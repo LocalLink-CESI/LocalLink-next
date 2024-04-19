@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model like {
+  userId            BigInt             @id
+  postId            BigInt?
+  culturePostId     BigInt?
+  goodServicesPost  BigInt?
+  user              user               @relation(fields: [userId], references: [id])
+  post              post?              @relation(fields: [postId], references: [id])
+  culturePost       culturePost?       @relation(fields: [culturePostId], references: [id])
+  goodsServicesPost goodsServicesPost? @relation(fields: [goodServicesPost], references: [id])
+}
+
+model eventPost {
+  id             BigInt           @id
+  text           String
+  title          String
+  media          Json?
+  userId         BigInt
+  cityId         BigInt
+  startAt        DateTime
+  endAt          DateTime
+  localisation   String
+  user           user             @relation(fields: [userId], references: [id])
+  city           city             @relation(fields: [cityId], references: [id])
+  userInterested userInterested[]
+}
+
+model user {
+  id                 BigInt              @id
+  firstName          String
+  lastName           String
+  mail               String              @unique
+  password           String
+  bio                String
+  avatar             String
+  cityId             BigInt
+  role               String
+  phone              String
+  city               city                @relation(fields: [cityId], references: [id])
+  likes              like[]
+  eventPosts         eventPost[]
+  userReads          userRead[]
+  userInteresteds    userInterested[]
+  goodsServicesPosts goodsServicesPost[]
+  culturePost        culturePost[]
+  post               post[]
+}
+
+model city {
+  id                 BigInt              @id
+  name               String
+  users              user[]
+  eventPosts         eventPost[]
+  goodsServicesPosts goodsServicesPost[]
+  culturePost        culturePost[]
+  post               post[]
+}
+
+model userRead {
+  userId        BigInt      @id
+  culturePostId BigInt
+  user          user        @relation(fields: [userId], references: [id])
+  culturePost   culturePost @relation(fields: [culturePostId], references: [id])
+}
+
+model goodsServicesPost {
+  id       BigInt  @id
+  text     String
+  title    String
+  media    Json?
+  userId   BigInt
+  price    Int
+  donation Boolean
+  cityId   BigInt
+  category String
+  user     user    @relation(fields: [userId], references: [id])
+  city     city    @relation(fields: [cityId], references: [id])
+  likes    like[]
+}
+
+model userInterested {
+  userId      BigInt    @id
+  eventPostId BigInt
+  user        user      @relation(fields: [userId], references: [id])
+  eventPost   eventPost @relation(fields: [eventPostId], references: [id])
+}
+
+model culturePost {
+  id        BigInt     @id
+  text      String
+  title     String
+  media     Json?
+  userId    BigInt
+  cityId    BigInt
+  user      user       @relation(fields: [userId], references: [id])
+  city      city       @relation(fields: [cityId], references: [id])
+  userReads userRead[]
+  like      like[]
+}
+
+model post {
+  id        BigInt  @id
+  text      String
+  title     String
+  media     Json?
+  userId    BigInt
+  cityId    BigInt
+  isVisible Boolean
+  user      user    @relation(fields: [userId], references: [id])
+  city      city    @relation(fields: [cityId], references: [id])
+  like      like[]
+}
