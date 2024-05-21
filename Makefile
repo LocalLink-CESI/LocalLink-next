@@ -1,10 +1,21 @@
 start:
 	docker compose up -d
+	make migrate
 start-prod:
-	docker compose -f docker-compose.prod.yml -d
+	docker compose -f docker-compose-prod.yml up -d
 stop:
 	docker compose down
-stop-prod:
-	docker compose -f docker-compose.prod.yml down
 restart:
-	docker compose restart
+	docker compose down
+	docker compose up -d
+	make migrate
+restart-prod:
+	docker compose -f docker-compose-prod.yml down
+	docker compose -f docker-compose-prod.yml up -d
+migrate:
+	# Wait for the database to become healthy
+	docker-compose exec locallink-db pg_isready -U postgres -q -h db
+
+	# Run Prisma commands
+	docker-compose exec locallink-next npx prisma generate
+	docker-compose exec locallink-next npx prisma db push
