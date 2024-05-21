@@ -26,13 +26,13 @@ model post {
   cityId BigInt
   city   city   @relation(fields: [cityId], references: [id])
 
-  like              like[]
-  comments          comment[]
-  notification      notification[]
-  type              postType
-  eventPost         eventPost[]
-  goodsServicesPost goodsServicesPost[]
-  culturePost       culturePost[]
+  likes              like[]
+  comments           comment[]
+  notifications      notification[]
+  type               postType
+  eventPosts         eventPost[]
+  goodsServicesPosts goodsServicesPost[]
+  culturePosts       culturePost[]
 }
 
 model eventPost {
@@ -98,7 +98,7 @@ model user {
 
   messagesSent     message[]      @relation("sender")
   messagesReceived message[]      @relation("receiver")
-  notification     notification[]
+  notifications    notification[]
 }
 
 model userInterested {
@@ -173,11 +173,10 @@ model message {
   receiverId BigInt
   receiver   user   @relation("receiver", fields: [receiverId], references: [id])
 
-  notification notification[]
+  notifications notification[]
 }
 
 model notification {
-  id        BigInt   @id @default(autoincrement())
   type      String // e.g., "like", "comment", "message"
   userId    BigInt
   createdAt DateTime @default(now())
@@ -186,6 +185,8 @@ model notification {
   postId BigInt?
   post   post?   @relation(fields: [postId], references: [id])
 
-  messageId BigInt?
-  message   message? @relation(fields: [messageId], references: [id])
+  messageId BigInt
+  message   message @relation(fields: [messageId], references: [id])
+
+  @@id([userId, messageId])
 }
