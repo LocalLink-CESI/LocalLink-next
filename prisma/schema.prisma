@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,114 +10,182 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model like {
-  userId            BigInt             @id
-  postId            BigInt?
-  culturePostId     BigInt?
-  goodServicesPost  BigInt?
-  user              user               @relation(fields: [userId], references: [id])
-  post              post?              @relation(fields: [postId], references: [id])
-  culturePost       culturePost?       @relation(fields: [culturePostId], references: [id])
-  goodsServicesPost goodsServicesPost? @relation(fields: [goodServicesPost], references: [id])
+model post {
+  id        BigInt  @id @default(autoincrement())
+  title     String
+  text      String
+  media     Json?
+  isVisible Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  cityId BigInt
+  city   city   @relation(fields: [cityId], references: [id])
+
+  like              like[]
+  comments          comment[]
+  notification      notification[]
+  type              postType
+  eventPost         eventPost[]
+  goodsServicesPost goodsServicesPost[]
+  culturePost       culturePost[]
 }
 
 model eventPost {
-  id             BigInt           @id
-  text           String
-  title          String
-  media          Json?
-  userId         BigInt
-  cityId         BigInt
-  startAt        DateTime
-  endAt          DateTime
-  localisation   String
-  user           user             @relation(fields: [userId], references: [id])
-  city           city             @relation(fields: [cityId], references: [id])
+  postId BigInt @id
+  post   post   @relation(fields: [postId], references: [id])
+
+  startAt      DateTime
+  endAt        DateTime
+  localisation String
+
   userInterested userInterested[]
 }
 
-model user {
-  id                 BigInt              @id
-  firstName          String
-  lastName           String
-  mail               String              @unique
-  password           String
-  bio                String
-  avatar             String
-  cityId             BigInt
-  role               String
-  phone              String
-  city               city                @relation(fields: [cityId], references: [id])
-  likes              like[]
-  eventPosts         eventPost[]
-  userReads          userRead[]
-  userInteresteds    userInterested[]
-  goodsServicesPosts goodsServicesPost[]
-  culturePost        culturePost[]
-  post               post[]
-}
-
-model city {
-  id                 BigInt              @id
-  name               String
-  users              user[]
-  eventPosts         eventPost[]
-  goodsServicesPosts goodsServicesPost[]
-  culturePost        culturePost[]
-  post               post[]
-}
-
-model userRead {
-  userId        BigInt      @id
-  culturePostId BigInt
-  user          user        @relation(fields: [userId], references: [id])
-  culturePost   culturePost @relation(fields: [culturePostId], references: [id])
-}
-
 model goodsServicesPost {
-  id       BigInt  @id
-  text     String
-  title    String
-  media    Json?
-  userId   BigInt
-  price    Int
-  donation Boolean
-  cityId   BigInt
-  category String
-  user     user    @relation(fields: [userId], references: [id])
-  city     city    @relation(fields: [cityId], references: [id])
-  likes    like[]
-}
+  postId BigInt @id
+  post   post   @relation(fields: [postId], references: [id])
 
-model userInterested {
-  userId      BigInt    @id
-  eventPostId BigInt
-  user        user      @relation(fields: [userId], references: [id])
-  eventPost   eventPost @relation(fields: [eventPostId], references: [id])
+  categoryId BigInt
+  category   category @relation(fields: [categoryId], references: [id])
+
+  price      Int?
+  isDonation Boolean
 }
 
 model culturePost {
-  id        BigInt     @id
-  text      String
-  title     String
-  media     Json?
-  userId    BigInt
-  cityId    BigInt
-  user      user       @relation(fields: [userId], references: [id])
-  city      city       @relation(fields: [cityId], references: [id])
+  postId BigInt @id
+  post   post   @relation(fields: [postId], references: [id])
+
   userReads userRead[]
-  like      like[]
 }
 
-model post {
-  id        BigInt  @id
+model like {
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  postId BigInt
+  post   post   @relation(fields: [postId], references: [id])
+
+  @@id([userId, postId])
+}
+
+model user {
+  id              BigInt   @id @default(autoincrement())
+  firstName       String
+  lastName        String
+  mail            String   @unique
+  password        String
+  bio             String
+  avatar          String
+  role            role     @default(USER)
+  isEmailVerified Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  cityId BigInt
+  city   city   @relation(fields: [cityId], references: [id])
+
+  posts          post[]
+  likes          like[]
+  userReads      userRead[]
+  comments       comment[]
+  userInterested userInterested[]
+
+  messagesSent     message[]      @relation("sender")
+  messagesReceived message[]      @relation("receiver")
+  notification     notification[]
+}
+
+model userInterested {
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  eventPostId BigInt
+  eventPost   eventPost @relation(fields: [eventPostId], references: [postId])
+
+  @@id([userId, eventPostId])
+}
+
+model city {
+  id BigInt @id @default(autoincrement())
+
+  name    String
+  zipCode String
+
+  users user[]
+  posts post[]
+}
+
+model userRead {
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  culturePostId BigInt
+  culturePost   culturePost @relation(fields: [culturePostId], references: [postId])
+
+  @@id([userId, culturePostId])
+}
+
+enum postType {
+  CULTURE
+  GOODS_SERVICES
+  EVENT
+}
+
+model category {
+  id                BigInt              @id @default(autoincrement())
+  name              String
+  goodsServicesPost goodsServicesPost[]
+}
+
+enum role {
+  USER
+  LEGISLATOR
+  ADMIN
+}
+
+model comment {
   text      String
-  title     String
-  media     Json?
+  createdAt DateTime @default(now())
+
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  postId BigInt
+  post   post   @relation(fields: [postId], references: [id])
+
+  @@id([userId, postId])
+}
+
+model message {
+  id        BigInt   @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  senderId BigInt
+  sender   user   @relation("sender", fields: [senderId], references: [id])
+
+  receiverId BigInt
+  receiver   user   @relation("receiver", fields: [receiverId], references: [id])
+
+  notification notification[]
+}
+
+model notification {
+  id        BigInt   @id @default(autoincrement())
+  type      String // e.g., "like", "comment", "message"
   userId    BigInt
-  cityId    BigInt
-  isVisible Boolean
-  user      user    @relation(fields: [userId], references: [id])
-  city      city    @relation(fields: [cityId], references: [id])
-  like      like[]
+  createdAt DateTime @default(now())
+  user      user     @relation(fields: [userId], references: [id])
+
+  postId BigInt?
+  post   post?   @relation(fields: [postId], references: [id])
+
+  messageId BigInt?
+  message   message? @relation(fields: [messageId], references: [id])
 }

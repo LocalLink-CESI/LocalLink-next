@@ -1,5 +1,5 @@
 services:
-  next:
+  locallink-next:
     container_name: locallink-next
     build:
       context: .
@@ -12,10 +12,10 @@ services:
       - ".:/app"
     command: ["npm", "run", "dev"]
     depends_on:
-      db:
+      locallink-db:
         condition: service_healthy
 
-  db:
+  locallink-db:
     container_name: locallink-db
     image: postgres
     restart: always
@@ -23,6 +23,8 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -31,12 +33,12 @@ services:
       timeout: 5s
       retries: 5
 
-  adminer:
+  locallink-adminer:
     container_name: locallink-adminer
     image: adminer
     #    restart: always
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
-      db:
+      locallink-db:
         condition: service_healthy
