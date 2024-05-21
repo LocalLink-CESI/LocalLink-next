@@ -1,6 +1,9 @@
 start:
 	docker compose up -d
 	make migrate
+seed:
+	docker-compose up -d
+	docker-compose exec locallink-next node prisma/seed.js
 start-prod:
 	docker compose -f docker-compose-prod.yml up -d
 stop:
