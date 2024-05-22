@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,18 +23,30 @@ model post {
   cityId BigInt
   city   city   @relation(fields: [cityId], references: [id])
 
-  likes              like[]
-  comments           comment[]
-  notifications      notification[]
-  type               postType
-  eventPosts         eventPost[]
-  goodsServicesPosts goodsServicesPost[]
-  culturePosts       culturePost[]
+  like         like[]
+  comments     comment[]
+  notification notification[]
 }
 
 model eventPost {
-  postId BigInt @id
-  post   post   @relation(fields: [postId], references: [id])
+  id        BigInt  @id @default(autoincrement())
+  title     String
+  text      String
+  media     Json?
+  isVisible Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  cityId BigInt
+  city   city   @relation(fields: [cityId], references: [id])
+
+  like         like[]
+  comments     comment[]
+  notification notification[]
 
   startAt      DateTime
   endAt        DateTime
@@ -46,9 +55,25 @@ model eventPost {
   userInterested userInterested[]
 }
 
-model goodsServicesPost {
-  postId BigInt @id
-  post   post   @relation(fields: [postId], references: [id])
+model salePost {
+  id        BigInt  @id @default(autoincrement())
+  title     String
+  text      String
+  media     Json?
+  isVisible Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  cityId BigInt
+  city   city   @relation(fields: [cityId], references: [id])
+
+  like         like[]
+  comments     comment[]
+  notification notification[]
 
   categoryId BigInt
   category   category @relation(fields: [categoryId], references: [id])
@@ -58,8 +83,24 @@ model goodsServicesPost {
 }
 
 model culturePost {
-  postId BigInt @id
-  post   post   @relation(fields: [postId], references: [id])
+  id        BigInt  @id @default(autoincrement())
+  title     String
+  text      String
+  media     Json?
+  isVisible Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId BigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  cityId BigInt
+  city   city   @relation(fields: [cityId], references: [id])
+
+  like         like[]
+  comments     comment[]
+  notification notification[]
 
   userReads userRead[]
 }
@@ -68,8 +109,14 @@ model like {
   userId BigInt
   user   user   @relation(fields: [userId], references: [id])
 
-  postId BigInt
-  post   post   @relation(fields: [postId], references: [id])
+  postId        BigInt
+  post          post         @relation(fields: [postId], references: [id])
+  eventPost     eventPost?   @relation(fields: [eventPostId], references: [id])
+  eventPostId   BigInt?
+  salePost      salePost?    @relation(fields: [salePostId], references: [id])
+  salePostId    BigInt?
+  culturePost   culturePost? @relation(fields: [culturePostId], references: [id])
+  culturePostId BigInt?
 
   @@id([userId, postId])
 }
@@ -98,7 +145,11 @@ model user {
 
   messagesSent     message[]      @relation("sender")
   messagesReceived message[]      @relation("receiver")
-  notifications    notification[]
+
+  notification     notification[]
+  eventPosts       eventPost[]
+  salePost         salePost[]
+  culturePosts     culturePost[]
 }
 
 model userInterested {
@@ -106,7 +157,7 @@ model userInterested {
   user   user   @relation(fields: [userId], references: [id])
 
   eventPostId BigInt
-  eventPost   eventPost @relation(fields: [eventPostId], references: [postId])
+  eventPost   eventPost @relation(fields: [eventPostId], references: [id])
 
   @@id([userId, eventPostId])
 }
@@ -117,8 +168,11 @@ model city {
   name    String
   zipCode String
 
-  users user[]
-  posts post[]
+  users        user[]
+  posts        post[]
+  eventPosts   eventPost[]
+  salePosts    salePost[]
+  culturePosts culturePost[]
 }
 
 model userRead {
@@ -126,21 +180,15 @@ model userRead {
   user   user   @relation(fields: [userId], references: [id])
 
   culturePostId BigInt
-  culturePost   culturePost @relation(fields: [culturePostId], references: [postId])
+  culturePost   culturePost @relation(fields: [culturePostId], references: [id])
 
   @@id([userId, culturePostId])
 }
 
-enum postType {
-  CULTURE
-  GOODS_SERVICES
-  EVENT
-}
-
 model category {
-  id                BigInt              @id @default(autoincrement())
-  name              String
-  goodsServicesPost goodsServicesPost[]
+  id        BigInt     @id @default(autoincrement())
+  name      String
+  salePosts salePost[]
 }
 
 enum role {
@@ -150,16 +198,24 @@ enum role {
 }
 
 model comment {
+  id        BigInt   @id @default(autoincrement())
   text      String
   createdAt DateTime @default(now())
 
   userId BigInt
   user   user   @relation(fields: [userId], references: [id])
 
-  postId BigInt
-  post   post   @relation(fields: [postId], references: [id])
+  postId BigInt?
+  post   post?   @relation(fields: [postId], references: [id])
 
-  @@id([userId, postId])
+  eventPostId BigInt?
+  eventPost   eventPost? @relation(fields: [eventPostId], references: [id])
+
+  salePostId BigInt?
+  salePost   salePost? @relation(fields: [salePostId], references: [id])
+
+  culturePostId BigInt?
+  culturePost   culturePost? @relation(fields: [culturePostId], references: [id])
 }
 
 model message {
@@ -185,8 +241,15 @@ model notification {
   postId BigInt?
   post   post?   @relation(fields: [postId], references: [id])
 
-  messageId BigInt
-  message   message @relation(fields: [messageId], references: [id])
+  eventPostId BigInt?
+  eventPost   eventPost? @relation(fields: [eventPostId], references: [id])
 
-  @@id([userId, messageId])
+  salePostId BigInt?
+  salePost   salePost? @relation(fields: [salePostId], references: [id])
+
+  culturePostId BigInt?
+  culturePost   culturePost? @relation(fields: [culturePostId], references: [id])
+
+  messageId BigInt?
+  message   message? @relation(fields: [messageId], references: [id])
 }
