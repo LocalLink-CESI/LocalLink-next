@@ -145,6 +145,7 @@ model user {
 
   messagesSent     message[]      @relation("sender")
   messagesReceived message[]      @relation("receiver")
+
   notification     notification[]
   eventPosts       eventPost[]
   salePost         salePost[]
@@ -228,11 +229,10 @@ model message {
   receiverId BigInt
   receiver   user   @relation("receiver", fields: [receiverId], references: [id])
 
-  notification notification[]
+  notifications notification[]
 }
 
 model notification {
-  id        BigInt   @id @default(autoincrement())
   type      String // e.g., "like", "comment", "message"
   userId    BigInt
   createdAt DateTime @default(now())
