@@ -1,95 +1,88 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import HomeCard from "@/components/Home/HomeCard";
+import { Flex, Grid, Text } from "@chakra-ui/react";
+
+// import "@/assets/scss/home.scss"
+
+const posts = [
+  {
+    user: {
+      name: "Segun Adebayo",
+      avatar: "https://bit.ly/sage-adebayo",
+      location: "Abuja, Nigeria"
+    },
+    content: "Hello again everyone! I just wanted to share this beautiful painting I painted today. I hope you all have a great day!",
+    image: "/example2.webp",
+    interactions: {
+      likes: 158,
+      comments: 20
+    }
+  },
+  {
+    user: {
+      name: "Segun Adebayo",
+      avatar: "https://bit.ly/sage-adebayo",
+      location: "Abuja, Nigeria"
+    },
+    content: "Hi my fellow neighbors! I just joined this app and am quite unsure as to what the next steps might be for me here. I would appreciate any help or guidance you can offer me. Below is a picture of trying trying to piece out how to use this thing. Thanks! 🙏",
+    image: "/example1.png",
+    interactions: {
+      likes: 10,
+      comments: 4
+    }
+  },
+
+]
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main>
+      <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"}>
+
+        <Flex w={"60%"} direction="column" alignItems={"center"} gap={"3rem"} height={"100%"} >
+          {/* <Text
+            fontFamily="Montserrat"
+            fontSize="3xl"
+            fontWeight="bold"
+            textAlign="center"
+            color="black"
+            mb={8}
+          >POSTS</Text> */}
+          {posts.map((post, index) => (
+            <HomeCard key={index} post={post} />
+          ))}
+        </Flex>
+
+        <Grid w={"40%"} column={""} gap={6}>
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            bg="brand.900"
+            minW="200px"
+            minH="200px"
+            borderRadius="md"
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+            <h2>EVENEMENTS</h2>
+            <p>Post content</p>
+          </Flex>
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            bg="brand.900"
+            minW="200px"
+            minH="200px"
+            borderRadius="md"
+          >
+            <h2>NEWS</h2>
+            <p>Dernières nouvelles</p>
+          </Flex>
+        </Grid>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      </Flex>
     </main>
   );
 }
