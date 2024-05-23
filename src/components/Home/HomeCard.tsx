@@ -1,5 +1,5 @@
 import { Image } from "@chakra-ui/next-js";
-import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, Text, Tooltip } from "@chakra-ui/react";
 import { FiFeather, FiMoreHorizontal, FiShare, FiThumbsUp } from "react-icons/fi";
 
 export default function HomeCard({ post }: { post: any }) {
@@ -45,14 +45,17 @@ export default function HomeCard({ post }: { post: any }) {
                     },
                 }}
             >
-                <Button flex='1' variant='ghost' leftIcon={<FiThumbsUp />}>
-                    {post.interactions.likes}
-                </Button>
-                <Button flex='1' variant='ghost' leftIcon={<FiFeather />}>
-                    {post.interactions.comments}
-                </Button>
-                <Button flex='1' variant='ghost' leftIcon={<FiShare />}>
-                </Button>
+                <Tooltip label="J'aime" aria-label="J'aime" placement="bottom">
+                    <Button variant='brandGhostButton' leftIcon={<FiThumbsUp />}>
+                        {post.interactions.likes}
+                    </Button></Tooltip>
+                <Tooltip label="Commenter" aria-label="Commenter" placement="bottom">
+                    <Button variant='brandGhostButton' leftIcon={<FiFeather />}>
+                        {post.interactions.comments}
+                    </Button></Tooltip>
+                <Tooltip label="Partager" aria-label="Partager" placement="bottom">
+                    <Button variant='brandGhostButton' leftIcon={<FiShare />}>
+                    </Button></Tooltip>
             </CardFooter>
         </Card>
     )

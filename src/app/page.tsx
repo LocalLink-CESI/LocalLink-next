@@ -38,7 +38,7 @@ const posts = [
 export default function Home() {
   return (
     <main>
-      <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"}>
+      <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"} py={"1rem"}>
 
         <Flex w={"60%"} direction="column" alignItems={"center"} gap={"3rem"} height={"100%"} >
           {/* <Text

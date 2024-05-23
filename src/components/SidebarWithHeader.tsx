@@ -32,6 +32,7 @@ import {
     FiMenu,
     FiBell,
     FiChevronDown,
+    FiUser,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
@@ -39,14 +40,14 @@ import { ReactText } from 'react';
 interface LinkItemProps {
     name: string;
     icon: IconType;
+    link?: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-    { name: 'Home', icon: FiHome },
-    { name: 'Trending', icon: FiTrendingUp },
-    { name: 'Explore', icon: FiCompass },
-    { name: 'Favourites', icon: FiStar },
-    { name: 'Settings', icon: FiSettings },
+    { name: 'Accueil', icon: FiHome, link: '/' },
     { name: "Notifications", icon: FiBell },
+    { name: 'Profil', icon: FiUser, link: '/profile' },
+    { name: 'Settings', icon: FiSettings },
+
 ];
 
 export default function SidebarWithHeader({
@@ -109,7 +110,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             </Flex>
             <Flex direction="column">
                 {LinkItems.map((link) => (
-                    <NavItem key={link.name} icon={link.icon} name={link.name} />
+                    <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link} />
                 ))}
             </Flex>
             <VStack spacing={{ base: '0', md: '6' }} _hover={{ bg: "brand.900" }}>
@@ -156,11 +157,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 interface NavItemProps extends FlexProps {
     icon: IconType;
     name: string;
+    link?: string;
 }
-const NavItem = ({ icon, name, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, name, link, ...rest }: NavItemProps) => {
     return (
         <Tooltip label={name} aria-label={name} placement='right'>
-            <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+            <Link href={link} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
                 <Flex
                     align="center"
                     p="4"
@@ -177,9 +179,7 @@ const NavItem = ({ icon, name, ...rest }: NavItemProps) => {
                     {icon && (
                         <Icon
                             fontSize="20"
-                            _groupHover={{
-                                color: 'white',
-                            }}
+                            color={"black"}
                             as={icon}
                         />
                     )}

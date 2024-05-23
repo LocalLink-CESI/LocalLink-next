@@ -1,4 +1,4 @@
-import { extendTheme, type ThemeConfig } from '@chakra-ui/react'
+import { Button, defineStyle, defineStyleConfig, extendTheme, type ThemeConfig } from '@chakra-ui/react'
 import "@fontsource-variable/open-sans"
 import "@fontsource-variable/montserrat"
 const config: ThemeConfig = {
@@ -26,8 +26,6 @@ const theme = extendTheme({
     },
     yellow: {
       900: "#FFD866",
-      800: "#FFD866",
-      700: "#FFD866"
     }
   },
   fonts: {
@@ -38,13 +36,41 @@ const theme = extendTheme({
     Tooltip: {
       baseStyle: {
         bg: "brand.900",
-        color: "white",
+        color: "black",
         padding: "0.25rem 1rem",
         borderRadius: "0.5rem",
         fontWeight: "bold",
         fontFamily: "heading",
       },
     },
+    Button: {
+      variants: {
+        brandPrimaryButton: {
+          bg: "brand.900",
+          color: "black",
+          fontFamily: "heading",
+          _hover: {
+            bg: "brand.800",
+          },
+          _active: {
+            bg: "brand.700",
+          },
+        },
+        brandGhostButton: {
+          bg: "transparent",
+          color: "black",
+          fontFamily: "heading",
+          _hover: {
+            bg: "brand.800",
+            color: "black",
+            fontWeight: "bold",
+          },
+          _active: {
+            bg: "brand.800",
+          },
+        },
+      }
+    }
   }
 })
 
