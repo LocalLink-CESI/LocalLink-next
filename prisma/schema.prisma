@@ -7,28 +7,82 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model post {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean
+model Account {
+  id                 String    @id @default(cuid())
+  userId             String
+  providerType       String
+  providerId         String
+  providerAccountId  String
+  refreshToken       String?
+  accessToken        String?
+  accessTokenExpires DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
-
-  cityId BigInt
-  city   city   @relation(fields: [cityId], references: [id])
-
-  like         like[]
-  comments     comment[]
-  notification notification[]
+  @@unique([providerId, providerAccountId])
 }
 
-model eventPost {
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+
+  firstName String
+  lastName  String
+  bio       String
+  avatar    String
+
+  password String
+  role     Role   @default(USER)
+
+  cityId BigInt
+  city   City   @relation(fields: [cityId], references: [id])
+
+  posts          Post[]
+  likes          Like[]
+  userReads      UserRead[]
+  comments       Comment[]
+  userInterested UserInterested[]
+
+  messagesSent     Message[] @relation("sender")
+  messagesReceived Message[] @relation("receiver")
+
+  notification Notification[]
+  eventPosts   EventPost[]
+  salePost     SalePost[]
+  culturePosts CulturePost[]
+}
+
+model VerificationRequest {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, token])
+}
+
+model Post {
   id        BigInt  @id @default(autoincrement())
   title     String
   text      String
@@ -38,24 +92,45 @@ model eventPost {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   cityId BigInt
-  city   city   @relation(fields: [cityId], references: [id])
+  city   City   @relation(fields: [cityId], references: [id])
 
-  like         like[]
-  comments     comment[]
-  notification notification[]
+  like         Like[]
+  comments     Comment[]
+  notification Notification[]
+}
+
+model EventPost {
+  id        BigInt  @id @default(autoincrement())
+  title     String
+  text      String
+  media     Json?
+  isVisible Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  cityId BigInt
+  city   City   @relation(fields: [cityId], references: [id])
+
+  like         Like[]
+  comments     Comment[]
+  notification Notification[]
 
   startAt      DateTime
   endAt        DateTime
   localisation String
 
-  userInterested userInterested[]
+  userInterested UserInterested[]
 }
 
-model salePost {
+model SalePost {
   id        BigInt  @id @default(autoincrement())
   title     String
   text      String
@@ -65,24 +140,24 @@ model salePost {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   cityId BigInt
-  city   city   @relation(fields: [cityId], references: [id])
+  city   City   @relation(fields: [cityId], references: [id])
 
-  like         like[]
-  comments     comment[]
-  notification notification[]
+  like         Like[]
+  comments     Comment[]
+  notification Notification[]
 
   categoryId BigInt
-  category   category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
 
   price      Int?
   isDonation Boolean
 }
 
-model culturePost {
+model CulturePost {
   id        BigInt  @id @default(autoincrement())
   title     String
   text      String
@@ -92,164 +167,136 @@ model culturePost {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   cityId BigInt
-  city   city   @relation(fields: [cityId], references: [id])
+  city   City   @relation(fields: [cityId], references: [id])
 
-  like         like[]
-  comments     comment[]
-  notification notification[]
+  like         Like[]
+  comments     Comment[]
+  notification Notification[]
 
-  userReads userRead[]
+  userReads UserRead[]
 }
 
-model like {
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
+model Like {
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   postId        BigInt
-  post          post         @relation(fields: [postId], references: [id])
-  eventPost     eventPost?   @relation(fields: [eventPostId], references: [id])
+  post          Post         @relation(fields: [postId], references: [id])
+  eventPost     EventPost?   @relation(fields: [eventPostId], references: [id])
   eventPostId   BigInt?
-  salePost      salePost?    @relation(fields: [salePostId], references: [id])
+  salePost      SalePost?    @relation(fields: [salePostId], references: [id])
   salePostId    BigInt?
-  culturePost   culturePost? @relation(fields: [culturePostId], references: [id])
+  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
   culturePostId BigInt?
 
   @@id([userId, postId])
 }
 
-model user {
-  id              BigInt   @id @default(autoincrement())
-  firstName       String
-  lastName        String
-  mail            String   @unique
-  password        String
-  bio             String
-  avatar          String
-  role            role     @default(USER)
-  isEmailVerified Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  cityId BigInt
-  city   city   @relation(fields: [cityId], references: [id])
-
-  posts          post[]
-  likes          like[]
-  userReads      userRead[]
-  comments       comment[]
-  userInterested userInterested[]
-
-  messagesSent     message[]      @relation("sender")
-  messagesReceived message[]      @relation("receiver")
-
-  notification     notification[]
-  eventPosts       eventPost[]
-  salePost         salePost[]
-  culturePosts     culturePost[]
-}
-
-model userInterested {
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
+model UserInterested {
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   eventPostId BigInt
-  eventPost   eventPost @relation(fields: [eventPostId], references: [id])
+  eventPost   EventPost @relation(fields: [eventPostId], references: [id])
 
   @@id([userId, eventPostId])
 }
 
-model city {
+model City {
   id BigInt @id @default(autoincrement())
 
   name    String
   zipCode String
 
-  users        user[]
-  posts        post[]
-  eventPosts   eventPost[]
-  salePosts    salePost[]
-  culturePosts culturePost[]
+  users        User[]
+  posts        Post[]
+  eventPosts   EventPost[]
+  salePosts    SalePost[]
+  culturePosts CulturePost[]
 }
 
-model userRead {
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
+model UserRead {
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   culturePostId BigInt
-  culturePost   culturePost @relation(fields: [culturePostId], references: [id])
+  culturePost   CulturePost @relation(fields: [culturePostId], references: [id])
 
   @@id([userId, culturePostId])
 }
 
-model category {
+model Category {
   id        BigInt     @id @default(autoincrement())
   name      String
-  salePosts salePost[]
+  salePosts SalePost[]
 }
 
-enum role {
+enum Role {
   USER
   LEGISLATOR
   ADMIN
 }
 
-model comment {
+model Comment {
   id        BigInt   @id @default(autoincrement())
   text      String
   createdAt DateTime @default(now())
 
-  userId BigInt
-  user   user   @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   postId BigInt?
-  post   post?   @relation(fields: [postId], references: [id])
+  post   Post?   @relation(fields: [postId], references: [id])
 
   eventPostId BigInt?
-  eventPost   eventPost? @relation(fields: [eventPostId], references: [id])
+  eventPost   EventPost? @relation(fields: [eventPostId], references: [id])
 
   salePostId BigInt?
-  salePost   salePost? @relation(fields: [salePostId], references: [id])
+  salePost   SalePost? @relation(fields: [salePostId], references: [id])
 
   culturePostId BigInt?
-  culturePost   culturePost? @relation(fields: [culturePostId], references: [id])
+  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
 }
 
-model message {
+model Message {
   id        BigInt   @id @default(autoincrement())
   content   String
   createdAt DateTime @default(now())
 
-  senderId BigInt
-  sender   user   @relation("sender", fields: [senderId], references: [id])
+  senderId String
+  sender   User   @relation("sender", fields: [senderId], references: [id])
 
-  receiverId BigInt
-  receiver   user   @relation("receiver", fields: [receiverId], references: [id])
+  receiverId String
+  receiver   User   @relation("receiver", fields: [receiverId], references: [id])
 
-  notifications notification[]
+  notifications Notification[]
 }
 
-model notification {
-  type      String // e.g., "like", "comment", "message"
-  userId    BigInt
+model Notification {
+  type   String // e.g., "like", "comment", "message"
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   createdAt DateTime @default(now())
-  user      user     @relation(fields: [userId], references: [id])
 
   postId BigInt?
-  post   post?   @relation(fields: [postId], references: [id])
+  post   Post?   @relation(fields: [postId], references: [id])
 
   eventPostId BigInt?
-  eventPost   eventPost? @relation(fields: [eventPostId], references: [id])
+  eventPost   EventPost? @relation(fields: [eventPostId], references: [id])
 
   salePostId BigInt?
-  salePost   salePost? @relation(fields: [salePostId], references: [id])
+  salePost   SalePost? @relation(fields: [salePostId], references: [id])
 
   culturePostId BigInt?
-  culturePost   culturePost? @relation(fields: [culturePostId], references: [id])
+  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
 
   messageId BigInt?
-  message   message? @relation(fields: [messageId], references: [id])
+  message   Message? @relation(fields: [messageId], references: [id])
+
+  @@id([userId, type, createdAt])
 }
