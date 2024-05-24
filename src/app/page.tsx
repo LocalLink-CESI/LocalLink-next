@@ -1,6 +1,6 @@
 'use client'
 
-import HomeCard from "@/components/Home/HomeCard";
+import PostCard from "@/components/Home/PostCard";
 import { Flex, Grid, Text } from "@chakra-ui/react";
 
 // import "@/assets/scss/home.scss"
@@ -50,7 +50,7 @@ export default function Home() {
             mb={8}
           >POSTS</Text> */}
           {posts.map((post, index) => (
-            <HomeCard key={index} post={post} />
+            <PostCard key={index} post={post} />
           ))}
         </Flex>
 

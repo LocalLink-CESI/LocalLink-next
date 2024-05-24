@@ -25,9 +25,6 @@ import {
 } from '@chakra-ui/react';
 import {
     FiHome,
-    FiTrendingUp,
-    FiCompass,
-    FiStar,
     FiSettings,
     FiMenu,
     FiBell,
@@ -35,7 +32,9 @@ import {
     FiUser,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
-import { ReactText } from 'react';
+import { useUserStore } from '@/providers/user-store-provider';
+import { usePathname } from 'next/navigation';
+import { User } from '@/stores/user-store';
 
 interface LinkItemProps {
     name: string;
@@ -56,12 +55,13 @@ export default function SidebarWithHeader({
     children: ReactNode;
 }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const user = useUserStore((state) => state)
     return (
         <Flex h="100dvh" bg={"white"} direction={"column"}>
             <SidebarContent
                 border="0px"
                 onClose={() => onClose}
-                display={{ base: 'none', md: 'flex' }}
+                display={{ base: 'none', md: 'flex' }} user={user}
             />
             <Drawer
                 autoFocus={false}
@@ -72,10 +72,9 @@ export default function SidebarWithHeader({
                 onOverlayClick={onClose}
                 size="full">
                 <DrawerContent>
-                    <SidebarContent onClose={onClose} />
+                    <SidebarContent onClose={onClose} user={user} />
                 </DrawerContent>
             </Drawer>
-            {/* mobilenav */}
             <MobileNav onOpen={onOpen} />
             <Box flex={"1"} border={"1px"} overflow={"scroll"} h={"100%"} borderTopLeftRadius={"15px"} borderColor={useColorModeValue('gray.200', 'brand.900')} ml={{ base: 0, md: 100 }} p="4">
                 {children}
@@ -86,9 +85,10 @@ export default function SidebarWithHeader({
 
 interface SidebarProps extends BoxProps {
     onClose: () => void;
+    user: User;
 }
 
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
     return (
         <Flex
             transition="3s ease"
@@ -103,8 +103,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             justifyContent={'space-between'}
             {...rest}>
             <Flex h="20" alignItems="center" justifyContent="center">
-                <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-                    Logo
+                <Text fontSize="2xl" fontFamily="Montserrat" fontWeight="bold" color={"black"}>
+                    LL
                 </Text>
                 <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
             </Flex>
@@ -123,9 +123,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
                             <HStack>
                                 <Avatar
+                                    ignoreFallback={true}
                                     size={'sm'}
                                     src={
-                                        'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
+                                        user.avatar
                                     }
                                 />
                                 <VStack
@@ -142,10 +143,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                         <MenuList
                             bg={useColorModeValue('white', 'gray.900')}
                             borderColor={useColorModeValue('gray.200', 'brand.900')}>
-                            <MenuItem _hover={{ bg: "brand.900", color: "white", fontWeight: "700" }}>Profil</MenuItem>
-                            <MenuItem _hover={{ bg: "brand.900", color: "white", fontWeight: "700" }}>Paramètres</MenuItem>
-                            <MenuDivider />
-                            <MenuItem _hover={{ bg: "brand.900", color: "white", fontWeight: "700" }}>Déconnexion</MenuItem>
+                            <MenuItem _hover={{ bg: "brand.900", color: "black", fontWeight: "700" }} transition={"all 0.2s ease"}>Déconnexion</MenuItem>
                         </MenuList>
                     </Menu>
                 </Flex>
@@ -160,21 +158,29 @@ interface NavItemProps extends FlexProps {
     link?: string;
 }
 const NavItem = ({ icon, name, link, ...rest }: NavItemProps) => {
+    const pathName = usePathname();
     return (
         <Tooltip label={name} aria-label={name} placement='right'>
-            <Link href={link} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+            <Link href={link} style={{ textDecoration: 'none' }}
+                _focus={{ boxShadow: 'none', bg: "brand.900" }}
+                mt={2}
+                p="4"
+                mx="4"
+                borderRadius="lg"
+                role="group"
+                cursor="pointer"
+                bg={pathName === link ? "brand.900" : "white"}
+                _active={{ bg: "brand.900" }}
+                transition={"all .4s ease"}
+                _hover={{
+                    bg: 'brand.900',
+                    color: 'white',
+                    transition: 'all .2s ease',
+                }}
+            >
                 <Flex
-                    align="center"
-                    p="4"
-                    mx="4"
-                    borderRadius="lg"
-                    role="group"
-                    cursor="pointer"
                     justify="center"
-                    _hover={{
-                        bg: 'brand.900',
-                        color: 'white',
-                    }}
+                    align="center"
                     {...rest}>
                     {icon && (
                         <Icon
@@ -185,7 +191,7 @@ const NavItem = ({ icon, name, link, ...rest }: NavItemProps) => {
                     )}
                 </Flex>
             </Link>
-        </Tooltip>
+        </Tooltip >
     );
 };
 
@@ -218,9 +224,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             <Text
                 display={{ base: 'flex', md: 'none' }}
                 fontSize="2xl"
-                fontFamily="monospace"
+                fontFamily="montserrat"
                 fontWeight="bold">
-                Logo
+                LL
             </Text>
 
         </Flex>

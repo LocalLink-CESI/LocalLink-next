@@ -1,25 +1,30 @@
+import { useUserStore } from "@/providers/user-store-provider";
 import { Image } from "@chakra-ui/next-js";
 import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, Text, Tooltip } from "@chakra-ui/react";
 import { FiFeather, FiMoreHorizontal, FiShare, FiThumbsUp } from "react-icons/fi";
 
-export default function HomeCard({ post }: { post: any }) {
+export default function PostCard({ post }: { post: any }) {
+    // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
+    const user = useUserStore((state) => state)
+    let postUser = user
+    if (!postUser) { postUser = user }
     return (
         <Card maxW='xl' borderRadius={"20px"} shadow={"rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.19) 0px 3px 6px;"}>
             <CardHeader>
-                <Flex gap='4'>
+                <Flex gap='0'>
                     <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                        <Avatar name={post.user.name} src={post.user.avatar} flexShrink={1} />
+                        <Avatar name={postUser.name} src={postUser.avatar} flexShrink={1} />
                         <Box>
-                            <Heading size='sm'>{post.user.name}</Heading>
-                            <Text color='gray.500'>{post.user.location}</Text>
+                            <Heading size='sm'>{postUser.name}</Heading>
+                            <Text color='gray.500'>{postUser.location}</Text>
                         </Box>
                     </Flex>
-                    <IconButton
+                    {/* <IconButton
                         variant='ghost'
                         colorScheme='gray'
                         aria-label='See menu'
                         icon={<FiMoreHorizontal />}
-                    />
+                    /> */}
                 </Flex>
             </CardHeader>
             <CardBody>
