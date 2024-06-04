@@ -17,3 +17,11 @@ export const LogoutButton = () => {
         </button>
     )
 }
+
+export const CreateAccountButton = () => {
+    return (
+        <button onClick={() => signIn()}>
+            Create Account
+        </button>
+    )
+}

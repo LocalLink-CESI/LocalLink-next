@@ -1,11 +1,11 @@
 'use server'
 
-import prisma from "@/utils/db";
+import {prisma} from "@/helpers/database";
 
 export const getPosts = async () => {
-    await prisma.post.findMany({include: {likes: true}});
+    await prisma.post.findMany();
 }
 
 export const getPostsDetails = async () => {
-    await prisma.post.findMany({include: {likes: true, comments: true}});
+    await prisma.post.findMany();
 }
