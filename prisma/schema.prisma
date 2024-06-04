@@ -65,10 +65,10 @@ model User {
   messagesSent     Message[] @relation("sender")
   messagesReceived Message[] @relation("receiver")
 
-  notification Notification[]
-  eventPosts   EventPost[]
-  salePost     SalePost[]
-  culturePosts CulturePost[]
+  notifications Notification[]
+  eventPosts    EventPost[]
+  salePost      SalePost[]
+  culturePosts  CulturePost[]
 }
 
 model VerificationRequest {
@@ -98,9 +98,9 @@ model Post {
   cityId BigInt
   city   City   @relation(fields: [cityId], references: [id])
 
-  like         Like[]
-  comments     Comment[]
-  notification Notification[]
+  likes         Like[]
+  comments      Comment[]
+  notifications Notification[]
 }
 
 model EventPost {
@@ -119,9 +119,9 @@ model EventPost {
   cityId BigInt
   city   City   @relation(fields: [cityId], references: [id])
 
-  like         Like[]
-  comments     Comment[]
-  notification Notification[]
+  likes         Like[]
+  comments      Comment[]
+  notifications Notification[]
 
   startAt      DateTime
   endAt        DateTime
@@ -146,9 +146,9 @@ model SalePost {
   cityId BigInt
   city   City   @relation(fields: [cityId], references: [id])
 
-  like         Like[]
-  comments     Comment[]
-  notification Notification[]
+  likes         Like[]
+  comments      Comment[]
+  notifications Notification[]
 
   categoryId BigInt
   category   Category @relation(fields: [categoryId], references: [id])
@@ -173,9 +173,9 @@ model CulturePost {
   cityId BigInt
   city   City   @relation(fields: [cityId], references: [id])
 
-  like         Like[]
-  comments     Comment[]
-  notification Notification[]
+  likes         Like[]
+  comments      Comment[]
+  notifications Notification[]
 
   userReads UserRead[]
 }
