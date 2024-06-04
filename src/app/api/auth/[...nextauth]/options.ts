@@ -1,9 +1,15 @@
-import NextAuth from "next-auth"
-import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import AppleProvider from "next-auth/providers/apple"
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/helpers/database";
+import bcrypt from "bcryptjs";
+
+const googleId = process.env.GOOGLE_ID
+const googleSecret = process.env.GOOGLE_SECRET
+
+if (!googleId || !googleSecret) {
+    throw new Error("GOOGLE_ID and GOOGLE_SECRET must be defined")
+}
 
 export const authOptions = {
     providers: [
@@ -20,21 +26,18 @@ export const authOptions = {
                 const user = await prisma.user.findFirst({
                     where: {
                         email: credentials.username,
-                        password: credentials.password
                     }
                 })
 
-                if (user) {
-                    return user
-                } else {
-                    return null
-                }
+                if (!user) return null
+
+                return await bcrypt.compare(credentials.password, user.password) ? user : null
             }
         }),
 
         GoogleProvider({
-            clientId: process.env.GOOGLE_ID,
-            clientSecret: process.env.GOOGLE_SECRET,
+            clientId: googleId,
+            clientSecret: googleSecret,
         }),
     ],
 }
