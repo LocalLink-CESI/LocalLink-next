@@ -12,8 +12,8 @@ export default async function CreateUser(form: FormData) {
             bio: form.get('bio') as string,
             avatar: form.get('avatar') as string,
         }
-    }).then((post) => {
-        console.log(post);
+    }).then((user) => {
+        console.log(user);
     }).catch((error) => {
         console.log(error);
     });
