@@ -4,7 +4,7 @@ import {PrismaClient} from "@prisma/client";
 //     query: {
 //         user: {
 //             $allOperations({ operation, args, query }) {
-//                 if (['create', 'update'].includes(operation) && args.data['password']) {
+//                 if (['signup', 'update'].includes(operation) && args.data['password']) {
 //                     args.data['password'] = bcrypt.hashSync(args.data['password'], 10)
 //
 //                 }
