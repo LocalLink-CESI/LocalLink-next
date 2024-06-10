@@ -22,5 +22,9 @@ export default async function CreateUser(form: {
             avatar: form.avatar,
             email: form.email
         }
+    }).then((user) => {
+        console.log(user);
+    }).catch((error) => {
+        console.log(error);
     });
 }

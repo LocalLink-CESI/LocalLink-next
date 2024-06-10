@@ -1,10 +1,8 @@
 'use server';
 import {PostType, prisma} from '@/helpers/database';
-import {PrismaClient} from "@prisma/client";
 
 export default async function GetPostsWithPaginationAndType (pagination: {limit:number, offset:number}, type: PostType, cityId: number) : Promise<Array<any>> {
-    console.log(type);
-    const posts = await prisma.post.findMany({
+    const posts = await prisma[type as string].findMany({
         take: pagination.limit,
         skip: pagination.offset,
         orderBy: {
@@ -16,5 +14,13 @@ export default async function GetPostsWithPaginationAndType (pagination: {limit:
     });
     console.log(posts);
     return posts;
+}
+
+export async function GetPostWithId (id: number) {
+    return prisma.post.findUnique({
+        where: {
+            id: id
+        }
+    }).catch();
 }
 
