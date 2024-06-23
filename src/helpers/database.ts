@@ -22,3 +22,5 @@ export const enum PostType {
     EVENT = 'eventPost',
     SALE = 'salePost',
 }
+
+export type PrismaPostType = 'post' | 'culturePost' | 'eventPost' | 'salePost';
