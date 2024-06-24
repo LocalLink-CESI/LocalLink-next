@@ -175,6 +175,7 @@ const Blur = (props: IconProps) => {
             width={useBreakpointValue({base: '100%', md: '40vw', lg: '30vw'})}
             zIndex={useBreakpointValue({base: -1, md: -1, lg: 0})}
             height="560px"
+            zIndex={0}
             viewBox="0 0 528 560"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -322,6 +323,7 @@ export function SignUp() {
                     maxW={{lg: 'lg'}}>
                     <Stack spacing={4}>
                         <Heading
+                            zIndex={1}
                             color={'gray.800'}
                             lineHeight={1.1}
                             fontSize={{base: '2xl', sm: '3xl', md: '4xl'}}>
@@ -434,7 +436,7 @@ export function SignUp() {
                     form
                 </Stack>
             </Container>
-            <Blur position={'absolute'} top={-10} left={-10} style={{filter: 'blur(70px)'}}/>
+            <Blur zIndex={0} position={'absolute'} top={-10} left={-10} style={{filter: 'blur(70px)'}}/>
         </Box>
     )
 }
