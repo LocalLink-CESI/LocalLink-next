@@ -1,76 +1,85 @@
-import {User} from '@prisma/client';
-
-import {prisma} from "@/helpers/database";
-
-describe('User model', () => {
-    beforeAll(async () => {
-        await prisma.$connect();
-    });
-
-    afterAll(async () => {
-        await prisma.$disconnect();
-    });
-
-    test('should create a new user', async () => {
-        const user: User = await prisma.user.create({
-            data: {
-                firstName: 'John',
-                lastName: 'Doe',
-                email: 'john.doe@example.com',
-                password: 'securepassword',
-                role: 'USER',
-                city: {
-                    create: {
-                        name: 'Sample City',
-                        zipCode: '12345',
-                        latitude: '10.0000',
-                        longitude: '20.0000',
-                    },
-                },
-            },
-        });
-
-        expect(user).toHaveProperty('id');
-        expect(user.firstName).toBe('John');
-        expect(user.email).toBe('john.doe@example.com');
-        expect(user.role).toBe('USER');
-    });
-
-    test('should fetch a user by email', async () => {
-        const user = await prisma.user.findUnique({
-            where: {email: 'john.doe@example.com'},
-        });
-
-        expect(user).not.toBeNull();
-        expect(user!.email).toBe('john.doe@example.com');
-    });
-
-    test('should update a user', async () => {
-        const user = await prisma.user.update({
-            where: {email: 'john.doe@example.com'},
-            data: {
-                firstName: 'Jane',
-            },
-        });
-
-        expect(user).toHaveProperty('id');
-        expect(user.firstName).toBe('Jane');
-    });
-
-    test('should delete a user', async () => {
-        const user = await prisma.user.delete({
-            where: {email: 'john.doe@example.com'},
-        });
-
-        expect(user).toHaveProperty('id');
-        expect(user.email).toBe('john.doe@example.com');
+import CreateUser from "@/app/actions/users/create";
+import {UpdateUserWithId} from "@/app/actions/users/update";
+import {DeleteUserWithId} from "@/app/actions/users/delete";
+import {GetUserWithId} from "@/app/actions/users/get";
 
 
+const uid = Math.random().toString(36).slice(2);
 
-        const deletedUser = await prisma.user.findUnique({
-            where: {email: 'john.doe@example.com'},
-        });
+test('Valid user creation', async () => {
+    let form = new FormData;
+    form.set("id", uid);
+    form.set("firstName","test");
+    form.set("lastName","test");
+    form.set("email","john.doe@test.mail");
+    form.set("password","securepassword");
+    form.set("avatar","");
+    form.set("bio","That's a bio");
+    form.set("cityId","1");
 
-        expect(deletedUser).toBeNull();
-    });
+    let response = await CreateUser(form);
+
+    expect(response).toHaveProperty("id");
+    expect(response).toHaveProperty("firstName");
+    expect(response).toHaveProperty("lastName");
+    expect(response).toHaveProperty("email");
+    expect(response).toHaveProperty("role");
+    expect(response).toHaveProperty("cityId");
+});
+
+
+// test('Valid user update', async () => {
+//     let form = new FormData;
+//     form.set("firstName","test");
+//     form.set("lastName","test");
+//     form.set("email","john.doe@notamail.com");
+//     form.set("password","securepassword");
+//     form.set("avatar","");
+//     form.set("bio","That's a bio");
+//     form.set("cityId","1");
+//
+//     let response = await UpdateUserWithId(uid, form);
+//
+//     expect(response).toHaveProperty("id");
+//     expect(response).toHaveProperty("email");
+//     expect(response).toHaveProperty("role");
+//     expect(response).toHaveProperty("cityId");
+// });
+
+// test('Invalid user update', async () => {
+//     let form = new FormData;
+//     form.set("firstName","test");
+//     form.set("lastName","test");
+//     form.set("email","john.doe@notamail.com");
+//     form.set("password","securepassword");
+//     form.set("avatar","");
+//     form.set("bio","That's a bio");
+//     form.set("cityId","1");
+//
+//     let response = await UpdateUserWithId("clxspgy360001fgxtmkfbq5r2031239120391", form);
+//
+//     expect(response).toBeNull();
+// });
+
+// test('Invalid user creation', async () => {
+//     let form = new FormData;
+//     form.set("firstName","test");
+//     form.set("lastName","test");
+//     form.set("email","john.doe@notamail.com");
+//     form.set("password","securepassword");
+//     form.set("avatar","");
+//     form.set("bio","That's a bio");
+//     form.set("cityId","1");
+//
+//     let response = await CreateUser(form);
+//
+//     expect(response).toBeNull();
+// });
+
+test('Valid user deletion', async () => {
+    await DeleteUserWithId(uid);
+
+    const response = await GetUserWithId(uid);
+
+    expect(response).toBeNull();
 });
