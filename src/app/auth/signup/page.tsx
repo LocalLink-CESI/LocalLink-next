@@ -7,7 +7,6 @@ type Props = {
 const SignUpPage = (props: Props) => {
     return (<>
         <SignUp />
-        <RegisterForm error={props.searchParams.error} callbackUrl={props.searchParams.callbackUrl} />
     </>
     )
 }
