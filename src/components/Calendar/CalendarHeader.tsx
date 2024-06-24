@@ -5,18 +5,18 @@ import ButtonNext from './Button/ButtonNext';
 import ButtonPrevious from './Button/ButtonPrevious';
 
 export const months: string[] = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+  'Janvier',
+  'Février',
+  'Mars',
+  'Avril',
+  'Mai',
+  'Juin',
+  'Juillet',
+  'Août',
+  'Septembre',
+  'Octobre',
+  'Novembre',
+  'Decembre',
 ];
 
 export const daysInEachMonth: number[] = [
@@ -50,9 +50,7 @@ const CalendarHeader: FC<Props> = ({ activeDate, onClick }) => {
           color={DefaultTheme.colors.primaryButton}
           cursor="pointer"
           onClick={() => onClick(today.getDate(), today.getMonth())}
-        >
-          Today
-        </Text>
+        >Aujourd&apos;hui</Text>
         <ButtonNext activeDate={activeDate} onClick={onClick} />
       </Box>
     </Box>

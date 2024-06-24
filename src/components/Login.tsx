@@ -1,10 +1,19 @@
-"use client";
+'use client'
 
-import React, {useRef} from "react";
+import {
+    Box,
+    Button,
+    Divider,
+    FormControl,
+    FormLabel,
+    Input,
+    AbsoluteCenter
+} from '@chakra-ui/react'
+
+import React, { useRef } from "react";
 import Link from "next/link";
-import {signIn} from "next-auth/react";
-import {Box, Button, Divider, FormControl, FormLabel, Input, AbsoluteCenter} from "@chakra-ui/react";
-import {CreateAccountButton} from "@components/LoginButton";
+import { signIn } from "next-auth/react";
+import { CreateAccountButton } from "@components/LoginButton";
 
 type Props = {
     className?: string;
@@ -67,3 +76,6 @@ const Login = (props: Props) => {
 }
 
 export default Login;
+
+
+
