@@ -10,18 +10,21 @@
     "test": "jest"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.24.7",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@prisma/client": "^5.14.0",
     "@types/bcryptjs": "^2.4.6",
+    "babel-jest": "^29.7.0",
     "bcryptjs": "^2.4.3",
     "framer-motion": "^11.2.6",
     "next": "14.2.2",
     "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
+    "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
