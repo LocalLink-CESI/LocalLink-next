@@ -1,6 +1,6 @@
 'use server';
 import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/api/auth/[...nextauth]/options";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
 import {prisma} from "@/helpers/database";
 
 export default async function DeleteMe(form: FormData) {
@@ -15,7 +15,7 @@ export default async function DeleteMe(form: FormData) {
     });
 }
 
-export async function DeleteUserWithId (id: string, form: FormData) {
+export async function DeleteUserWithId (id: string) {
     //TODO VERIFIER ROLE
     return prisma.user.delete(
         {

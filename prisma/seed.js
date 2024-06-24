@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 const cities = require('./french_cities.json');
 
-
 async function main() {
 
     // foreach element in french_cities.json
