@@ -16,6 +16,7 @@ export type Post = {
     userId: UserId;
     content: string;
     image: string;
+    createdOn: Date;
     interactions: {
         likes: number;
         comments: number;
@@ -39,6 +40,7 @@ const defaultUser: User = {
             userId: "1",
             content: "Hello again everyone! I just wanted to share this beautiful painting I painted today. I hope you all have a great day!",
             image: "/example2.webp",
+            createdOn: new Date(),
             interactions: {
                 likes: 158,
                 comments: 20
@@ -48,6 +50,7 @@ const defaultUser: User = {
             userId: "1",
             content: "Hi my fellow neighbors! I just joined this app and am quite unsure as to what the next steps might be for me here. I would appreciate any help or guidance you can offer me. Below is a picture of trying trying to piece out how to use this thing. Thanks! 🙏",
             image: "/example1.png",
+            createdOn: new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 2),
             interactions: {
                 likes: 10,
                 comments: 4

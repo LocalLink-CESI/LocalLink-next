@@ -8,6 +8,23 @@ export default function PostCard({ post }: { post: any }) {
     const user = useUserStore((state) => state)
     let postUser = user
     if (!postUser) { postUser = user }
+    // console.log(postUser)
+    const relativeDate = (date: Date) => {
+        const diff = new Date().getTime() - date.getTime()
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+        if (days > 0) {
+            return `Il y a ${days} jours`
+        }
+        const hours = Math.floor(diff / (1000 * 60 * 60))
+        if (hours > 0) {
+            return `Il y a ${hours} heures`
+        }
+        const minutes = Math.floor(diff / (1000 * 60))
+        if (minutes >= 0) {
+            return `Il y a ${minutes} minutes`
+        }
+        return ""
+    }
     return (
         <Card maxW='xl' borderRadius={"20px"} shadow={"rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.19) 0px 3px 6px;"}>
             <CardHeader>
@@ -16,7 +33,9 @@ export default function PostCard({ post }: { post: any }) {
                         <Avatar name={postUser.name} src={postUser.avatar} flexShrink={1} />
                         <Box>
                             <Heading size='sm'>{postUser.name}</Heading>
-                            <Text color='gray.500'>{postUser.location}</Text>
+                            <Text fontSize="sm" color='gray.500'>{postUser.location + " • " + relativeDate(post.createdOn)}</Text>
+                            {/* <Text color='gray.500'>{relativeDate(post.createdOn)}</Text> */}
+
                         </Box>
                     </Flex>
                     {/* <IconButton
@@ -25,9 +44,10 @@ export default function PostCard({ post }: { post: any }) {
                         aria-label='See menu'
                         icon={<FiMoreHorizontal />}
                     /> */}
+
                 </Flex>
             </CardHeader>
-            <CardBody>
+            <CardBody style={{ paddingTop: 0 }}>
                 <Text>
                     {post.content}
                 </Text>

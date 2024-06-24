@@ -1,8 +1,10 @@
 'use client'
 
 import PostCard from "@/components/Home/PostCard";
+import { useUserStore } from "@/providers/user-store-provider";
 import { Flex, Grid, Text } from "@chakra-ui/react";
-
+import Calendar from '../components/Calendar/Calendar';
+import { useState } from "react";
 // import "@/assets/scss/home.scss"
 
 const posts = [
@@ -36,6 +38,19 @@ const posts = [
 ]
 
 export default function Home() {
+  const user = useUserStore((state) => state)
+  const [activeDate, setActiveDate] = useState<Date>(new Date());
+
+  const onClickDate = (day: number, month: number) => {
+
+    if (typeof day !== 'string' && day != -1) {
+      let newDate = new Date(activeDate.setMonth(month));
+      newDate = new Date(activeDate.setDate(day));
+      setActiveDate(newDate);
+    }
+    console.log(activeDate);
+  };
+
   return (
     <main>
       <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"} py={"1rem"}>
@@ -49,7 +64,7 @@ export default function Home() {
             color="black"
             mb={8}
           >POSTS</Text> */}
-          {posts.map((post, index) => (
+          {user.posts.map((post, index) => (
             <PostCard key={index} post={post} />
           ))}
         </Flex>
@@ -59,13 +74,14 @@ export default function Home() {
             direction="column"
             align="center"
             justify="center"
-            bg="brand.900"
+            // bg="brand.900"
             minW="200px"
             minH="200px"
             borderRadius="md"
+            border={"1px solid #E2E8F0"}
           >
             <h2>EVENEMENTS</h2>
-            <p>Post content</p>
+            <Calendar activeDate={activeDate} onClick={onClickDate} />
           </Flex>
           <Flex
             direction="column"
