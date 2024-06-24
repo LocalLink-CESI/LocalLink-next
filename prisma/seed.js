@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 const cities = require('./french_cities.json');
 
-
 async function main() {
     const tableNames = ['Post', 'User', 'City', 'Category', 'SalePost', 'EventPost', 'CulturePost', 'Session', 'Account', 'VerificationRequest'];
 
