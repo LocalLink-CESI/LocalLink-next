@@ -2,6 +2,7 @@ import { useUserStore } from "@/providers/user-store-provider";
 import { Image } from "@chakra-ui/next-js";
 import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, Text, Tooltip } from "@chakra-ui/react";
 import { FiFeather, FiMoreHorizontal, FiShare, FiThumbsUp } from "react-icons/fi";
+import { shadow } from "../../../theme";
 
 export default function PostCard({ post }: { post: any }) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
@@ -26,7 +27,7 @@ export default function PostCard({ post }: { post: any }) {
         return ""
     }
     return (
-        <Card maxW='xl' borderRadius={"20px"} shadow={"rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.19) 0px 3px 6px;"}>
+        <Card maxW='xl' borderRadius={"20px"} boxShadow={shadow}>
             <CardHeader>
                 <Flex gap='0'>
                     <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
