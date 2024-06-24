@@ -1,5 +1,5 @@
-import CreatePost from "@/app/actions/posts/create";
-import {PostType} from "@/helpers/database";
+import CreatePost from "../src/app/actions/posts/create";
+import {PostType, prisma} from "@/helpers/database";
 
 test('Valid post creation', async () => {
     let form = new FormData;
@@ -7,17 +7,13 @@ test('Valid post creation', async () => {
     form.set("text","test default post text");
     form.set("media","");
     form.set("isVisible","true");
-    form.set("userId","1");
+    form.set("userId","clxspgy360001fgxtmkfbq5r9");
     form.set("cityId","1");
     let response = await CreatePost(
         form,
         PostType.DEFAULT
     );
-
-    console.log(response);
-
-    expect(CreatePost(
-        form,
-        PostType.DEFAULT
-    ));
+    expect(response).toHaveProperty("id");
+    expect(response).toHaveProperty("title");
+    expect(response).toHaveProperty("text");
 });

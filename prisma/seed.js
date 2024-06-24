@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 const cities = require('./french_cities.json');
 
-
 async function main() {
 
     // foreach element in french_cities.json
@@ -24,6 +23,7 @@ async function main() {
     // Create Users
     const user1 = await prisma.user.create({
         data: {
+            id: "clxspgy360001fgxtmkfbq5r9",
             firstName: 'John',
             lastName: 'Doe',
             email: 'john.doe@example.com',
@@ -37,6 +37,7 @@ async function main() {
 
     const user2 = await prisma.user.create({
         data: {
+            id: "clxspgy5i0003fgxtt3fq3yzg ",
             firstName: 'Jane',
             lastName: 'Doe',
             email: 'jane.doe@example.com',

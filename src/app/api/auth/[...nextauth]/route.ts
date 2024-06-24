@@ -12,7 +12,7 @@ if (!googleId || !googleSecret) {
     throw new Error("GOOGLE_ID and GOOGLE_SECRET must be defined")
 }
 
-const handler = NextAuth({
+export const authOptions = {
     providers: [
         CredentialsProvider({
             type: "credentials",
@@ -41,32 +41,36 @@ const handler = NextAuth({
             clientSecret: googleSecret,
         }),
     ],
+}
 
-    callbacks: {
-        session: async (session) => {
-            if (!session) return;
+const handler = NextAuth({
+    providers: authOptions.providers,
 
-            const userData = await prisma.user.findFirst({
-                where: {
-                    email: session.user.email
-                }
-            });
-
-            if (!userData) return;
-
-            return {
-                session: {
-                    user: {
-                        id: userData.id,
-                        firstname: userData.firstName,
-                        lastname: userData.lastName,
-                        username: userData.name,
-                        email: userData.email
-                    }
-                }
-            };
-        },
-    },
+    // callbacks: {
+    //     session: async (session : any) => {
+    //         if (!session) return;
+    //
+    //         const userData = await prisma.user.findFirst({
+    //             where: {
+    //                 email: session.user.email
+    //             }
+    //         });
+    //
+    //         if (!userData) return;
+    //
+    //         return {
+    //             session: {
+    //                 user: {
+    //                     id: userData.id,
+    //                     firstname: userData.firstName,
+    //                     lastname: userData.lastName,
+    //                     username: userData.name,
+    //                     email: userData.email
+    //                 }
+    //             }
+    //         };
+    //     },
+    // },
 
     pages: {
         signIn: "/auth/signin",
