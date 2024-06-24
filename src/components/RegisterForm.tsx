@@ -378,7 +378,7 @@ export function SignUp() {
                             />
                             <FormLabel style={labelStyle}>Email</FormLabel>
                             <Input
-                                placeholder="monemail@service.com"
+                                placeholder="john@mail.com"
                                 name="email"
                                 type="email"
                                 onChange={(e) => {
@@ -399,6 +399,7 @@ export function SignUp() {
                                 type="password"
                                 name="password"
                                 bg={'gray.100'}
+                                min={8}
                                 onChange={(e) => {
                                     let form = formData;
                                     form.password = e.target.value;
