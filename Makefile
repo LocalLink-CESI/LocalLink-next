@@ -4,6 +4,9 @@ start:
 seed:
 	docker-compose up -d
 	docker-compose exec locallink-next node prisma/seed.js
+seed-cities:
+	docker-compose up -d
+	docker-compose exec locallink-next node prisma/seedCities.js
 start-prod:
 	docker compose -f docker-compose-prod.yml up -d
 stop:
