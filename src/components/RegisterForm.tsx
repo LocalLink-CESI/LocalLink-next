@@ -1,8 +1,21 @@
 'use client';
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import CreateUser from "@/app/actions/users/create";
 import GetCities from "@/app/actions/cities/get";
+
+import {
+    FormControl,
+    FormLabel,
+    Select,
+    Input,
+    Button
+} from '@chakra-ui/react'
+
+type Props = {
+    error?: string;
+    callbackUrl?: string;
+}
 
 interface FormData {
     firstName: string;
@@ -20,7 +33,7 @@ interface City {
     zipCode: string;
 }
 
-export default function RegisterForm() {
+const RegisterForm = (props: Props) => {
     const [formData, setFormData] = useState<FormData>({
         firstName: "",
         lastName: "",
@@ -64,7 +77,6 @@ export default function RegisterForm() {
             await CreateUser(formData);
 
             window.alert("User created successfully");
-
             window.location.href = "/auth/signin";
         } catch (error) {
             console.error(error);
@@ -73,23 +85,39 @@ export default function RegisterForm() {
 
     return (
         <form onSubmit={handleSubmit} style={{display: "flex", flexDirection: "column", gap: "10px"}}>
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange}
-                   placeholder="First Name"/>
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange}
-                   placeholder="Last Name"/>
-            <input type="password" name="password" value={formData.password} onChange={handleChange}
-                   placeholder="Password"/>
-            <input type="text" name="bio" value={formData.bio} onChange={handleChange} placeholder="Bio"/>
-            <select
-                name="cityId" value={formData.cityId} onChange={handleChange}>
-                <option value="">Select a city</option>
-                {cities.map(city => (
-                    <option key={city.id} value={city.id}>{city.name}</option>
-                ))}
-            </select>
-            <input type="text" name="avatar" value={formData.avatar} onChange={handleChange} placeholder="Avatar"/>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email"/>
-            <button type="submit">Submit</button>
+            <FormControl isRequired display='flex' flexDirection='column' gap='10px'>
+                <FormLabel>First name</FormLabel>
+                <Input type='text' onChange={handleChange} name='firstName' />
+
+                <FormLabel>Last name</FormLabel>
+                <Input type='text' onChange={handleChange} name='lastName' />
+
+                <FormLabel>Email</FormLabel>
+                <Input type='email' onChange={handleChange} name='email' />
+
+                <FormLabel>Password</FormLabel>
+                <Input type='password' onChange={handleChange} name='password' />
+
+                <FormLabel>Bio</FormLabel>
+                <Input type='text' onChange={handleChange} name='bio' />
+
+                <FormLabel>City</FormLabel>
+                <Select onChange={handleChange} name='cityId'>
+                    <option value="">Select a city</option>
+                    {cities.map(city => (
+                        <option key={city.id} value={city.id}>{city.name}</option>
+                    ))}
+                </Select>
+
+                <FormLabel>Avatar</FormLabel>
+                <Input type='text' onChange={handleChange} name='avatar' />
+
+            </FormControl>
+
+            <Button type='submit'>Submit</Button>
+
         </form>
     )
 }
+
+export default RegisterForm;
