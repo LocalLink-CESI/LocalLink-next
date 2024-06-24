@@ -25,6 +25,6 @@ export default async function CreateUser(form: UserInput) {
             cityId: form.cityId,
         }
     }).catch((error: Error) => {
-        console.error(error)
+        return error;
     });
 }

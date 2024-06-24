@@ -11,15 +11,19 @@ export default async function GetMe() {
         where: {
             id: user.user.name
         }
+    }).catch((error: Error) => {
+        console.error(error);
+        return error;
     });
 }
 
 export async function GetUserWithId(id: string) {
-    return prisma.user.findUnique(
-        {
-            where: {
-                id: id
-            }
+    return prisma.user.findUnique({
+        where: {
+            id: id
         }
-    )
+    }).catch((error: Error) => {
+        console.error(error);
+        return error;
+    });
 }

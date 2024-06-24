@@ -20,8 +20,9 @@ export default async function UpdateMe(form: FormData) {
             bio: form.get('bio') as string,
             avatar: form.get('avatar') as string,
         }
-    }).catch((error) => {
-        console.log(error);
+    }).catch((error : Error) => {
+        console.log(error)
+        return error;
     });
 }
 
@@ -42,7 +43,8 @@ export async function UpdateUserWithId(id: string, form: FormData) {
                 avatar: form.get('avatar') as string,
             }
         }
-    ).catch((error) => {
-        console.log(error);
+    ).catch((error: Error) => {
+        console.error(error);
+        return error;
     });
 }
