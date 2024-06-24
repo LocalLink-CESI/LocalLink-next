@@ -11,7 +11,6 @@ export default async function GetMe () {
             id: user.user.name
         }
     }).catch((error: Error) => {
-        console.error(error);
         return error;
     });
 }
@@ -22,7 +21,6 @@ export async function GetUserWithId (id: string) {
             id: id
         }
     }).catch((error: Error) => {
-        console.error(error);
         return error;
     });
 }
