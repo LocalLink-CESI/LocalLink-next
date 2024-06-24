@@ -1,11 +1,13 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
-
 const cities = require('./french_cities.json');
 
 
 async function main() {
+    const tableNames = ['Post', 'User', 'City', 'Category', 'SalePost', 'EventPost', 'CulturePost', 'Session', 'Account', 'VerificationRequest'];
+
+    for (const tableName of tableNames) await prisma.$queryRawUnsafe(`Truncate "${tableName}" restart identity cascade;`);
 
     // foreach element in french_cities.json
     // create a city in the database

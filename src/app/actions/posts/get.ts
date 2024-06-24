@@ -2,7 +2,8 @@
 import {PostType, prisma} from '@/helpers/database';
 
 export default async function GetPostsWithPaginationAndType (pagination: {limit:number, offset:number}, type: PostType, cityId: number) : Promise<Array<any>> {
-    const posts = await prisma[type as string].findMany({
+    // @ts-ignore
+    return await prisma[type as string].findMany({
         take: pagination.limit,
         skip: pagination.offset,
         orderBy: {
@@ -11,9 +12,9 @@ export default async function GetPostsWithPaginationAndType (pagination: {limit:
         where: {
             cityId: cityId
         }
+    }).catch((e: Error) => {
+        return (e);
     });
-    console.log(posts);
-    return posts;
 }
 
 export async function GetPostWithId (id: number) {
@@ -21,6 +22,8 @@ export async function GetPostWithId (id: number) {
         where: {
             id: id
         }
-    }).catch();
+    }).catch((e: Error) => {
+        return (e);
+    });
 }
 
