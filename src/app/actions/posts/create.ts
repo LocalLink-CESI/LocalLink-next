@@ -1,5 +1,5 @@
 'use server';
-import { PostType, prisma } from '@/helpers/database';
+import {PostType, prisma} from '@/helpers/database';
 
 export default async function CreatePost(form: FormData, type: PostType) {
     // @ts-ignore
@@ -12,5 +12,7 @@ export default async function CreatePost(form: FormData, type: PostType) {
             userId: form.get('userId') as string,
             cityId: form.get('cityId') as unknown as number,
         }
-    }).catch((e: Error) => console.error(e));
+    }).catch((e: Error) => {
+        return (e);
+    });
 }

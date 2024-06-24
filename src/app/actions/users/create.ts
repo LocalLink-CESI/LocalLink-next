@@ -15,6 +15,6 @@ export default async function CreateUser(form: FormData) {
             cityId: form.get('cityId') as unknown as number,
         }
     }).catch((error: Error) => {
-        console.error(error)
+        return error;
     });
 }
