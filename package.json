@@ -18,11 +18,16 @@
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^2.4.3",
     "framer-motion": "^11.2.6",
+    "@fontsource-variable/montserrat": "^5.0.19",
+    "@fontsource-variable/open-sans": "^5.0.29",
     "next": "14.2.2",
     "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "react-icons": "^5.2.1",
+    "sass": "^1.77.2",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.6",
