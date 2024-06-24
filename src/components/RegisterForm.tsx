@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import CreateUser from "@/app/actions/users/create";
 import GetCities from "@/app/actions/cities/get";
 
-
-
 import {
     Flex,
     Stack,
@@ -48,94 +46,94 @@ interface City {
     zipCode: string;
 }
 
-const RegisterForm = (props: Props) => {
-    const [formData, setFormData] = useState<FormData>({
-        firstName: "",
-        lastName: "",
-        password: "",
-        bio: "",
-        cityId: 0,
-        avatar: "",
-        email: ""
-    });
+// const RegisterForm = (props: Props) => {
+//     const [formDataOld, setFormDataOld] = useState<FormDataOld>({
+//         firstName: "",
+//         lastName: "",
+//         password: "",
+//         bio: "",
+//         cityId: 0,
+//         avatar: "",
+//         email: ""
+//     });
 
-    const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
+//     const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
 
-    useEffect(() => {
-        const fetchCities = async () => {
-            try {
-                const fetchedCities: City[] = await GetCities();
-                // Convert bigint to number for city ids
-                const convertedCities = fetchedCities.map(city => ({
-                    id: Number(city.id),
-                    name: city.name,
-                }));
-                setCities(convertedCities);
-            } catch (error) {
-                console.error("Error fetching cities:", error);
-            }
-        };
+//     useEffect(() => {
+//         const fetchCities = async () => {
+//             try {
+//                 const fetchedCities: City[] = await GetCities();
+//                 // Convert bigint to number for city ids
+//                 const convertedCities = fetchedCities.map(city => ({
+//                     id: Number(city.id),
+//                     name: city.name,
+//                 }));
+//                 setCities(convertedCities);
+//             } catch (error) {
+//                 console.error("Error fetching cities:", error);
+//             }
+//         };
 
-        fetchCities();
-    }, []);
+//         fetchCities();
+//     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    }
+//     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+//         setFormDataOld({
+//             ...formDataOld,
+//             [e.target.name]: e.target.value
+//         });
+//     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            await CreateUser(formData);
+//     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+//         e.preventDefault();
+//         try {
+//             await CreateUser(formDataOld);
 
-            window.alert("User created successfully");
-            window.location.href = "/auth/signin";
-        } catch (error) {
-            console.error(error);
-        }
-    }
+//             window.alert("User created successfully");
+//             window.location.href = "/auth/signin";
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     }
 
-    return (
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <FormControl isRequired display='flex' flexDirection='column' gap='10px'>
-                <FormLabel>First name</FormLabel>
-                <Input type='text' onChange={handleChange} name='firstName' />
+//     return (
+//         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+//             <FormControl isRequired display='flex' flexDirection='column' gap='10px'>
+//                 <FormLabel>First name</FormLabel>
+//                 <Input type='text' onChange={handleChange} name='firstName' />
 
-                <FormLabel>Last name</FormLabel>
-                <Input type='text' onChange={handleChange} name='lastName' />
+//                 <FormLabel>Last name</FormLabel>
+//                 <Input type='text' onChange={handleChange} name='lastName' />
 
-                <FormLabel>Email</FormLabel>
-                <Input type='email' onChange={handleChange} name='email' />
+//                 <FormLabel>Email</FormLabel>
+//                 <Input type='email' onChange={handleChange} name='email' />
 
-                <FormLabel>Password</FormLabel>
-                <Input type='password' onChange={handleChange} name='password' />
+//                 <FormLabel>Password</FormLabel>
+//                 <Input type='password' onChange={handleChange} name='password' />
 
-                <FormLabel>Bio</FormLabel>
-                <Input type='text' onChange={handleChange} name='bio' />
+//                 <FormLabel>Bio</FormLabel>
+//                 <Input type='text' onChange={handleChange} name='bio' />
 
-                <FormLabel>City</FormLabel>
-                <Select onChange={handleChange} name='cityId'>
-                    <option value="">Select a city</option>
-                    {cities.map(city => (
-                        <option key={city.id} value={city.id}>{city.name}</option>
-                    ))}
-                </Select>
+//                 <FormLabel>City</FormLabel>
+//                 <Select onChange={handleChange} name='cityId'>
+//                     <option value="">Select a city</option>
+//                     {cities.map(city => (
+//                         <option key={city.id} value={city.id}>{city.name}</option>
+//                     ))}
+//                 </Select>
 
-                <FormLabel>Avatar</FormLabel>
-                <Input type='text' onChange={handleChange} name='avatar' />
+//                 <FormLabel>Avatar</FormLabel>
+//                 <Input type='text' onChange={handleChange} name='avatar' />
 
-            </FormControl>
+//             </FormControl>
 
-            <Button type='submit'>Submit</Button>
+//             <Button type='submit'>Submit</Button>
 
-        </form>
-    )
-}
+//         </form>
+//     )
+// }
 
-export default RegisterForm;
+// export default RegisterForm;
 
 
 const avatars = [
@@ -192,7 +190,7 @@ const Blur = (props: IconProps) => {
     )
 }
 
-export function SignUp() {
+export function SignUp({ error, callbackUrl }: { error?: string, callbackUrl?: string }) {
     const [formData, setFormData] = useState<FormData>({
         firstName: "",
         lastName: "",
@@ -409,3 +407,5 @@ export function SignUp() {
         </Box>
     )
 }
+
+export default SignUp;

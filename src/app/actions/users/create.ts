@@ -1,18 +1,28 @@
 'use server';
 
-import {prisma} from '@/helpers/database';
+import { prisma } from '@/helpers/database';
 import bcrypt from "bcryptjs";
 
-export default async function CreateUser(form: FormData) {
-    return prisma.user.create({
+interface UserInput {
+    firstName: string;
+    lastName: string;
+    password: string;
+    bio: string;
+    cityId: number;
+    avatar: string;
+    email: string;
+}
+
+export default async function CreateUser(form: UserInput) {
+    return await prisma.user.create({
         data: {
-            firstName: form.get('firstName') as string,
-            lastName: form.get('lastName') as string,
-            email: form.get('email') as string,
-            password: await bcrypt.hash(form.get('password') as string, 10),
-            avatar: form.get('avatar') as string,
-            bio: form.get('bio') as string,
-            cityId: form.get('cityId') as unknown as number,
+            firstName: form.firstName,
+            lastName: form.lastName,
+            email: form.email,
+            password: await bcrypt.hash(form.password, 10),
+            avatar: form.avatar,
+            bio: form.bio,
+            cityId: form.cityId,
         }
     }).catch((error: Error) => {
         console.error(error)
