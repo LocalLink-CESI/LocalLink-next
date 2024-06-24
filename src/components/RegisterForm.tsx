@@ -176,7 +176,6 @@ const Blur = (props: IconProps) => {
             width={useBreakpointValue({base: '100%', md: '40vw', lg: '30vw'})}
             zIndex={useBreakpointValue({base: -1, md: -1, lg: 0})}
             height="560px"
-            zIndex={0}
             viewBox="0 0 528 560"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -193,15 +192,6 @@ const Blur = (props: IconProps) => {
 }
 
 export function SignUp() {
-    const [formData, setFormData] = useState<FormData>({
-        firstName: "",
-        lastName: "",
-        password: "",
-        bio: "",
-        cityId: 0,
-        avatar: "",
-        email: ""
-    });
     const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
 
     useEffect(() => {
@@ -222,25 +212,6 @@ export function SignUp() {
         fetchCities();
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            await CreateUser(formData);
-
-            window.alert("User created successfully");
-            window.location.href = "/auth/signin";
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const labelStyle = {fontFamily: "Montserrat", fontWeight: 800, margin: 0}
     return (
         <Box position={'relative'}>
@@ -252,6 +223,7 @@ export function SignUp() {
                 py={{base: 10, sm: 20, lg: 32}}>
                 <Stack spacing={{base: 10, md: 20}}>
                     <Heading
+                        zIndex={1}
                         lineHeight={1.1}
                         fontSize={{base: '3xl', sm: '4xl', md: '5xl', lg: '6xl'}}>
                         Rejoingez votre quartier{' '}
@@ -344,7 +316,7 @@ export function SignUp() {
                             lastName: "",
                             password: "",
                             email: "",
-                            cityId: 0,
+                            cityId: 1,
                         }}
                         onSubmit={async (values, actions) => {
                             try {
@@ -364,47 +336,61 @@ export function SignUp() {
                                     {({field, form}) => (
                                         <FormControl isRequired>
                                             <FormLabel>Prénom</FormLabel>
-                                            <Input {...field} placeholder='name'/>
+                                            <Input {...field} placeholder='John'/>
                                         </FormControl>
                                     )}
                                 </Field>
 
                                 <Field name='lastName'>
                                     {({field, form}) => (
-                                        <FormControl isRequired>
+                                        <FormControl mt={4} isRequired>
                                             <FormLabel>Nom</FormLabel>
-                                            <Input {...field} placeholder='name'/>
+                                            <Input {...field} placeholder='Doe'/>
                                         </FormControl>
                                     )}
                                 </Field>
 
                                 <Field name='email'>
                                     {({field, form}) => (
-                                        <FormControl isRequired>
+                                        <FormControl mt={4} isRequired>
                                             <FormLabel>Email</FormLabel>
-                                            <Input type='email' {...field} placeholder='name'/>
+                                            <Input type='email' {...field} placeholder='john@email.com'/>
                                         </FormControl>
                                     )}
                                 </Field>
 
                                 <Field name='password'>
                                     {({field, form}) => (
-                                        <FormControl isRequired>
+                                        <FormControl mt={4} isRequired>
                                             <FormLabel>Mot de passe</FormLabel>
-                                            <Input type='password' {...field} placeholder='name'/>
+                                            <Input min={8} type='password' {...field} placeholder='***********'/>
                                         </FormControl>
                                     )}
                                 </Field>
 
-                                <Field as='select' name='cityId'>
-                                    {
-                                        cities.map(city => (
-                                            <option key={city.id} value={city.id}>{city.name}</option>
-                                        ))
-                                    }
+                                <Field>
+                                    {({ field, form }) => (
+                                        <FormControl mt={4} isRequired>
+                                            <FormLabel>Ville</FormLabel>
+                                            <Select
+                                                name="cityId"
+                                                id="cityId"
+                                                onChange={form.handleChange}
+                                                value={form.values['cityId']}>
+                                                {
+                                                    cities.map(city => (
+                                                        <option key={city.id} value={city.id}>{city.name}</option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    )}
                                 </Field>
 
-                                <Button variant='ghost'
+                                <Button
+                                        textAlign={'center'}
+                                        mt={8}
+                                        w={'full'}
                                         type='submit'
                                         colorScheme={'blue'}
                                         isLoading={props.isSubmitting}>Creer un compte</Button>

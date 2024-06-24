@@ -3,6 +3,8 @@
 import { prisma } from '@/helpers/database';
 import bcrypt from "bcryptjs";
 import {FormikValues} from "formik";
+import {Prisma} from ".prisma/client";
+import PrismaClientValidationError = Prisma.PrismaClientValidationError;
 
 interface UserInput {
     firstName: string;
@@ -22,11 +24,10 @@ export default async function CreateUser(form: FormikValues) {
             lastName: form.lastName,
             email: form.email,
             password: await bcrypt.hash(form.password, 10),
-            avatar: form.avatar,
-            bio: form.bio,
             cityId: form.cityId,
         }
-    }).catch((error: Error) => {
+    }).catch((error: PrismaClientValidationError) => {
+        console.log(error);
         return error;
     });
 }
