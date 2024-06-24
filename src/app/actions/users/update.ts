@@ -1,7 +1,8 @@
 'use server';
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/api/auth/[...nextauth]/route";
-import {prisma} from "@/helpers/database";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+
+import { prisma } from "@/helpers/database";
 
 export default async function UpdateMe(form: FormData) {
     let user = await getServerSession(authOptions)

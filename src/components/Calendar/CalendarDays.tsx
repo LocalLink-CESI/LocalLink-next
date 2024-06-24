@@ -13,9 +13,10 @@ export interface ICalendarDay {
 type Props = {
   activeDate: Date;
   onClick: (day: number, month: number) => void;
+  today: Date;
 };
 
-const CalendarDays: FC<Props> = ({ activeDate, onClick }) => {
+const CalendarDays: FC<Props> = ({ activeDate, onClick, today }) => {
   let firstDayOfMonth: Date = new Date(
     activeDate.getFullYear(),
     activeDate.getMonth(),
@@ -59,25 +60,26 @@ const CalendarDays: FC<Props> = ({ activeDate, onClick }) => {
       justifyContent="center"
       boxSizing="border-box"
     >
-      {currentDays.map((day) => {
+      {currentDays.map((day, index) => {
         return (
           <Box
             w="72px"
             h="52px"
             position="relative"
             border={`0.1px solid ${DefaultTheme.colors.lines}`}
+            key={index}
             bg={
-              day.currentMonth && day.selected
+              (today.getMonth() === activeDate.getMonth() && day.currentMonth) && day.selected
                 ? DefaultTheme.colors.activeDate
                 : DefaultTheme.colors.transparent
             }
             color={
-              day.currentMonth && day.selected
+              (today.getMonth() === activeDate.getMonth() && day.currentMonth) && day.selected
                 ? DefaultTheme.colors.white
                 : DefaultTheme.colors.text
             }
-            cursor="pointer"
-            onClick={() => onClick(day.number, day.month)}
+          // cursor="pointer"
+          // onClick={() => onClick(day.number, day.month)}
           >
             <Text
               position="absolute"
@@ -86,7 +88,7 @@ const CalendarDays: FC<Props> = ({ activeDate, onClick }) => {
               fontSize={DefaultTheme.fontSize.s}
               opacity={!day.currentMonth ? 0.3 : 1}
             >
-              {`${day.number}.`}
+              {`${day.number}`}
             </Text>
           </Box>
         );

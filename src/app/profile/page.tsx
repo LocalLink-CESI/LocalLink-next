@@ -29,6 +29,7 @@ export default function Profile() {
                         src={user.avatar}
                         aspectRatio={"1/1"}
                         borderRadius={"lg"}
+                        alt={"Photo de profil"}
                     />
                 </Flex>
                 <Stack

@@ -4,6 +4,7 @@ import { DefaultTheme } from '../../assets/styles/theme';
 import CalendarHeader from './CalendarHeader';
 import DateHeader from './DateHeader';
 import CalendarDays from './CalendarDays';
+import { shadow } from '../../../theme';
 
 type Props = {
   activeDate: Date;
@@ -11,23 +12,25 @@ type Props = {
 };
 
 const Calendar: FC<Props> = ({ activeDate, onClick }) => {
+  const today = new Date();
   return (
     <Box>
       <Box
         w="504px"
         bg={DefaultTheme.colors.white}
         h="390px"
-        borderRadius="13px"
-        boxShadow={`0 0 99px 0px ${DefaultTheme.colors.boxShadow}`}
+        borderRadius="25px"
+        overflow={"hidden"}
+        boxShadow={shadow}
         mb="10"
         display="flex"
         flexDirection="column"
         justifyContent="center"
       >
         <CalendarHeader activeDate={activeDate} onClick={onClick} />
-        <CalendarDays activeDate={activeDate} onClick={onClick} />
+        <CalendarDays activeDate={activeDate} today={today} onClick={onClick} />
       </Box>
-      <DateHeader activeDate={activeDate} />
+      {/* <DateHeader activeDate={activeDate} /> */}
     </Box>
   );
 };
