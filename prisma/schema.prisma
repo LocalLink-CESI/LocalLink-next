@@ -212,6 +212,9 @@ model City {
   name    String
   zipCode String
 
+  latitude  String
+  longitude String
+
   users        User[]
   posts        Post[]
   eventPosts   EventPost[]
