@@ -2,6 +2,7 @@
 
 import { prisma } from '@/helpers/database';
 import bcrypt from "bcryptjs";
+import {FormikValues} from "formik";
 
 interface UserInput {
     firstName: string;
@@ -13,7 +14,8 @@ interface UserInput {
     email: string;
 }
 
-export default async function CreateUser(form: UserInput) {
+export default async function CreateUser(form: FormikValues) {
+    console.log(form);
     return prisma.user.create({
         data: {
             firstName: form.firstName,
