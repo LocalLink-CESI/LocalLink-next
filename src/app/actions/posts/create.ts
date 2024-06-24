@@ -2,7 +2,8 @@
 import {PostType, prisma} from '@/helpers/database';
 
 export default async function CreatePost(form: FormData, type: PostType) {
-        return prisma[type as string].create({
+        // @ts-ignore
+    return prisma[type as string].create({
             data: {
                 title: form.get('title') as string,
                 text: form.get('text') as string,
@@ -11,7 +12,5 @@ export default async function CreatePost(form: FormData, type: PostType) {
                 userId: form.get('userId') as string,
                 cityId: form.get('cityId') as unknown as number,
             }
-        }).catch((error) => {
-            console.log(error);
-        });
+        }).catch((e : Error) => console.error(e));
 }
