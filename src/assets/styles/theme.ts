@@ -5,9 +5,9 @@ export const DefaultTheme = {
     white: '#FFFFFF',
     text: '#707070',
     lines: '#F2F2F2',
-    primaryButton: '#8C5EC3',
+    primaryButton: '#12E8E4',
     secondaryButton: '#D9D9D9',
-    activeDate: '#A170DB',
+    activeDate: '#12E8E4',
     transparent: 'transparent',
   },
   fontSize: {

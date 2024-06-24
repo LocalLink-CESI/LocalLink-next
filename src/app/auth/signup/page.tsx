@@ -1,11 +1,14 @@
-import RegisterForm from "@components/RegisterForm";
+import RegisterForm, { SignUp } from "@components/RegisterForm";
 
 type Props = {
     searchParams: Record<"callbackUrl" | "error", string>;
 }
 
-const SignUpPage = (props : Props) => {
-    return <RegisterForm error={props.searchParams.error} callbackUrl={props.searchParams.callbackUrl} />
+const SignUpPage = (props: Props) => {
+    return (<>
+        <SignUp />
+    </>
+    )
 }
 
 export default SignUpPage;

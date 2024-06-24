@@ -1,9 +1,10 @@
 'use server';
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/api/auth/[...nextauth]/route";
-import {prisma} from "@/helpers/database";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
-export default async function GetMe () {
+import { prisma } from "@/helpers/database";
+
+export default async function GetMe() {
     let user = await getServerSession(authOptions)
     if (!user || !user.user || !user.user.name) return null;
     return prisma.user.findUnique({
@@ -15,7 +16,7 @@ export default async function GetMe () {
     });
 }
 
-export async function GetUserWithId (id: string) {
+export async function GetUserWithId(id: string) {
     return prisma.user.findUnique({
         where: {
             id: id
