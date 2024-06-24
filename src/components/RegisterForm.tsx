@@ -190,7 +190,7 @@ const Blur = (props: IconProps) => {
     )
 }
 
-export function SignUp({ error, callbackUrl }: { error?: string, callbackUrl?: string }) {
+export function SignUp() {
     const [formData, setFormData] = useState<FormData>({
         firstName: "",
         lastName: "",
