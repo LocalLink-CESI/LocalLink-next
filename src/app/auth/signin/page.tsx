@@ -7,7 +7,9 @@ type Props = {
 
 const SignInPage = (props: Props) => {
     return (
-            <Login error={props.searchParams.error} callbackUrl={props.searchParams.callbackUrl}/>
+        <>
+            <Login error={props.searchParams.error} callbackUrl={props.searchParams.callbackUrl} />
+        </>
     )
 }
 
