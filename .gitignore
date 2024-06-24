@@ -43,4 +43,5 @@ next-env.d.ts
 /.idea/
 
 postgres
+/package-lock.json
 package-lock.json 
