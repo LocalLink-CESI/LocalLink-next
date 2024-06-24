@@ -7,8 +7,6 @@ const ProfilePage = () => {
 
     console.log(session);
 
-    const user = session?.user;
-
     if (!session) {
         return (
             <div>
