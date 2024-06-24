@@ -14,7 +14,7 @@ interface UserInput {
 }
 
 export default async function CreateUser(form: UserInput) {
-    return await prisma.user.create({
+    return prisma.user.create({
         data: {
             firstName: form.firstName,
             lastName: form.lastName,
