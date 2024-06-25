@@ -21,8 +21,6 @@ export default function Home() {
 
     const session = useSession();
 
-    console.log(session);
-
     const onClickDate = (day: number, month: number) => {
         if (typeof day !== 'string' && day != -1) {
             let newDate = new Date(activeDate.setMonth(month));
