@@ -1,18 +1,22 @@
 'use client'
 
 import {
+    Flex,
     Box,
-    Button,
-    Divider,
     FormControl,
     FormLabel,
     Input,
-    AbsoluteCenter
+    Checkbox,
+    Stack,
+    Button,
+    Heading,
+    Text,
+    useColorModeValue,
 } from '@chakra-ui/react'
 
 import React, { useRef } from "react";
 import Link from "next/link";
-import {signIn, useSession} from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { CreateAccountButton } from "@components/LoginButton";
 
 type Props = {
@@ -42,43 +46,53 @@ const Login = (props: Props) => {
     }
 
     return (
-        <Box className={props.className} >
 
-            {!!props.error && <div>{props.error}</div>}
-
-            <form onSubmit={onSubmit}>
-                <FormControl display={"flex"} flexDirection={"column"} gap={4}>
-                    <FormLabel>Email</FormLabel>
-                    <Input type="email" onChange={(e) => (userName.current = e.target.value)} />
-
-                    <FormLabel>Password</FormLabel>
-                    <Input type="password" onChange={(e) => (password.current = e.target.value)} />
-
-                    <Button type="submit">Sign In</Button>
-
-                    <Box position='relative' padding='10'>
-                        <Divider />
-                        <AbsoluteCenter bg='white' px='4'>
-                            Or
-                        </AbsoluteCenter>
-                    </Box>
-
-                    <Button onClick={handleGoogleSignIn} w={"100%"}>Sign In with Google</Button>
-                </FormControl>
-
-                <Box>
-                    <Link href={props.callbackUrl || "/"}>Cancel</Link>
-                    <CreateAccountButton />
+        <Flex
+            minH={'100%'}
+            align={'center'}
+            justify={'center'}>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+                <Stack align={'center'}>
+                    <Heading fontSize={'4xl'} textAlign={'left'} >Heureux de vous revoir !</Heading>
+                    <Text fontSize={'lg'} color={'gray.600'}>
+                        Connectez-vous pour profiter de toutes nos <Text as={"span"} color={'blue.400'}>fonctionalitées</Text> ✌️
+                    </Text>
+                </Stack>
+                <Box
+                    rounded={'lg'}
+                    bg={useColorModeValue('white', 'gray.700')}
+                    boxShadow={'lg'}
+                    p={8}>
+                    <Stack spacing={4}>
+                        <FormControl id="email">
+                            <FormLabel>Email</FormLabel>
+                            <Input type="email" />
+                        </FormControl>
+                        <FormControl id="password">
+                            <FormLabel>Mot de passe</FormLabel>
+                            <Input type="password" />
+                        </FormControl>
+                        <Stack spacing={10}>
+                            <Stack
+                                direction={{ base: 'column', sm: 'row' }}
+                                align={'start'}
+                                justify={'space-between'}>
+                                <Checkbox>Se rappeler de moi</Checkbox>
+                                <Text color={'blue.400'}>Mot de passe oublié?</Text>
+                            </Stack>
+                            <Button
+                                bg={'blue.400'}
+                                color={'white'}
+                                _hover={{
+                                    bg: 'blue.500',
+                                }}>
+                                Se connecter
+                            </Button>
+                        </Stack>
+                    </Stack>
                 </Box>
-            </form>
-
-
-
-        </Box>
+            </Stack>
+        </Flex>
     )
 }
-
 export default Login;
-
-
-
