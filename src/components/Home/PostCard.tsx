@@ -35,17 +35,8 @@ export default function PostCard({ post }: { post: any }) {
                         <Box>
                             <Heading size='sm'>{postUser.name}</Heading>
                             <Text fontSize="sm" color='gray.500'>{postUser.location + " • " + relativeDate(post.createdOn)}</Text>
-                            {/* <Text color='gray.500'>{relativeDate(post.createdOn)}</Text> */}
-
                         </Box>
                     </Flex>
-                    {/* <IconButton
-                        variant='ghost'
-                        colorScheme='gray'
-                        aria-label='See menu'
-                        icon={<FiMoreHorizontal />}
-                    /> */}
-
                 </Flex>
             </CardHeader>
             <CardBody style={{ paddingTop: 0 }}>

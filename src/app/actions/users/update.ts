@@ -18,7 +18,7 @@ export default async function UpdateMe(form: FormData) {
             password: form.get('password') as string,
             cityId: form.get('cityId') as unknown as number,
             bio: form.get('bio') as string,
-            avatar: form.get('avatar') as string,
+            image: form.get('image') as string,
         }
     }).catch((error : Error) => {
         return error;
@@ -39,7 +39,7 @@ export async function UpdateUserWithId(id: string, form: FormData) {
                 password: form.get('password') as string,
                 cityId: form.get('cityId') as unknown as number,
                 bio: form.get('bio') as string,
-                avatar: form.get('avatar') as string,
+                image: form.get('image') as string,
             }
         }
     ).catch((error: Error) => {
