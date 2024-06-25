@@ -3,9 +3,10 @@ import {Button, Flex, Heading, Image, Stack, Text, useDisclosure,} from '@chakra
 import {useSession} from "next-auth/react";
 import {redirect} from "next/navigation";
 import PostModal from "@/app/component/postModal";
-import {Key, useEffect} from "react";
-import {GetSelfPosts} from "@/app/actions/posts/get";
+import {Key, useEffect, useState} from "react";
+import GetPostsWithPaginationAndType, {GetSelfPosts} from "@/app/actions/posts/get";
 import PostCard from "@components/Home/PostCard";
+import {PostType} from "@/helpers/database";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
@@ -21,19 +22,15 @@ export default function Profile() {
     const user = session.data?.session?.user;
     const userId = user?.id;
 
-    let posts: any = {};
-
-    const GetPosts = async () => {
-        if (!userId) return console.error("No user id");
-
-        return await GetSelfPosts(userId).then(r => {
-            return r;
-        });
-    }
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        if (userId) GetPosts().then(r => posts = r);
-    }, [userId]);
+        // Get posts from the city from the server actions
+        const posts = GetSelfPosts(userId);
+        posts.then((data) => {
+            setPosts(data)
+        })
+    }, [setPosts])
 
     if (!user) return null;
 

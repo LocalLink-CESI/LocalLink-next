@@ -32,7 +32,7 @@ export async function GetPostWithId (id: number) {
 }
 
 export async function GetSelfPosts (id: string) {
-    return await prisma.post.findMany({
+    return prisma.post.findMany({
         where: {
             userId: id
         }

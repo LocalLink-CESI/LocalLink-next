@@ -66,6 +66,7 @@ const Login = (props: Props) => {
                             onSubmit={async (values, actions) => {
                                 try {
                                     await signIn("credentials", values);
+                                    router.push("/");
                                 } catch (error) {
                                     console.error(error);
                                 }
@@ -77,7 +78,7 @@ const Login = (props: Props) => {
                                         {({field, form}) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Email</FormLabel>
-                                                <Input type='email' {...field} placeholder='john@email.com'/>
+                                                <Input type='email' {...field} placeholder='john@email.com' />
                                             </FormControl>
                                         )}
                                     </Field>
@@ -86,7 +87,7 @@ const Login = (props: Props) => {
                                         {({field, form}) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Mot de passe</FormLabel>
-                                                <Input min={8} type='password' {...field} placeholder='***********'/>
+                                                <Input min={8} type='password' {...field} placeholder='***********' />
                                             </FormControl>
                                         )}
                                     </Field>
