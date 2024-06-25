@@ -12,7 +12,6 @@ export default async function DeleteMe(form: FormData) {
             id: user.user.name
         }
     }).catch((error : Error) => {
-        console.log(error);
         return error;
     });
 }
@@ -26,7 +25,6 @@ export async function DeleteUserWithId(id: string) {
             }
         }
     ).catch((error : Error) => {
-        console.log(error);
         return error;
     });
 }

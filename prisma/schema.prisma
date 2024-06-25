@@ -47,14 +47,14 @@ model User {
 
   firstName String
   lastName  String
-  bio       String
-  avatar    String
+  bio       String?
+  avatar    String  @default("https://placehold.co/600x400")
 
   password String
   role     Role   @default(USER)
 
-  cityId BigInt
-  city   City   @relation(fields: [cityId], references: [id])
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
 
   posts          Post[]
   likes          Like[]
@@ -87,7 +87,7 @@ model Post {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -95,8 +95,8 @@ model Post {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  cityId BigInt
-  city   City   @relation(fields: [cityId], references: [id])
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
 
   likes         Like[]
   comments      Comment[]
@@ -108,7 +108,7 @@ model EventPost {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -116,8 +116,8 @@ model EventPost {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  cityId BigInt
-  city   City   @relation(fields: [cityId], references: [id])
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
 
   likes         Like[]
   comments      Comment[]
@@ -125,7 +125,7 @@ model EventPost {
 
   startAt      DateTime
   endAt        DateTime
-  localisation String
+  localisation String?
 
   userInterested UserInterested[]
 }
@@ -135,7 +135,7 @@ model SalePost {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -143,8 +143,8 @@ model SalePost {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  cityId BigInt
-  city   City   @relation(fields: [cityId], references: [id])
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
 
   likes         Like[]
   comments      Comment[]
@@ -162,7 +162,7 @@ model CulturePost {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -170,8 +170,8 @@ model CulturePost {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  cityId BigInt
-  city   City   @relation(fields: [cityId], references: [id])
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
 
   likes         Like[]
   comments      Comment[]
@@ -206,7 +206,7 @@ model UserInterested {
 }
 
 model City {
-  id BigInt @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   name    String
   zipCode String

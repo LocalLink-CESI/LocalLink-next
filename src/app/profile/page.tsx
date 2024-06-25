@@ -5,14 +5,18 @@ import {
     Button,
     Flex,
     Heading,
-    Image,
+    Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay,
     Stack,
-    Text,
+    Text, useDisclosure,
 } from '@chakra-ui/react';
+import {Formik} from "formik";
+import PostModal from "@/app/component/postModal";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
     const user = useUserStore((state) => state)
+    const {onOpen, onClose, isOpen} = useDisclosure();
+
     return (
         <Flex direction={"column"} py={6} margin={"auto"} alignItems={"center"}>
             <Stack
@@ -80,7 +84,10 @@ export default function Profile() {
                         padding={2}
                         justifyContent={'space-between'}
                         alignItems={'center'}>
+
+                        <PostModal isOpen={isOpen} onClose={onClose} />
                         <Button
+                            onClick={onOpen}
                             flex={1}
                             fontSize={'sm'}
                             rounded={'full'}
@@ -90,7 +97,7 @@ export default function Profile() {
                             boxShadow={
                                 '0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'
                             }>
-                            Créer un post
+                            Poster quelque chose !
                         </Button>
                     </Stack>
 
