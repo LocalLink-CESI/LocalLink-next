@@ -6,6 +6,7 @@ import {Flex, Grid} from "@chakra-ui/react";
 import Calendar from '../components/Calendar/Calendar';
 import {useState} from "react";
 import {useSession} from "next-auth/react";
+import {redirect} from "next/navigation";
 // import "@/assets/scss/home.scss"
 
 export default function Home() {
@@ -15,7 +16,7 @@ export default function Home() {
     useSession({
         required: true,
         onUnauthenticated() {
-            return {redirect: "/auth/signin"};
+            redirect('/auth/signin')
         },
     });
 

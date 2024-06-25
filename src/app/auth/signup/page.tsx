@@ -9,11 +9,10 @@ type Props = {
 }
 
 const SignUpPage = (props: Props) => {
-    const session = useSession();
 
-    if (session?.session?.user) {
-        redirect("/");
-    }
+    useSession({
+        required: false,
+    });
 
     return (
         <SignUp />

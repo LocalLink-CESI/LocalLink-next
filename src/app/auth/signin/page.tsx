@@ -11,11 +11,9 @@ type Props = {
 
 const SignInPage = (props: Props) => {
 
-    const session = useSession();
-
-    if (session?.session?.user) {
-        redirect("/");
-    }
+    useSession({
+        required: false,
+    });
 
     return (
         <>
