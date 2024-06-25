@@ -217,9 +217,8 @@ export function SignUp() {
                         onSubmit={async (values, actions) => {
                             try {
                                 let user = await CreateUser(values);
-                                //redirect to user profile
-
-                                window.location.href = `/profile`;
+                                // Put the user in the next session and redirect to the signin page to login
+                                router.push("/signin")
 
                             } catch (error) {
                             }
