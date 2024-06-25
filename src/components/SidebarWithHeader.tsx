@@ -27,7 +27,7 @@ import {
 import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser,} from 'react-icons/fi';
 import {IconType} from 'react-icons';
 import {useUserStore} from '@/providers/user-store-provider';
-import {usePathname, useRouter} from 'next/navigation';
+import {redirect, usePathname, useRouter} from 'next/navigation';
 import {User} from '@/stores/user-store';
 import {signOut, useSession} from "next-auth/react";
 
@@ -55,7 +55,7 @@ export default function SidebarWithHeader({
     const path = usePathname()
 
     if (!session || session.status === "unauthenticated" && path !== "/auth/signin" && path !== "/auth/signup") {
-        useRouter().push("/auth/signin")
+        redirect("/auth/signin")
     }
     const {isOpen, onOpen, onClose} = useDisclosure();
     const user = useUserStore((state) => state)
@@ -94,7 +94,10 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
-
+    const menuColors = {
+        bg: useColorModeValue('white', 'gray.900'),
+        border: useColorModeValue('gray.200', 'brand.900'),
+    }
     const {data: session} = useSession()
 
     let isLogged = !!session?.session.user
@@ -159,8 +162,8 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                             </HStack>
                         </MenuButton>
                         <MenuList
-                            bg={useColorModeValue('white', 'gray.900')}
-                            borderColor={useColorModeValue('gray.200', 'brand.900')}>
+                            bg={menuColors.bg}
+                            borderColor={menuColors.border}>
                             <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
                                       transition={"all 0.2s ease"}
                                       onClick={() => {

@@ -21,6 +21,7 @@ import {isDisabled} from "@chakra-ui/utils";
 import GetCities from "@/app/actions/cities/get";
 import {Category} from "@prisma/client";
 import GetCategories from "@/app/actions/categories/get";
+import {useSession} from "next-auth/react";
 
 export default function PostModal({isOpen, onClose}) {
     const [type, setType] = useState(PostType.DEFAULT);
@@ -29,6 +30,12 @@ export default function PostModal({isOpen, onClose}) {
     const handleTypeChange = (e) => {
         setType(e.target.value);
         console.log(e.target.value)
+    }
+
+    let session = useSession();
+    let userId = null;
+    if (session.status === "authenticated" && session.data.session) {
+         userId = session.data.session?.user.id;
     }
 
     useEffect( () =>  {
@@ -60,7 +67,7 @@ export default function PostModal({isOpen, onClose}) {
                         title: '',
                         text: '',
                         media: '',
-                        userId: 'clxspgy360001fgxtmkfbq5r9',
+                        userId: userId,
                         startAt: '',
                         endAt: '',
                         price: 0,
