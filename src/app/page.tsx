@@ -7,7 +7,6 @@ import Calendar from '../components/Calendar/Calendar';
 import {useState} from "react";
 import {useSession} from "next-auth/react";
 import {redirect} from "next/navigation";
-// import "@/assets/scss/home.scss"
 
 export default function Home() {
     const user = useUserStore((state) => state)
@@ -19,6 +18,10 @@ export default function Home() {
             redirect('/auth/signin')
         },
     });
+
+    const session = useSession();
+
+    console.log(session);
 
     const onClickDate = (day: number, month: number) => {
         if (typeof day !== 'string' && day != -1) {

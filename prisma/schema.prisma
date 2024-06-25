@@ -47,7 +47,7 @@ model User {
 
   firstName String
   lastName  String
-  bio       String
+  bio       String?
 
   password String
   role     Role   @default(USER)
