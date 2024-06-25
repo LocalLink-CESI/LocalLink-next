@@ -5,13 +5,13 @@ import { FiFeather, FiMoreHorizontal, FiShare, FiThumbsUp } from "react-icons/fi
 import { shadow, shadowHover } from "../../../theme";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { GetUserWithId } from "@/app/actions/users/get";
+import { useEffect, useState } from "react";
 
 export default function PostCard({ post }: { post: any }) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
-    const user = useUserStore((state) => state)
-    let postUser = user
-    if (!postUser) { postUser = user }
     const router = useRouter()
+    const [postUser, setPostUser] = useState(null)
     // console.log(postUser)
     // const relativeDate = (date: Date) => {
     //     const diff = new Date().getTime() - date.getTime()
@@ -30,16 +30,25 @@ export default function PostCard({ post }: { post: any }) {
     //     return ""
     // }
     console.log(post, "post")
+    useEffect(() => {
+        const postUserFetch = GetUserWithId(post.userId)
+        postUserFetch.then((data) => {
+            setPostUser(data)
+        }).catch((e) => {
+            console.error(e)
+            // router.push('/404')
+        })
+    }, [setPostUser])
     return (
         <Link href={"/posts/" + post.id}>
             <Card maxW='xl' borderRadius={"20px"} boxShadow={shadow} cursor={"pointer"} transition={"box-shadow 0.2s ease-in-out"} _hover={{ boxShadow: shadowHover }}>
                 <CardHeader>
                     <Flex gap='0'>
                         <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                            <Avatar name={postUser.name} src={postUser.avatar} flexShrink={1} />
+                            <Avatar name={postUser?.firstName + " " + postUser?.lastName} src={postUser?.image} flexShrink={1} />
                             <Box>
-                                <Heading size='sm'>{postUser.name}</Heading>
-                                {/* <Text fontSize="sm" color='gray.500'>{postUser.location + " • " + relativeDate(post.createdOn)}</Text> */}
+                                <Heading size='sm'>{postUser?.firstName + " " + postUser?.lastName}</Heading>
+                                <Text fontSize="sm" color='gray.500'>{postUser?.city.name}</Text>
                             </Box>
                         </Flex>
                     </Flex>

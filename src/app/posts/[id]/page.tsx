@@ -43,10 +43,10 @@ export default function Page({ params }: { params: { id: string } }) {
                     <CardHeader>
                         <Flex gap='0'>
                             <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                                <Avatar name={post.user.name} src={post.user.avatar} flexShrink={1} />
+                                <Avatar name={post.user.firstName + " " + post.user.lastName} src={post.user.image} flexShrink={1} />
                                 <Box>
-                                    <Heading size='sm'>{post.user.name}</Heading>
-                                    {/* <Text fontSize="sm" color='gray.500'>{postUser.location + " • " + relativeDate(post.createdOn)}</Text> */}
+                                    <Heading size='sm'>{post.user.firstName + " " + post.user.lastName}</Heading>
+                                    <Text fontSize="sm" color='gray.500'>{post.user.city.name}</Text>
                                 </Box>
                             </Flex>
                         </Flex>
