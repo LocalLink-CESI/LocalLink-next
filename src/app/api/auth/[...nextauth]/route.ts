@@ -3,6 +3,7 @@ import {authOptions} from "@/lib/authOptions";
 import {prisma} from "@/helpers/database";
 import CreateUser from "@/app/actions/users/create";
 import {GetUserWithId} from "@/app/actions/users/get";
+import {FormikValues} from "formik";
 
 const handler = NextAuth({
     providers: authOptions.providers,
@@ -13,11 +14,13 @@ const handler = NextAuth({
             session.session.role = "user";
 
             try {
-                const user = await prisma.user.findFirst({
+                const user = await prisma.user.findUnique({
                     where: {
                         email: session.session.user.email,
                     }
                 });
+
+                console.log(user);
 
                 session.session.role = user?.role || "user";
 
@@ -30,14 +33,15 @@ const handler = NextAuth({
                 }
 
                 if (!user) {
-                    const newUser = new FormData();
-                    newUser.append('firstName', session.session.user.name);
-                    newUser.append('lastName', session.session.user.name);
-                    newUser.append('email', session.session.user.email);
-                    newUser.append('avatar', session.session.user.image);
-                    newUser.append('bio', 'Hello World');
-                    newUser.append('cityId', '1');
-                    newUser.append('password', Math.random().toString(36).substring(7));
+                    const newUser: FormikValues = {
+                        firstName: session.session.user.name.split(" ")[0],
+                        lastName: session.session.user.name.split(" ")[1],
+                        email: session.session.user.email,
+                        image: session.session.user.image,
+                        password: Math.random().toString(36).substring(7),
+                        cityId: 1,
+                        bio: "",
+                    };
 
                     await CreateUser(newUser);
 

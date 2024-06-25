@@ -30,17 +30,11 @@ type Props = {
 
 const Login = (props: Props) => {
     const router = useRouter();
-    const userName = useRef<string>("");
-    const password = useRef<string>("");
+    const [userName, setUserName] = React.useState<string>("");
+    const [password, setPassword] = React.useState<string>("");
 
-    const onSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        await signIn("credentials", {
-            username: userName.current,
-            password: password.current,
-            redirect: true,
-            callbackUrl: props.callbackUrl || "/",
-        });
+    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     }
 
     const handleGoogleSignIn = async () => {
@@ -69,20 +63,12 @@ const Login = (props: Props) => {
                     <Stack spacing={4}>
                         <Formik
                             initialValues={{
-                                firstName: "",
-                                lastName: "",
-                                password: "",
                                 email: "",
-                                cityId: 1,
+                                password: "",
                             }}
                             onSubmit={async (values, actions) => {
                                 try {
-                                    await signIn("credentials", {
-                                        username: userName.current,
-                                        password: password.current,
-                                        redirect: true,
-                                        callbackUrl: props.callbackUrl || "/",
-                                    });
+                                    await signIn("credentials", values);
                                 } catch (error) {
                                     console.log(values);
                                     console.error(error);
@@ -95,7 +81,7 @@ const Login = (props: Props) => {
                                         {({ field, form }) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Email</FormLabel>
-                                                <Input type='email' {...field} placeholder='john@email.com' />
+                                                <Input type='email' {...field} placeholder='john@email.com'/>
                                             </FormControl>
                                         )}
                                     </Field>
@@ -104,7 +90,7 @@ const Login = (props: Props) => {
                                         {({ field, form }) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Mot de passe</FormLabel>
-                                                <Input min={8} type='password' {...field} placeholder='***********' />
+                                                <Input min={8} type='password' {...field} placeholder='***********'/>
                                             </FormControl>
                                         )}
                                     </Field>

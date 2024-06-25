@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React, {ReactNode} from 'react';
 import {
     Avatar,
     Box,
@@ -24,12 +24,12 @@ import {
     useDisclosure,
     VStack,
 } from '@chakra-ui/react';
-import { FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser, } from 'react-icons/fi';
-import { IconType } from 'react-icons';
-import { useUserStore } from '@/providers/user-store-provider';
-import { usePathname, useRouter } from 'next/navigation';
-import { User } from '@/stores/user-store';
-import { useSession } from "next-auth/react";
+import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser,} from 'react-icons/fi';
+import {IconType} from 'react-icons';
+import {useUserStore} from '@/providers/user-store-provider';
+import {usePathname, useRouter} from 'next/navigation';
+import {User} from '@/stores/user-store';
+import {signOut, useSession} from "next-auth/react";
 
 interface LinkItemProps {
     name: string;
@@ -38,34 +38,34 @@ interface LinkItemProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-    { name: 'Accueil', icon: FiHome, link: '/' },
-    { name: "Notifications", icon: FiBell },
-    { name: 'Profil', icon: FiUser, link: '/profile' },
-    { name: 'Settings', icon: FiSettings },
+    {name: 'Accueil', icon: FiHome, link: '/'},
+    {name: "Notifications", icon: FiBell},
+    {name: 'Profil', icon: FiUser, link: '/profile'},
+    {name: 'Settings', icon: FiSettings},
 ];
 
 
 export default function SidebarWithHeader({
-    children,
-}: {
+                                              children,
+                                          }: {
     children: ReactNode;
 }) {
     const session = useSession()
-    console.log("session: ", session)
+
     const path = usePathname()
+
     if (!session || session.status === "unauthenticated" && path !== "/auth/signin" && path !== "/auth/signup") {
         useRouter().push("/auth/signin")
     }
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const {isOpen, onOpen, onClose} = useDisclosure();
     const user = useUserStore((state) => state)
-
 
     return (
         <Flex h="100dvh" bg={"white"} direction={"column"}>
             <SidebarContent
                 border="0px"
                 onClose={() => onClose}
-                display={{ base: 'none', md: 'flex' }} user={user}
+                display={{base: 'none', md: 'flex'}} user={user}
             />
             <Drawer
                 autoFocus={false}
@@ -76,12 +76,12 @@ export default function SidebarWithHeader({
                 onOverlayClick={onClose}
                 size="full">
                 <DrawerContent>
-                    <SidebarContent onClose={onClose} user={user} />
+                    <SidebarContent onClose={onClose} user={user}/>
                 </DrawerContent>
             </Drawer>
-            <MobileNav onOpen={onOpen} />
+            <MobileNav onOpen={onOpen}/>
             <Box flex={"1"} border={"1px"} overflow={"scroll"} h={"100%"} borderTopLeftRadius={"15px"}
-                borderColor={useColorModeValue('gray.200', 'brand.900')} ml={{ base: 0, md: 100 }} p="4">
+                 borderColor={useColorModeValue('gray.200', 'brand.900')} ml={{base: 0, md: 100}} p="4">
                 {children}
             </Box>
         </Flex>
@@ -93,9 +93,9 @@ interface SidebarProps extends BoxProps {
     user: User;
 }
 
-const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
 
-    const { data: session } = useSession()
+    const {data: session} = useSession()
 
     let isLogged = !!session?.session.user
 
@@ -105,34 +105,13 @@ const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
         },
     });
 
-    return (<Flex
-        transition="3s ease"
-        bg={useColorModeValue('white', 'gray.900')}
-        borderRight="1px"
-        borderRightColor={useColorModeValue('gray.200', 'brand.900')}
-        w={{base: 'full', md: 100}}
-        pos="fixed"
-        top="0"
-        h="full"
-        direction={'column'}
-        justifyContent={'space-between'}
-        {...rest}>
-        <Flex h="20" alignItems="center" justifyContent="center">
-            <Text fontSize="2xl" fontFamily="Montserrat" fontWeight="bold" color={"black"}>
-                LL
-            </Text>
-            <CloseButton display={{base: 'flex', md: 'none'}} onClick={onClose}/>
-        </Flex>
-
-        {isLogged && (
-
     return (
         <Flex
             transition="3s ease"
             bg={useColorModeValue('white', 'gray.900')}
             borderRight="1px"
             borderRightColor={useColorModeValue('gray.200', 'brand.900')}
-            w={{ base: 'full', md: 100 }}
+            w={{base: 'full', md: 100}}
             pos="fixed"
             top="0"
             h="full"
@@ -143,58 +122,59 @@ const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
                 <Text fontSize="2xl" fontFamily="Montserrat" fontWeight="bold" color={"black"}>
                     LL
                 </Text>
-                <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
-            </Flex>
-            <Flex direction="column">
-                {LinkItems.map((link) => (
-                    <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link}/>))}
+                <CloseButton display={{base: 'flex', md: 'none'}} onClick={onClose}/>
             </Flex>
 
-        )}
+            {isLogged && (
+                <Flex direction="column">
+                    {LinkItems.map((link) => (
+                        <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link}/>))}
+                </Flex>
+            )}
 
 
-        <VStack spacing={{base: '0', md: '6'}} _hover={{bg: "brand.900"}}>
-            <Flex alignItems={'center'}>
-                {session?.session.user && (<Menu>
-                    <MenuButton
-                        py={2}
-                        transition="all 0.3s"
-                        _focus={{boxShadow: 'none', bg: "brand:900"}}>
+            <VStack spacing={{base: '0', md: '6'}} _hover={{bg: "brand.900"}}>
+                <Flex alignItems={'center'}>
+                    {session?.session.user && (<Menu>
+                        <MenuButton
+                            py={2}
+                            transition="all 0.3s"
+                            _focus={{boxShadow: 'none', bg: "brand:900"}}>
 
-                        <HStack>
-                            <Avatar
-                                ignoreFallback={true}
-                                size={'sm'}
-                                src={session?.session.user.avatar}
-                            />
-                            <VStack
-                                display={{base: 'none', md: 'flex'}}
-                                alignItems="flex-start"
-                                spacing="1px"
-                                ml="0">
-                            </VStack>
-                            <Box display={{base: 'none', md: 'flex'}}>
-                                <FiChevronDown/>
-                            </Box>
-                        </HStack>
-                    </MenuButton>
-                    <MenuList
-                        bg={useColorModeValue('white', 'gray.900')}
-                        borderColor={useColorModeValue('gray.200', 'brand.900')}>
-                        <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
-                                  transition={"all 0.2s ease"}
-                                  onClick={() => {
-                                      signOut()
-                                  }}
-                        >Déconnexion</MenuItem>
-                        <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
-                                  transition={"all 0.2s ease"}>Account
-                            : {session?.session.user.email}</MenuItem>
-                    </MenuList>
-                </Menu>)}
-            </Flex>
-        </VStack>
-    </Flex>);
+                            <HStack>
+                                <Avatar
+                                    ignoreFallback={true}
+                                    size={'sm'}
+                                    src={session?.session.user.avatar}
+                                />
+                                <VStack
+                                    display={{base: 'none', md: 'flex'}}
+                                    alignItems="flex-start"
+                                    spacing="1px"
+                                    ml="0">
+                                </VStack>
+                                <Box display={{base: 'none', md: 'flex'}}>
+                                    <FiChevronDown/>
+                                </Box>
+                            </HStack>
+                        </MenuButton>
+                        <MenuList
+                            bg={useColorModeValue('white', 'gray.900')}
+                            borderColor={useColorModeValue('gray.200', 'brand.900')}>
+                            <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
+                                      transition={"all 0.2s ease"}
+                                      onClick={() => {
+                                          signOut()
+                                      }}
+                            >Déconnexion</MenuItem>
+                            <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
+                                      transition={"all 0.2s ease"}>Account
+                                : {session?.session.user.email}</MenuItem>
+                        </MenuList>
+                    </Menu>)}
+                </Flex>
+            </VStack>
+        </Flex>);
 };
 
 interface NavItemProps extends FlexProps {
@@ -203,7 +183,11 @@ interface NavItemProps extends FlexProps {
     link?: string;
 }
 
-const NavItem = ({ icon, name, link, ...rest }: NavItemProps) => {
+const NavItem = ({
+                     icon, name, link,
+                     ...
+                         rest
+                 }: NavItemProps) => {
     const pathName = usePathname();
     return (<Tooltip label={name} aria-label={name} placement='right'>
         <Link href={link} style={{textDecoration: 'none'}}
@@ -239,7 +223,11 @@ interface MobileProps extends FlexProps {
     onOpen: () => void;
 }
 
-const MobileNav = ({onOpen, ...rest}: MobileProps) => {
+const MobileNav = ({
+                       onOpen,
+                       ...
+                           rest
+                   }: MobileProps) => {
     return (<Flex
         marginLeft="0px"
         border="0px"

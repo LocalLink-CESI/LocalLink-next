@@ -27,22 +27,12 @@ import {
 import {brandPrimary} from '../../theme';
 import {useSession} from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
-interface FormData {
-    firstName: string;
-    lastName: string;
-    password: string;
-    bio: string;
-    cityId: number;
-    avatar: string;
-    email: string;
-}
 
 interface City {
     id: bigint;
     name: string;
     zipCode: string;
 }
-
 
 const avatars = [
     {
@@ -108,8 +98,6 @@ export function SignUp() {
 
         fetchCities();
     }, []);
-
-    const labelStyle = { fontFamily: "Montserrat", fontWeight: 800, margin: 0 }
     return (
         <Box position={'relative'}>
             <Container
@@ -275,7 +263,7 @@ export function SignUp() {
                                                 value={form.values['cityId']}>
                                                 {
                                                     cities.map(city => (
-                                                        <option key={city.id} value={city.id}>{city.name}</option>
+                                                        <option key={city.id} value={Number(city.id)}>{city.name}</option>
                                                     ))
                                                 }
                                             </Select>

@@ -28,3 +28,13 @@ export async function GetUserWithId(id: string) {
         return error;
     });
 }
+
+export async function GetUserWithEmail(email: string) {
+    return prisma.user.findUnique({
+        where: {
+            email: email
+        }
+    }).catch((error: Error) => {
+        return error;
+    });
+}

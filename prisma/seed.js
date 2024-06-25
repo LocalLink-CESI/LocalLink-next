@@ -33,7 +33,7 @@ async function main() {
             role: 'USER',
             cityId: 1,
             bio: 'Lorem ipsum dolor sit amet.',
-            avatar: 'https://example.com/avatar1.jpg',
+            image: 'https://example.com/avatar1.jpg',
         },
     });
 
@@ -47,7 +47,7 @@ async function main() {
             role: 'ADMIN',
             cityId: 2,
             bio: 'Lorem ipsum dolor sit amet.',
-            avatar: 'https://example.com/avatar2.jpg',
+            image: 'https://example.com/avatar2.jpg',
         },
     });
 
