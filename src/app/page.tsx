@@ -6,7 +6,7 @@ import Calendar from '../components/Calendar/Calendar';
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import GetPostsWithPaginationAndType from "./actions/posts/get";
+import GetPostsWithPaginationAndType, {GetPostsWithPaginationFeed} from "./actions/posts/get";
 import { PostType } from "@/helpers/database";
 
 export default function Home() {
@@ -32,11 +32,12 @@ export default function Home() {
 
     useEffect(() => {
         // Get posts from the city from the server actions
-        const posts = GetPostsWithPaginationAndType({ limit: 10, offset: 0 }, PostType.DEFAULT, user?.cityId)
+        const posts = GetPostsWithPaginationFeed({ limit: 10, offset: 0 }, user?.cityId)
         posts.then((data) => {
             setPosts(data)
         })
-    }, [setPosts])
+    }, [setPosts]
+    )
 
     return (
         <main>

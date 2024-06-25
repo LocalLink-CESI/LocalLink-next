@@ -1,16 +1,32 @@
 import { useUserStore } from "@/providers/user-store-provider";
 import { Image } from "@chakra-ui/next-js";
-import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, Text, Tooltip } from "@chakra-ui/react";
+import {
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    Flex,
+    Heading,
+    IconButton,
+    Text,
+    Tooltip,
+    useDisclosure
+} from "@chakra-ui/react";
 import { FiFeather, FiMoreHorizontal, FiShare, FiThumbsUp } from "react-icons/fi";
 import { shadow, shadowHover } from "../../../theme";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GetUserWithId } from "@/app/actions/users/get";
 import { useEffect, useState } from "react";
+import CommentModal from "@/app/component/commentModal";
 
 export default function PostCard({ post }: { post: any }) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
     const router = useRouter()
+    const {onOpen, onClose, isOpen} = useDisclosure();
     const [postUser, setPostUser] = useState(null)
     // console.log(postUser)
     // const relativeDate = (date: Date) => {
@@ -29,7 +45,6 @@ export default function PostCard({ post }: { post: any }) {
     //     }
     //     return ""
     // }
-    console.log(post, "post")
     useEffect(() => {
         const postUserFetch = GetUserWithId(post.userId)
         postUserFetch.then((data) => {
@@ -40,8 +55,8 @@ export default function PostCard({ post }: { post: any }) {
         })
     }, [setPostUser])
     return (
-        <Link href={"/posts/" + post.id}>
             <Card maxW='xl' borderRadius={"20px"} boxShadow={shadow} cursor={"pointer"} transition={"box-shadow 0.2s ease-in-out"} _hover={{ boxShadow: shadowHover }}>
+                <Link href={"/posts/" + post.id}>
                 <CardHeader>
                     <Flex gap='0'>
                         <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -61,15 +76,13 @@ export default function PostCard({ post }: { post: any }) {
                         {post.text}
                     </Text>
                 </CardBody>
-                {post.image ? (<Box aspectRatio={"16/9"} mx={0} position={"relative"}>
-                    <Image
-                        fill={true}
-                        src={post.image}
+                {post.media && (<Box aspectRatio={"16/9"} mx={0} position={"relative"}>
+                    <img
+                        src={"/media/" + post.media}
                         alt='Exemple image for now'
                     />
-                </Box>) : null}
-
-
+                </Box>)}
+                </Link>
                 <CardFooter
                     justify='center'
                     flexWrap='wrap'
@@ -84,14 +97,14 @@ export default function PostCard({ post }: { post: any }) {
                             {/* {post.interactions.likes} */} 0
                         </Button></Tooltip>
                     <Tooltip label="Commenter" aria-label="Commenter" placement="bottom">
-                        <Button variant='brandGhostButton' leftIcon={<FiFeather />}>
+                        <Button variant='brandGhostButton' leftIcon={<FiFeather />} onClick={onOpen}>
                             {/* {post.interactions.comments} */} 0
                         </Button></Tooltip>
                     <Tooltip label="Partager" aria-label="Partager" placement="bottom">
                         <Button variant='brandGhostButton' leftIcon={<FiShare />}>
                         </Button></Tooltip>
                 </CardFooter>
+                <CommentModal isOpen={isOpen} onClose={onClose} post={post} />
             </Card>
-        </Link>
     )
 }
