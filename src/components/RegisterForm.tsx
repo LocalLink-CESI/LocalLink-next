@@ -1,9 +1,9 @@
 'use client';
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import CreateUser from "@/app/actions/users/create";
 import GetCities from "@/app/actions/cities/get";
-import {Formik, Field, Form, FormikHelpers} from 'formik';
+import { Formik, Field, Form, FormikHelpers } from 'formik';
 
 import {
     Flex,
@@ -24,7 +24,8 @@ import {
     Input,
     Select
 } from '@chakra-ui/react'
-import {brandPrimary} from '../../theme';
+import { brandPrimary } from '../../theme';
+import { redirect, useRouter } from "next/navigation";
 interface FormData {
     firstName: string;
     lastName: string;
@@ -68,27 +69,27 @@ const avatars = [
 const Blur = (props: IconProps) => {
     return (
         <Icon
-            width={useBreakpointValue({base: '100%', md: '40vw', lg: '30vw'})}
-            zIndex={useBreakpointValue({base: -1, md: -1, lg: 0})}
+            width={useBreakpointValue({ base: '100%', md: '40vw', lg: '30vw' })}
+            zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
             height="560px"
             viewBox="0 0 528 560"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             {...props}>
-            <circle cx="71" cy="61" r="111" fill="#F56565"/>
-            <circle cx="244" cy="106" r="139" fill="#ED64A6"/>
-            <circle cy="291" r="139" fill="#ED64A6"/>
-            <circle cx="80.5" cy="189.5" r="101.5" fill="#ED8936"/>
-            <circle cx="196.5" cy="317.5" r="101.5" fill="#ECC94B"/>
-            <circle cx="70.5" cy="458.5" r="101.5" fill="#48BB78"/>
-            <circle cx="426.5" cy="-0.5" r="101.5" fill="#4299E1"/>
+            <circle cx="71" cy="61" r="111" fill="#F56565" />
+            <circle cx="244" cy="106" r="139" fill="#ED64A6" />
+            <circle cy="291" r="139" fill="#ED64A6" />
+            <circle cx="80.5" cy="189.5" r="101.5" fill="#ED8936" />
+            <circle cx="196.5" cy="317.5" r="101.5" fill="#ECC94B" />
+            <circle cx="70.5" cy="458.5" r="101.5" fill="#48BB78" />
+            <circle cx="426.5" cy="-0.5" r="101.5" fill="#4299E1" />
         </Icon>
     )
 }
 
 export function SignUp() {
     const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
-
+    const router = useRouter();
     useEffect(() => {
         const fetchCities = async () => {
             try {
@@ -107,20 +108,20 @@ export function SignUp() {
         fetchCities();
     }, []);
 
-    const labelStyle = {fontFamily: "Montserrat", fontWeight: 800, margin: 0}
+    const labelStyle = { fontFamily: "Montserrat", fontWeight: 800, margin: 0 }
     return (
         <Box position={'relative'}>
             <Container
                 as={SimpleGrid}
                 maxW={'7xl'}
-                columns={{base: 1, md: 2}}
-                spacing={{base: 10, lg: 32}}
-                py={{base: 10, sm: 20, lg: 32}}>
-                <Stack spacing={{base: 10, md: 20}}>
+                columns={{ base: 1, md: 2 }}
+                spacing={{ base: 10, lg: 32 }}
+                py={{ base: 10, sm: 20, lg: 32 }}>
+                <Stack spacing={{ base: 10, md: 20 }}>
                     <Heading
                         zIndex={1}
                         lineHeight={1.1}
-                        fontSize={{base: '3xl', sm: '4xl', md: '5xl', lg: '6xl'}}>
+                        fontSize={{ base: '3xl', sm: '4xl', md: '5xl', lg: '6xl' }}>
                         Rejoingez votre quartier{' '}
                         <Text as={'span'} bg={brandPrimary} bgClip="text">
                             &
@@ -135,7 +136,7 @@ export function SignUp() {
                                     name={avatar.name}
                                     src={avatar.url}
                                     // eslint-disable-next-line react-hooks/rules-of-hooks
-                                    size={useBreakpointValue({base: 'md', md: 'lg'})}
+                                    size={useBreakpointValue({ base: 'md', md: 'lg' })}
                                     position={'relative'}
                                     zIndex={2}
                                     _before={{
@@ -153,19 +154,19 @@ export function SignUp() {
                                 />
                             ))}
                         </AvatarGroup>
-                        <Text fontFamily={'heading'} fontSize={{base: '4xl', md: '6xl'}}>
+                        <Text fontFamily={'heading'} fontSize={{ base: '4xl', md: '6xl' }}>
                             +
                         </Text>
                         <Flex
                             align={'center'}
                             justify={'center'}
                             fontFamily={'heading'}
-                            fontSize={{base: 'xs', md: 'sm'}}
+                            fontSize={{ base: 'xs', md: 'sm' }}
                             bg={'gray.800'}
                             color={'white'}
                             rounded={'full'}
-                            minWidth={useBreakpointValue({base: '44px', md: '60px'})}
-                            minHeight={useBreakpointValue({base: '44px', md: '60px'})}
+                            minWidth={useBreakpointValue({ base: '44px', md: '60px' })}
+                            minHeight={useBreakpointValue({ base: '44px', md: '60px' })}
                             position={'relative'}
                             _before={{
                                 content: '""',
@@ -186,21 +187,21 @@ export function SignUp() {
                 <Stack
                     bg={'gray.50'}
                     rounded={'xl'}
-                    p={{base: 4, sm: 6, md: 8}}
-                    spacing={{base: 8}}
-                    maxW={{lg: 'lg'}}>
+                    p={{ base: 4, sm: 6, md: 8 }}
+                    spacing={{ base: 8 }}
+                    maxW={{ lg: 'lg' }}>
                     <Stack spacing={4}>
                         <Heading
                             zIndex={1}
                             color={'gray.800'}
                             lineHeight={1.1}
-                            fontSize={{base: '2xl', sm: '3xl', md: '4xl'}}>
+                            fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}>
                             Rejoignez <Text as={'span'} bg={brandPrimary} bgClip="text">L</Text>ocal<Text as={'span'}
-                                                                                                          bg={brandPrimary}
-                                                                                                          bgClip="text">L</Text>ink
+                                bg={brandPrimary}
+                                bgClip="text">L</Text>ink
                             <Text as={'span'} bg={brandPrimary} bgClip="text">!</Text>
                         </Heading>
-                        <Text color={'gray.500'} fontSize={{base: 'sm', sm: 'md'}}>
+                        <Text color={'gray.500'} fontSize={{ base: 'sm', sm: 'md' }}>
                             Votre quartier vous attend ! N&apos;hésitez plus et rejoignez-nous pour participer à la vie
                             de votre quartier.
                         </Text>
@@ -228,37 +229,37 @@ export function SignUp() {
 
                             <Form>
                                 <Field name='firstName'>
-                                    {({field, form}) => (
+                                    {({ field, form }) => (
                                         <FormControl isRequired>
                                             <FormLabel>Prénom</FormLabel>
-                                            <Input {...field} placeholder='John'/>
+                                            <Input {...field} placeholder='John' />
                                         </FormControl>
                                     )}
                                 </Field>
 
                                 <Field name='lastName'>
-                                    {({field, form}) => (
+                                    {({ field, form }) => (
                                         <FormControl mt={4} isRequired>
                                             <FormLabel>Nom</FormLabel>
-                                            <Input {...field} placeholder='Doe'/>
+                                            <Input {...field} placeholder='Doe' />
                                         </FormControl>
                                     )}
                                 </Field>
 
                                 <Field name='email'>
-                                    {({field, form}) => (
+                                    {({ field, form }) => (
                                         <FormControl mt={4} isRequired>
                                             <FormLabel>Email</FormLabel>
-                                            <Input type='email' {...field} placeholder='john@email.com'/>
+                                            <Input type='email' {...field} placeholder='john@email.com' />
                                         </FormControl>
                                     )}
                                 </Field>
 
                                 <Field name='password'>
-                                    {({field, form}) => (
+                                    {({ field, form }) => (
                                         <FormControl mt={4} isRequired>
                                             <FormLabel>Mot de passe</FormLabel>
-                                            <Input min={8} type='password' {...field} placeholder='***********'/>
+                                            <Input min={8} type='password' {...field} placeholder='***********' />
                                         </FormControl>
                                     )}
                                 </Field>
@@ -283,19 +284,19 @@ export function SignUp() {
                                 </Field>
 
                                 <Button
-                                        textAlign={'center'}
-                                        mt={8}
-                                        w={'full'}
-                                        type='submit'
-                                        colorScheme={'blue'}
-                                        isDisabled={props.isSubmitting}
-                                        isLoading={props.isSubmitting}>Creer un compte</Button>
+                                    textAlign={'center'}
+                                    mt={8}
+                                    w={'full'}
+                                    type='submit'
+                                    colorScheme={'blue'}
+                                    isLoading={props.isSubmitting}>Créer mon compte</Button>
+                                <Button onClick={() => router.push("/auth/signin")} textAlign={'center'} mt={8} w={'full'} >Déjà un compte ?</Button>
                             </Form>
                         )}
                     </Formik>
                 </Stack>
             </Container>
-            <Blur zIndex={0} position={'absolute'} top={-10} left={-10} style={{filter: 'blur(70px)'}}/>
+            <Blur zIndex={0} position={'absolute'} top={-10} left={-10} style={{ filter: 'blur(70px)' }} />
         </Box>
     )
 }
