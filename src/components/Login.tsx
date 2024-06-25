@@ -15,7 +15,9 @@ import {
 } from '@chakra-ui/react'
 
 import React, { useRef } from "react";
-import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { CreateAccountButton } from "@components/LoginButton";
 
 type Props = {
     className?: string;
