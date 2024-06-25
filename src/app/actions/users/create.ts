@@ -1,21 +1,24 @@
 'use server';
 
-import {prisma} from '@/helpers/database';
+import { prisma } from '@/helpers/database';
 import bcrypt from "bcryptjs";
+import {FormikValues} from "formik";
+import {Prisma} from ".prisma/client";
+import PrismaClientValidationError = Prisma.PrismaClientValidationError;
 
-export default async function CreateUser(form: FormData) {
+export default async function CreateUser(form: FormikValues) {
+    console.log(form);
     return prisma.user.create({
         data: {
-            firstName: form.get('firstName') as string,
-            lastName: form.get('lastName') as string,
-            email: form.get('email') as string,
-            password: bcrypt.hashSync(form.get('password') as string, 10),
-            bio: form.get('bio') as string,
-            cityId: Number(form.get('cityId') as string),
-            avatar: form.get('avatar') as string,
+            firstName: form.firstName,
+            lastName: form.lastName,
+            email: form.email,
+            password: await bcrypt.hash(form.password, 10),
+            cityId: form.cityId,
         }
-    }).catch((error: Error) => {
-        console.error(error);
+    }).catch((error: PrismaClientValidationError) => {
+        console.log(error);
+        return error;
     });
 }
 

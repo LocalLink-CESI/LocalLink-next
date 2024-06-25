@@ -3,6 +3,7 @@
 import React, {useEffect, useState} from "react";
 import CreateUser from "@/app/actions/users/create";
 import GetCities from "@/app/actions/cities/get";
+import {Formik, Field, Form, FormikHelpers} from 'formik';
 
 import {
     Flex,
@@ -70,7 +71,6 @@ const Blur = (props: IconProps) => {
             width={useBreakpointValue({base: '100%', md: '40vw', lg: '30vw'})}
             zIndex={useBreakpointValue({base: -1, md: -1, lg: 0})}
             height="560px"
-            zIndex={0}
             viewBox="0 0 528 560"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -87,15 +87,6 @@ const Blur = (props: IconProps) => {
 }
 
 export function SignUp() {
-    const [formData, setFormData] = useState<FormData>({
-        firstName: "",
-        lastName: "",
-        password: "",
-        bio: "",
-        cityId: 0,
-        avatar: "",
-        email: ""
-    });
     const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
 
     useEffect(() => {
@@ -116,25 +107,6 @@ export function SignUp() {
         fetchCities();
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            await CreateUser(formData);
-
-            window.alert("User created successfully");
-            window.location.href = "/auth/signin";
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const labelStyle = {fontFamily: "Montserrat", fontWeight: 800, margin: 0}
     return (
         <Box position={'relative'}>
@@ -146,6 +118,7 @@ export function SignUp() {
                 py={{base: 10, sm: 20, lg: 32}}>
                 <Stack spacing={{base: 10, md: 20}}>
                     <Heading
+                        zIndex={1}
                         lineHeight={1.1}
                         fontSize={{base: '3xl', sm: '4xl', md: '5xl', lg: '6xl'}}>
                         Rejoingez votre quartier{' '}
@@ -232,104 +205,93 @@ export function SignUp() {
                             de votre quartier.
                         </Text>
                     </Stack>
-                    <Box as={'form'} mt={0}>
-                        <Stack spacing={4}>
-                            <FormLabel style={labelStyle}>Nom</FormLabel>
-                            <Input
-                                placeholder="Dupont"
-                                name="lastName"
-                                max={50}
-                                min={1}
-                                onChange={(e) => {
-                                    let form = formData;
-                                    form.lastName = e.target.value;
-                                    setFormData(form);
-                                }}
-                                bg={'gray.100'}
-                                border={0}
-                                color={'gray.500'}
-                                _placeholder={{
-                                    color: 'gray.500',
-                                }}
-                            />
-                            <FormLabel style={labelStyle}>Prénom</FormLabel>
-                            <Input
-                                placeholder="Jean"
-                                name="firstName"
-                                type="text"
-                                max={50}
-                                min={1}
-                                onChange={(e) => {
-                                    let form = formData;
-                                    form.firstName = e.target.value;
-                                    setFormData(form);
-                                }}
-                                bg={'gray.100'}
-                                border={0}
-                                color={'gray.500'}
-                                _placeholder={{
-                                    color: 'gray.500',
-                                }}
-                            />
-                            <FormLabel style={labelStyle}>Email</FormLabel>
-                            <Input
-                                placeholder="john@mail.com"
-                                name="email"
-                                type="email"
-                                onChange={(e) => {
-                                    let form = formData;
-                                    form.email = e.target.value;
-                                    setFormData(form);
-                                }}
-                                bg={'gray.100'}
-                                border={0}
-                                color={'gray.500'}
-                                _placeholder={{
-                                    color: 'gray.500',
-                                }}
-                            />
-                            <FormLabel style={labelStyle}>Mot de passe</FormLabel>
-                            <Input
-                                placeholder="MonMotDePasse"
-                                type="password"
-                                name="password"
-                                bg={'gray.100'}
-                                min={8}
-                                onChange={(e) => {
-                                    let form = formData;
-                                    form.password = e.target.value;
-                                    setFormData(form);
-                                }}
-                                border={0}
-                                color={'gray.500'}
-                                _placeholder={{
-                                    color: 'gray.500',
-                                }}
-                            />
-                            <FormLabel style={labelStyle}>Ville</FormLabel>
+                    <Formik
+                        initialValues={{
+                            firstName: "",
+                            lastName: "",
+                            password: "",
+                            email: "",
+                            cityId: 1,
+                        }}
+                        onSubmit={async (values, actions) => {
+                            try {
+                                let user = await CreateUser(values);
+                                window.alert("User created successfully");
+                                console.log(user);
+                            } catch (error) {
+                                console.log(values);
+                                console.error(error);
+                            }
+                        }}
+                    >
+                        {(props) => (
 
-                            <Select onChange={handleChange} name='cityId'>
-                                <option value="">Selectionner une ville</option>
-                                {cities.map(city => (
-                                    <option key={city.id} value={city.id}>{city.name}</option>
-                                ))}
-                            </Select>
-                        </Stack>
-                        <Button
-                            onClick={handleSubmit}
-                            fontFamily={'heading'}
-                            mt={8}
-                            w={'full'}
-                            bg={brandPrimary}
-                            color={'white'}
-                            _hover={{
-                                bgGradient: 'brandprimary.700',
-                                boxShadow: 'xl',
-                            }}>
-                            Envoyer
-                        </Button>
-                    </Box>
-                    form
+                            <Form>
+                                <Field name='firstName'>
+                                    {({field, form}) => (
+                                        <FormControl isRequired>
+                                            <FormLabel>Prénom</FormLabel>
+                                            <Input {...field} placeholder='John'/>
+                                        </FormControl>
+                                    )}
+                                </Field>
+
+                                <Field name='lastName'>
+                                    {({field, form}) => (
+                                        <FormControl mt={4} isRequired>
+                                            <FormLabel>Nom</FormLabel>
+                                            <Input {...field} placeholder='Doe'/>
+                                        </FormControl>
+                                    )}
+                                </Field>
+
+                                <Field name='email'>
+                                    {({field, form}) => (
+                                        <FormControl mt={4} isRequired>
+                                            <FormLabel>Email</FormLabel>
+                                            <Input type='email' {...field} placeholder='john@email.com'/>
+                                        </FormControl>
+                                    )}
+                                </Field>
+
+                                <Field name='password'>
+                                    {({field, form}) => (
+                                        <FormControl mt={4} isRequired>
+                                            <FormLabel>Mot de passe</FormLabel>
+                                            <Input min={8} type='password' {...field} placeholder='***********'/>
+                                        </FormControl>
+                                    )}
+                                </Field>
+
+                                <Field>
+                                    {({ field, form }) => (
+                                        <FormControl mt={4} isRequired>
+                                            <FormLabel>Ville</FormLabel>
+                                            <Select
+                                                name="cityId"
+                                                id="cityId"
+                                                onChange={form.handleChange}
+                                                value={form.values['cityId']}>
+                                                {
+                                                    cities.map(city => (
+                                                        <option key={city.id} value={city.id}>{city.name}</option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    )}
+                                </Field>
+
+                                <Button
+                                        textAlign={'center'}
+                                        mt={8}
+                                        w={'full'}
+                                        type='submit'
+                                        colorScheme={'blue'}
+                                        isLoading={props.isSubmitting}>Creer un compte</Button>
+                            </Form>
+                        )}
+                    </Formik>
                 </Stack>
             </Container>
             <Blur zIndex={0} position={'absolute'} top={-10} left={-10} style={{filter: 'blur(70px)'}}/>
