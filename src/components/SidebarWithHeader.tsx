@@ -27,10 +27,9 @@ import {
 import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser,} from 'react-icons/fi';
 import {IconType} from 'react-icons';
 import {useUserStore} from '@/providers/user-store-provider';
-import {usePathname} from 'next/navigation';
+import {redirect, usePathname} from 'next/navigation';
 import {User} from '@/stores/user-store';
 import {signOut, useSession} from "next-auth/react";
-import {getServerSession} from "next-auth";
 
 interface LinkItemProps {
     name: string;
@@ -92,7 +91,18 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
 
     const {data: session} = useSession()
 
-    console.log("session", session)
+    let isLogged = false
+
+    useSession({
+        required: false,
+        onUnauthenticated() {
+            isLogged = false
+        },
+    });
+
+    if (session?.session.user) {
+        isLogged = true
+    }
 
     return (
         <Flex
@@ -113,55 +123,59 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                 </Text>
                 <CloseButton display={{base: 'flex', md: 'none'}} onClick={onClose}/>
             </Flex>
+
+            {isLogged && (
+
             <Flex direction="column">
                 {LinkItems.map((link) => (
                     <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link}/>
                 ))}
             </Flex>
-
+            )}
 
 
             <VStack spacing={{base: '0', md: '6'}} _hover={{bg: "brand.900"}}>
                 <Flex alignItems={'center'}>
-                    {session?.session && (
-                    <Menu>
-                        <MenuButton
-                            py={2}
-                            transition="all 0.3s"
-                            _focus={{boxShadow: 'none', bg: "brand:900"}}>
+                    {session?.session.user && (
+                        <Menu>
+                            <MenuButton
+                                py={2}
+                                transition="all 0.3s"
+                                _focus={{boxShadow: 'none', bg: "brand:900"}}>
 
-                            <HStack>
-                                <Avatar
-                                    ignoreFallback={true}
-                                    size={'sm'}
-                                    src={
-                                        session?.session.user.avatar
-                                    }
-                                />
-                                <VStack
-                                    display={{base: 'none', md: 'flex'}}
-                                    alignItems="flex-start"
-                                    spacing="1px"
-                                    ml="0">
-                                </VStack>
-                                <Box display={{base: 'none', md: 'flex'}}>
-                                    <FiChevronDown/>
-                                </Box>
-                            </HStack>
-                        </MenuButton>
-                        <MenuList
-                            bg={useColorModeValue('white', 'gray.900')}
-                            borderColor={useColorModeValue('gray.200', 'brand.900')}>
-                            <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
-                                      transition={"all 0.2s ease"}
-                            onClick={() => {
-                                signOut()
-                            }}
-                            >Déconnexion</MenuItem>
-                            <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
-                                        transition={"all 0.2s ease"}>Account : {session?.session.user.email}</MenuItem>
-                        </MenuList>
-                    </Menu>
+                                <HStack>
+                                    <Avatar
+                                        ignoreFallback={true}
+                                        size={'sm'}
+                                        src={
+                                            session?.session.user.avatar
+                                        }
+                                    />
+                                    <VStack
+                                        display={{base: 'none', md: 'flex'}}
+                                        alignItems="flex-start"
+                                        spacing="1px"
+                                        ml="0">
+                                    </VStack>
+                                    <Box display={{base: 'none', md: 'flex'}}>
+                                        <FiChevronDown/>
+                                    </Box>
+                                </HStack>
+                            </MenuButton>
+                            <MenuList
+                                bg={useColorModeValue('white', 'gray.900')}
+                                borderColor={useColorModeValue('gray.200', 'brand.900')}>
+                                <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
+                                          transition={"all 0.2s ease"}
+                                          onClick={() => {
+                                              signOut()
+                                          }}
+                                >Déconnexion</MenuItem>
+                                <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
+                                          transition={"all 0.2s ease"}>Account
+                                    : {session?.session.user.email}</MenuItem>
+                            </MenuList>
+                        </Menu>
                     )}
                 </Flex>
             </VStack>

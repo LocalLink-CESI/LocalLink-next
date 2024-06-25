@@ -11,11 +11,20 @@ import {
 } from '@chakra-ui/react';
 import {Formik} from "formik";
 import PostModal from "@/app/component/postModal";
+import {useSession} from "next-auth/react";
+import {redirect} from "next/navigation";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
     const user = useUserStore((state) => state)
     const {onOpen, onClose, isOpen} = useDisclosure();
+
+    useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect('/auth/signin')
+        },
+    });
 
     return (
         <Flex direction={"column"} py={6} margin={"auto"} alignItems={"center"}>
