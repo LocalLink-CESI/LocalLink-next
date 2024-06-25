@@ -6,7 +6,6 @@ import {
     FormControl,
     FormLabel,
     Input,
-    Checkbox,
     Stack,
     Button,
     Heading,
@@ -14,13 +13,10 @@ import {
     useColorModeValue,
 } from '@chakra-ui/react'
 
-import React, { useRef } from "react";
-import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
-import { CreateAccountButton } from "@components/LoginButton";
-import { redirect, useRouter } from 'next/navigation';
-import { Formik, Field, Form, FormikHelpers } from 'formik';
-import CreateUser from '@/app/actions/users/create';
+import React, { useEffect } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation';
+import { Formik, Field, Form } from 'formik';
 
 type Props = {
     className?: string;
@@ -30,18 +26,8 @@ type Props = {
 
 const Login = (props: Props) => {
     const router = useRouter();
-    const userName = useRef<string>("");
-    const password = useRef<string>("");
-
-    const onSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        await signIn("credentials", {
-            username: userName.current,
-            password: password.current,
-            redirect: true,
-            callbackUrl: props.callbackUrl || "/",
-        });
-    }
+    const [error, setError] = React.useState<string | null>(null);
+    const [errorText, setErrorText] = React.useState<string | null>(null);
 
     const handleGoogleSignIn = async () => {
         await signIn('google', {
@@ -49,6 +35,17 @@ const Login = (props: Props) => {
         });
     }
 
+    useEffect(() => {
+        switch (error) {
+            case "CredentialsSignin": {
+                setErrorText("Email ou mot de passe incorrect");
+                break;
+            }
+            default:
+                setErrorText(null);
+        }
+        console.log(error)
+    }, [error, setErrorText]);
     return (
         <Flex
             minH={'100%'}
@@ -77,22 +74,27 @@ const Login = (props: Props) => {
                             }}
                             onSubmit={async (values, actions) => {
                                 try {
-                                    await signIn("credentials", {
-                                        username: userName.current,
-                                        password: password.current,
-                                        redirect: true,
+                                    const response = await signIn("credentials", {
+                                        email: values.email,
+                                        password: values.password,
+                                        redirect: false,
                                         callbackUrl: props.callbackUrl || "/",
                                     });
+                                    console.log(response);
+                                    if (response.error) {
+                                        setError(response.error);
+                                    }
                                 } catch (error) {
                                     console.log(values);
                                     console.error(error);
                                 }
                             }}
                         >
-                            {(props) => (
+                            {(formikProps) => (
                                 <Form>
+                                    {error ? <Text color={'red.500'}>{errorText}</Text> : null}
                                     <Field name='email'>
-                                        {({ field, form }) => (
+                                        {({ field }) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Email</FormLabel>
                                                 <Input type='email' {...field} placeholder='john@email.com' />
@@ -101,7 +103,7 @@ const Login = (props: Props) => {
                                     </Field>
 
                                     <Field name='password'>
-                                        {({ field, form }) => (
+                                        {({ field }) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Mot de passe</FormLabel>
                                                 <Input min={8} type='password' {...field} placeholder='***********' />
@@ -115,9 +117,10 @@ const Login = (props: Props) => {
                                         w={'full'}
                                         type='submit'
                                         colorScheme={'blue'}
-                                        isLoading={props.isSubmitting}>Se connecter</Button>
+                                        isLoading={formikProps.isSubmitting}>Se connecter</Button>
                                     <Button onClick={handleGoogleSignIn} textAlign={'center'} mt={4} w={'full'}>Se connecter avec Google</Button>
-                                    <Button onClick={() => router.push("/auth/signup")} textAlign={'center'} mt={10} w={'full'} >Créer mon compte</Button>
+                                    <hr style={{ marginTop: 16 }} />
+                                    <Button onClick={() => router.push("/auth/signup")} textAlign={'center'} mt={4} w={'full'} >Créer mon compte</Button>
                                 </Form>
                             )}
                         </Formik>

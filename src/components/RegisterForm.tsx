@@ -289,7 +289,9 @@ export function SignUp() {
                                     type='submit'
                                     colorScheme={'blue'}
                                     isLoading={props.isSubmitting}>Créer mon compte</Button>
-                                <Button onClick={() => router.push("/auth/signin")} textAlign={'center'} mt={8} w={'full'} >Déjà un compte ?</Button>
+                                <hr style={{ marginTop: 16 }} />
+
+                                <Button onClick={() => router.push("/auth/signin")} textAlign={'center'} mt={4} w={'full'} >Déjà un compte ?</Button>
                             </Form>
                         )}
                     </Formik>
