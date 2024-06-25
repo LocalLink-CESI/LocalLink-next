@@ -25,6 +25,8 @@ import {
     Select
 } from '@chakra-ui/react'
 import {brandPrimary} from '../../theme';
+import {useSession} from "next-auth/react";
+import {redirect} from "next/navigation";
 interface FormData {
     firstName: string;
     lastName: string;
@@ -264,7 +266,7 @@ export function SignUp() {
                                 </Field>
 
                                 <Field>
-                                    {({ field, form }) => (
+                                    {({field, form}) => (
                                         <FormControl mt={4} isRequired>
                                             <FormLabel>Ville</FormLabel>
                                             <Select

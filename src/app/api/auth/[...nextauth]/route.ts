@@ -19,7 +19,6 @@ const handler = NextAuth({
                     }
                 });
 
-
                 session.session.role = user?.role || "user";
 
                 if (user) {
@@ -53,7 +52,7 @@ const handler = NextAuth({
                     session.session.role = "user";
                 }
             } catch (error) {
-                console.error(error);
+                return session;
             }
 
             return session;

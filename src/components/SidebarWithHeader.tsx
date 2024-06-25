@@ -29,7 +29,7 @@ import {IconType} from 'react-icons';
 import {useUserStore} from '@/providers/user-store-provider';
 import {usePathname} from 'next/navigation';
 import {User} from '@/stores/user-store';
-import {useSession} from "next-auth/react";
+import {signOut, useSession} from "next-auth/react";
 import {getServerSession} from "next-auth";
 
 interface LinkItemProps {
@@ -118,8 +118,12 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                     <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link}/>
                 ))}
             </Flex>
+
+
+
             <VStack spacing={{base: '0', md: '6'}} _hover={{bg: "brand.900"}}>
                 <Flex alignItems={'center'}>
+                    {session?.session && (
                     <Menu>
                         <MenuButton
                             py={2}
@@ -149,11 +153,16 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                             bg={useColorModeValue('white', 'gray.900')}
                             borderColor={useColorModeValue('gray.200', 'brand.900')}>
                             <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
-                                      transition={"all 0.2s ease"}>Déconnexion</MenuItem>
+                                      transition={"all 0.2s ease"}
+                            onClick={() => {
+                                signOut()
+                            }}
+                            >Déconnexion</MenuItem>
                             <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
                                         transition={"all 0.2s ease"}>Account : {session?.session.user.email}</MenuItem>
                         </MenuList>
                     </Menu>
+                    )}
                 </Flex>
             </VStack>
         </Flex>
