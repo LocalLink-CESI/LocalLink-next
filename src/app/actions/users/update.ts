@@ -7,16 +7,18 @@ import {FormikValues} from "formik";
 
 export default async function UpdateMe(form: FormikValues) {
     let user = await getServerSession(authOptions)
+
     if (!user || !user.user || !user.user.name) return null;
+
     return prisma.user.update({
         where: {
-            id: user.user.name
+            email: user.user.email
         },
         data: {
             firstName: form.firstName,
             lastName: form.lastName,
             email: form.email,
-            cityId: form.cityId,
+            cityId: Number(form.cityId),
             bio: form.bio,
             image: form.image
         }
