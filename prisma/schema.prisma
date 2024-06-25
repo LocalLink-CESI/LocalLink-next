@@ -47,8 +47,7 @@ model User {
 
   firstName String
   lastName  String
-  bio       String?
-  avatar    String  @default("https://placehold.co/600x400")
+  bio       String
 
   password String
   role     Role   @default(USER)
