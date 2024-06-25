@@ -6,6 +6,7 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 }
 export const shadow = "0 0 30px 0px #0000000F"
+export const shadowHover = "0 0 30px 0px #00000025"
 export const brandPrimary = "#12E8E4"
 const theme = extendTheme({
   config,
