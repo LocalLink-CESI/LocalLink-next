@@ -26,7 +26,6 @@ import {
 } from '@chakra-ui/react';
 import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser,} from 'react-icons/fi';
 import {IconType} from 'react-icons';
-import {useUserStore} from '@/providers/user-store-provider';
 import {usePathname, useRouter} from 'next/navigation';
 import {User} from '@/stores/user-store';
 import {signOut, useSession} from "next-auth/react";
@@ -58,7 +57,9 @@ export default function SidebarWithHeader({
         useRouter().push("/auth/signin")
     }
     const {isOpen, onOpen, onClose} = useDisclosure();
-    const user = useUserStore((state) => state)
+
+    const user = session.data?.session?.user;
+
 
     return (
         <Flex h="100dvh" bg={"white"} direction={"column"}>
@@ -94,16 +95,18 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
+    let isLogged = false
 
-    const {data: session} = useSession()
-
-    let isLogged = !!session?.session.user
-
-    useSession({
-        required: false, onUnauthenticated() {
+    const session = useSession({
+        required: false,
+        onUnauthenticated() {
             isLogged = false
         },
     });
+
+    if (session.status === "authenticated") {
+        isLogged = true
+    }
 
     return (
         <Flex
@@ -135,7 +138,7 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
 
             <VStack spacing={{base: '0', md: '6'}} _hover={{bg: "brand.900"}}>
                 <Flex alignItems={'center'}>
-                    {session?.session.user && (<Menu>
+                    {isLogged && (<Menu>
                         <MenuButton
                             py={2}
                             transition="all 0.3s"
@@ -145,7 +148,7 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                                 <Avatar
                                     ignoreFallback={true}
                                     size={'sm'}
-                                    src={session?.session.user.avatar}
+                                    src={user.image}
                                 />
                                 <VStack
                                     display={{base: 'none', md: 'flex'}}
@@ -169,7 +172,7 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                             >Déconnexion</MenuItem>
                             <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
                                       transition={"all 0.2s ease"}>Account
-                                : {session?.session.user.email}</MenuItem>
+                                : {user.email}</MenuItem>
                         </MenuList>
                     </Menu>)}
                 </Flex>
