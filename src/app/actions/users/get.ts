@@ -21,6 +21,9 @@ export async function GetUserWithId(id: string) {
         where: {
             id: id
         },
+        include: {
+            city: true
+        }
     }).catch((error: Error) => {
         return error;
     });

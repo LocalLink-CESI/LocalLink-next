@@ -87,7 +87,7 @@ model Post {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,7 +108,7 @@ model EventPost {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -125,7 +125,7 @@ model EventPost {
 
   startAt      DateTime
   endAt        DateTime
-  localisation String
+  localisation String?
 
   userInterested UserInterested[]
 }
@@ -135,7 +135,7 @@ model SalePost {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -162,7 +162,7 @@ model CulturePost {
   title     String
   text      String
   media     Json?
-  isVisible Boolean
+  isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
