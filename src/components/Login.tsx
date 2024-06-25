@@ -77,9 +77,12 @@ const Login = (props: Props) => {
                             }}
                             onSubmit={async (values, actions) => {
                                 try {
-                                    let user = await CreateUser(values);
-                                    window.alert("User created successfully");
-                                    console.log(user);
+                                    await signIn("credentials", {
+                                        username: userName.current,
+                                        password: password.current,
+                                        redirect: true,
+                                        callbackUrl: props.callbackUrl || "/",
+                                    });
                                 } catch (error) {
                                     console.log(values);
                                     console.error(error);
