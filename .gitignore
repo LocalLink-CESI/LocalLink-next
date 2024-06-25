@@ -46,4 +46,4 @@ postgres
 /package-lock.json
 package-lock.json
 
-./public/media
+./public/media/*
