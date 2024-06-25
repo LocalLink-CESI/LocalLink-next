@@ -12,7 +12,7 @@ import {
 
 import React, { useRef } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import { CreateAccountButton } from "@components/LoginButton";
 
 type Props = {
@@ -71,6 +71,9 @@ const Login = (props: Props) => {
                     <CreateAccountButton />
                 </Box>
             </form>
+
+
+
         </Box>
     )
 }

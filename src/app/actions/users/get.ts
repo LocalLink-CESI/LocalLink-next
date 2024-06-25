@@ -20,7 +20,7 @@ export async function GetUserWithId(id: string) {
     return prisma.user.findUnique({
         where: {
             id: id
-        }
+        },
     }).catch((error: Error) => {
         return error;
     });
