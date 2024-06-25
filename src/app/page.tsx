@@ -1,17 +1,17 @@
 'use client'
 
 import PostCard from "@/components/Home/PostCard";
-import {useUserStore} from "@/providers/user-store-provider";
-import {Flex, Grid} from "@chakra-ui/react";
+import { Flex, Grid } from "@chakra-ui/react";
 import Calendar from '../components/Calendar/Calendar';
-import {useState} from "react";
-import {useSession} from "next-auth/react";
-import {redirect} from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import GetPostsWithPaginationAndType from "./actions/posts/get";
+import { PostType } from "@/helpers/database";
 
 export default function Home() {
-    const user = useUserStore((state) => state)
     const [activeDate, setActiveDate] = useState<Date>(new Date());
-
+    const [posts, setPosts] = useState([]);
     useSession({
         required: true,
         onUnauthenticated() {
@@ -19,10 +19,9 @@ export default function Home() {
         },
     });
 
-    const session = useSession();
+    const { data: session, status } = useSession()
 
-    console.log(session);
-
+    const user = (session as any)?.session?.user
     const onClickDate = (day: number, month: number) => {
         if (typeof day !== 'string' && day != -1) {
             let newDate = new Date(activeDate.setMonth(month));
@@ -31,13 +30,22 @@ export default function Home() {
         }
     };
 
+    useEffect(() => {
+        // Get posts from the city from the server actions
+        const posts = GetPostsWithPaginationAndType({ limit: 10, offset: 0 }, PostType.DEFAULT, user?.cityId)
+        posts.then((data) => {
+            setPosts(data)
+        })
+    }, [setPosts]
+    )
+
     return (
         <main>
             <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"} py={"1rem"}>
 
                 <Flex w={"60%"} direction="column" alignItems={"center"} gap={"3rem"} height={"100%"}>
-                    {user.posts.map((post, index) => (
-                        <PostCard key={index} post={post}/>
+                    {posts.map((post, index) => (
+                        <PostCard key={index} post={post} />
                     ))}
                 </Flex>
 
@@ -55,7 +63,7 @@ export default function Home() {
                             fontWeight: 800,
                             fontFamily: "Montserrat"
                         }}>EVENEMENTS</h2>
-                        <Calendar activeDate={activeDate} onClick={onClickDate}/>
+                        <Calendar activeDate={activeDate} onClick={onClickDate} />
                     </Flex>
                     <Flex
                         direction="column"
