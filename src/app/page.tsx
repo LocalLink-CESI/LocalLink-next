@@ -36,8 +36,7 @@ export default function Home() {
         posts.then((data) => {
             setPosts(data)
         })
-    }, [setPosts]
-    )
+    }, [setPosts])
 
     return (
         <main>

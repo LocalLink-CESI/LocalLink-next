@@ -1,5 +1,9 @@
 'use server';
+
 import {PostType, prisma} from '@/helpers/database';
+import {getServerSession} from "next-auth";
+import {useSession} from "next-auth/react";
+import {authOptions} from "@/lib/authOptions";
 
 export default async function GetPostsWithPaginationAndType (pagination: {limit:number, offset:number}, type: PostType, cityId: number) : Promise<Array<any>> {
     // @ts-ignore
@@ -27,3 +31,12 @@ export async function GetPostWithId (id: number) {
     });
 }
 
+export async function GetSelfPosts (id: string) {
+    return prisma.post.findMany({
+        where: {
+            userId: id
+        }
+    }).catch((e: Error) => {
+        return (e);
+    });
+}

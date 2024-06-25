@@ -9,6 +9,10 @@ const handler = NextAuth({
     providers: authOptions.providers,
 
     callbacks: {
+        redirect: () => {
+            return "/";
+        },
+
         session: async (session: any) => {
 
             session.session.role = "user";
@@ -19,8 +23,6 @@ const handler = NextAuth({
                         email: session.session.user.email,
                     }
                 });
-
-                console.log(user);
 
                 session.session.role = user?.role || "user";
 

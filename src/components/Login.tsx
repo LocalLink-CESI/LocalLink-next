@@ -1,26 +1,22 @@
 'use client'
 
 import {
-    Flex,
     Box,
+    Button,
+    Flex,
     FormControl,
     FormLabel,
-    Input,
-    Checkbox,
-    Stack,
-    Button,
     Heading,
+    Input,
+    Stack,
     Text,
     useColorModeValue,
 } from '@chakra-ui/react'
 
-import React, { useRef } from "react";
-import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
-import { CreateAccountButton } from "@components/LoginButton";
-import { redirect, useRouter } from 'next/navigation';
-import { Formik, Field, Form, FormikHelpers } from 'formik';
-import CreateUser from '@/app/actions/users/create';
+import React from "react";
+import {signIn} from "next-auth/react";
+import {useRouter} from 'next/navigation';
+import {Field, Form, Formik} from 'formik';
 
 type Props = {
     className?: string;
@@ -50,9 +46,10 @@ const Login = (props: Props) => {
             justify={'center'}>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Stack align={'center'}>
-                    <Heading fontSize={'4xl'} w={"100%"} >Heureux de vous revoir !</Heading>
+                    <Heading fontSize={'4xl'} w={"100%"}>Heureux de vous revoir !</Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
-                        Connectez-vous pour profiter de toutes nos <Text as={"span"} color={'blue.400'}>fonctionalitées</Text> ✌️
+                        Connectez-vous pour profiter de toutes nos <Text as={"span"}
+                                                                         color={'blue.400'}>fonctionalitées</Text> ✌️
                     </Text>
                 </Stack>
                 <Box
@@ -71,7 +68,6 @@ const Login = (props: Props) => {
                                     await signIn("credentials", values);
                                     router.push("/");
                                 } catch (error) {
-                                    console.log(values);
                                     console.error(error);
                                 }
                             }}
@@ -79,7 +75,7 @@ const Login = (props: Props) => {
                             {(props) => (
                                 <Form>
                                     <Field name='email'>
-                                        {({ field, form }) => (
+                                        {({field, form}) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Email</FormLabel>
                                                 <Input type='email' {...field} placeholder='john@email.com' />
@@ -88,7 +84,7 @@ const Login = (props: Props) => {
                                     </Field>
 
                                     <Field name='password'>
-                                        {({ field, form }) => (
+                                        {({field, form}) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Mot de passe</FormLabel>
                                                 <Input min={8} type='password' {...field} placeholder='***********' />
@@ -103,8 +99,10 @@ const Login = (props: Props) => {
                                         type='submit'
                                         colorScheme={'blue'}
                                         isLoading={props.isSubmitting}>Se connecter</Button>
-                                    <Button onClick={handleGoogleSignIn} textAlign={'center'} mt={4} w={'full'}>Se connecter avec Google</Button>
-                                    <Button onClick={() => router.push("/auth/signup")} textAlign={'center'} mt={10} w={'full'} >Créer mon compte</Button>
+                                    <Button onClick={handleGoogleSignIn} textAlign={'center'} mt={4} w={'full'}>Se
+                                        connecter avec Google</Button>
+                                    <Button onClick={() => router.push("/auth/signup")} textAlign={'center'} mt={10}
+                                            w={'full'}>Créer mon compte</Button>
                                 </Form>
                             )}
                         </Formik>
