@@ -1,7 +1,8 @@
 'use server';
 import {PostType, prisma} from "@/helpers/database";
+import {FormikValues} from "formik";
 
-export default async function CreateComment(form :FormData, type: PostType) {
+export default async function CreateComment(form :FormikValues, type: PostType) {
     switch(type) {
         case PostType.DEFAULT :
             return CreateDefaultComment;

@@ -11,7 +11,8 @@ import {
     ModalHeader,
     ModalOverlay,
     Select,
-    Textarea
+    Textarea,
+    Text
 } from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
 import React, {useEffect, useState} from "react";
@@ -22,10 +23,12 @@ import GetCities from "@/app/actions/cities/get";
 import {Category} from "@prisma/client";
 import GetCategories from "@/app/actions/categories/get";
 import {useSession} from "next-auth/react";
+import {brandPrimary} from "../../../theme";
 
 export default function PostModal({isOpen, onClose}) {
     const [type, setType] = useState(PostType.DEFAULT);
     const [categories, setCategories] = useState([])
+    const [mediaPreview, setMediaPreview] = useState('');
 
     const handleTypeChange = (e) => {
         setType(e.target.value);
@@ -66,13 +69,14 @@ export default function PostModal({isOpen, onClose}) {
                     <Formik initialValues={{
                         title: '',
                         text: '',
-                        media: '',
+                        media: null,
                         userId: userId,
                         startAt: '',
                         endAt: '',
                         price: 0,
                         isDonation: false,
                         categoryId: 1,
+                        localisation: '',
                         type: PostType.DEFAULT,
                     }}
                             onSubmit={
@@ -110,8 +114,37 @@ export default function PostModal({isOpen, onClose}) {
                                 <Field name='media'>
                                     {({field, form}) => (
                                         <FormControl mt={4}>
-                                            <FormLabel>Media</FormLabel>
-                                            <Input type='text' {...field} placeholder='https://example.com/image.png'/>
+                                            <FormLabel>Media {mediaPreview == 'error' &&
+                                                (<Text as={'span'} bg={"red.500"} bgClip="text">
+                                                    1 mo maximum !</Text>)}
+                                            </FormLabel>
+                                            <input
+                                                name='media'
+                                                accept='image/png'
+                                                id='media'
+                                                type='file'
+                                                onChange={(e) => {
+                                                    const fileReader = new FileReader();
+                                                    fileReader.onload = () => {
+                                                        console.log(e.target.files[0].size)
+                                                        console.log(e.target.files[0].size < 1000000)
+                                                        if (fileReader.readyState == 2 && e.target.files[0].size < 1000000 ) {
+                                                            form.setFieldValue('media', fileReader.result);
+                                                            // @ts-ignore
+                                                            setMediaPreview(fileReader.result);
+                                                        } else {
+                                                            setMediaPreview("error");
+                                                        }
+                                                    };
+                                                    fileReader.readAsDataURL(e.target.files[0]);
+                                                }}
+                                            />
+                                            {mediaPreview != '' && mediaPreview != 'error' &&
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img src={mediaPreview} alt="Image preview" style={{width: '100px'}}/>
+                                            }
+
+
                                         </FormControl>
                                     )}
                                 </Field>
@@ -156,6 +189,15 @@ export default function PostModal({isOpen, onClose}) {
                                                 <FormControl mt={4} isRequired>
                                                     <FormLabel>Date de fin</FormLabel>
                                                     <Input type='date' {...field} />
+                                                </FormControl>
+                                            )}
+                                        </Field>
+
+                                        <Field name='localisation'>
+                                            {({field, form}) => (
+                                                <FormControl mt={4} isRequired>
+                                                    <FormLabel>Où se passe l'événement ?</FormLabel>
+                                                    <Input type='text' {...field} />
                                                 </FormControl>
                                             )}
                                         </Field>

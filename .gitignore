@@ -44,4 +44,6 @@ next-env.d.ts
 
 postgres
 /package-lock.json
-package-lock.json 
+package-lock.json
+
+./public/media
