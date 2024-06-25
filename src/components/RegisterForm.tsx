@@ -218,11 +218,11 @@ export function SignUp() {
                         onSubmit={async (values, actions) => {
                             try {
                                 let user = await CreateUser(values);
-                                window.alert("User created successfully");
-                                console.log(user);
+                                //redirect to user profile
+
+                                window.location.href = `/profile`;
+
                             } catch (error) {
-                                console.log(values);
-                                console.error(error);
                             }
                         }}
                     >
@@ -285,12 +285,13 @@ export function SignUp() {
                                 </Field>
 
                                 <Button
-                                    textAlign={'center'}
-                                    mt={8}
-                                    w={'full'}
-                                    type='submit'
-                                    colorScheme={'blue'}
-                                    isLoading={props.isSubmitting}>Creer un compte</Button>
+                                        textAlign={'center'}
+                                        mt={8}
+                                        w={'full'}
+                                        type='submit'
+                                        colorScheme={'blue'}
+                                        isDisabled={props.isSubmitting}
+                                        isLoading={props.isSubmitting}>Creer un compte</Button>
                             </Form>
                         )}
                     </Formik>
