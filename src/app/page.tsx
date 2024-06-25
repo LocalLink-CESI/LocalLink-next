@@ -6,22 +6,22 @@ import Calendar from '../components/Calendar/Calendar';
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import GetPostsWithPaginationAndType from "./actions/posts/get";
+import GetPostsWithPaginationAndType, {GetPostsWithPaginationFeed} from "./actions/posts/get";
 import { PostType } from "@/helpers/database";
 
 export default function Home() {
     const [activeDate, setActiveDate] = useState<Date>(new Date());
     const [posts, setPosts] = useState([]);
-    useSession({
+
+    const session = useSession({
         required: true,
         onUnauthenticated() {
             redirect('/auth/signin')
         },
     });
 
-    const { data: session, status } = useSession()
-
     const user = (session as any)?.session?.user
+
     const onClickDate = (day: number, month: number) => {
         if (typeof day !== 'string' && day != -1) {
             let newDate = new Date(activeDate.setMonth(month));
@@ -31,12 +31,12 @@ export default function Home() {
     };
 
     useEffect(() => {
-        // Get posts from the city from the server actions
         const posts = GetPostsWithPaginationAndType({ limit: 10, offset: 0 }, PostType.DEFAULT, user?.cityId)
         posts.then((data) => {
             setPosts(data)
         })
-    }, [setPosts])
+    }, [setPosts]
+    )
 
     return (
         <main>
