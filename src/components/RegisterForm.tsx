@@ -218,7 +218,7 @@ export function SignUp() {
                             try {
                                 let user = await CreateUser(values);
                                 // Put the user in the next session and redirect to the signin page to login
-                                router.push("/signin")
+                                router.push("/auth/signin")
 
                             } catch (error) {
                             }
