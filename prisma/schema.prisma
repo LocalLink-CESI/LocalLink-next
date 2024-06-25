@@ -68,6 +68,8 @@ model User {
   eventPosts    EventPost[]
   salePost      SalePost[]
   culturePosts  CulturePost[]
+
+  isDeleted Boolean @default(false)
 }
 
 model VerificationRequest {

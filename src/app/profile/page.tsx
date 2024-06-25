@@ -1,49 +1,56 @@
 'use client'
-import PostCard from '@/components/Home/PostCard';
-import { useUserStore } from '@/providers/user-store-provider';
-import {
-    Button,
-    Flex,
-    Heading,
-    Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay,
-    Stack,
-    Text, useDisclosure,
-} from '@chakra-ui/react';
-import {Formik} from "formik";
-import PostModal from "@/app/component/postModal";
+import {Button, Flex, Heading, Image, Stack, Text, useDisclosure,} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
 import {redirect} from "next/navigation";
+import PostModal from "@/app/component/postModal";
+import {Key, useEffect, useState} from "react";
+import GetPostsWithPaginationAndType, {GetSelfPosts} from "@/app/actions/posts/get";
+import PostCard from "@components/Home/PostCard";
+import {PostType} from "@/helpers/database";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
-    const user = useUserStore((state) => state)
     const {onOpen, onClose, isOpen} = useDisclosure();
 
-    useSession({
+    const session = useSession({
         required: true,
         onUnauthenticated() {
             redirect('/auth/signin')
         },
     });
 
+    const user = session.data?.session?.user;
+    const userId = user?.id;
+
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        // Get posts from the city from the server actions
+        const posts = GetSelfPosts(userId);
+        posts.then((data) => {
+            setPosts(data)
+        })
+    }, [setPosts])
+
+    if (!user) return null;
+
     return (
         <Flex direction={"column"} py={6} margin={"auto"} alignItems={"center"}>
             <Stack
                 borderWidth="1px"
                 borderRadius="lg"
-                w={{ sm: '100%', md: '800px' }}
-                direction={{ base: 'column', md: 'row' }}
+                w={{sm: '100%', md: '800px'}}
+                direction={{base: 'column', md: 'row'}}
                 boxShadow={'xl'}
                 padding={4}>
                 <Flex flex={1}>
                     <Image
                         objectFit="cover"
                         boxSize="100%"
-                        src={user.avatar}
+                        src={user.image}
                         aspectRatio={"1/1"}
                         borderRadius={"lg"}
-                        alt={"Photo de profil"}
-                    />
+                        alt={"Photo de profil"}/>
                 </Flex>
                 <Stack
                     flex={2}
@@ -54,10 +61,10 @@ export default function Profile() {
                     p={1}
                     pt={2}>
                     <Heading fontSize={'2xl'} fontFamily={'body'} color={"black"}>
-                        {user.name}
+                        {user.firstName} {user.lastName}
                     </Heading>
                     <Text fontWeight={600} color={'gray.500'} size="sm" mb={4}>
-                        {user.location}
+                        {/*{user.location}*/}
                     </Text>
                     <Text
                         textAlign={'center'}
@@ -71,7 +78,7 @@ export default function Profile() {
 
             <Stack
                 borderRadius="lg"
-                direction={{ base: 'column', md: 'row' }}
+                direction={{base: 'column', md: 'row'}}
                 mt={"4rem"}
                 padding={4}>
                 <Stack
@@ -94,7 +101,7 @@ export default function Profile() {
                         justifyContent={'space-between'}
                         alignItems={'center'}>
 
-                        <PostModal isOpen={isOpen} onClose={onClose} />
+                        <PostModal isOpen={isOpen} onClose={onClose}/>
                         <Button
                             onClick={onOpen}
                             flex={1}
@@ -103,9 +110,7 @@ export default function Profile() {
                             color={'black'}
                             variant={"brandPrimaryButton"}
                             px={10}
-                            boxShadow={
-                                '0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'
-                            }>
+                            boxShadow={'0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'}>
                             Poster quelque chose !
                         </Button>
                     </Stack>
@@ -118,16 +123,18 @@ export default function Profile() {
                         justifyContent={'space-between'}
                         alignItems={'center'}>
                         <Text
-                            hidden={user.posts.length > 0}
+                            hidden={posts.length > 0}
                             fontSize={'lg'}
                             fontFamily={'body'}
                             color={"black"}>
                             Aucun post pour le moment
                         </Text>
 
-                        {user.posts.map((post, index) => (
-                            <PostCard key={index} post={post} />
-                        ))}
+                        {posts.length > 0 && posts.map((post: any, index: Key) => {
+                            return (
+                                <PostCard key={index} post={post}/>
+                            )
+                        })}
 
                     </Stack>
 
@@ -135,5 +142,4 @@ export default function Profile() {
             </Stack>
         </Flex>
     )
-
 }

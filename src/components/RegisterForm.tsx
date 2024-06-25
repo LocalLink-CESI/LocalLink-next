@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import CreateUser from "@/app/actions/users/create";
 import GetCities from "@/app/actions/cities/get";
 import { Formik, Field, Form, FormikHelpers } from 'formik';
+import {City} from "@/models/City";
 
 import {
     Flex,
@@ -28,11 +29,7 @@ import {brandPrimary} from '../../theme';
 import {useSession} from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
 
-interface City {
-    id: bigint;
-    name: string;
-    zipCode: string;
-}
+
 
 const avatars = [
     {

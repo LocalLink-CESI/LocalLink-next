@@ -36,8 +36,7 @@ export default function Home() {
         posts.then((data) => {
             setPosts(data)
         })
-    }, [setPosts]
-    )
+    }, [setPosts])
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLargerThan800] = useMediaQuery("(min-width: 800px)");

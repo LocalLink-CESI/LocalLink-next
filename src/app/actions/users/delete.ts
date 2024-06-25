@@ -7,9 +7,13 @@ import { authOptions } from "@/lib/authOptions";
 export default async function DeleteMe(form: FormData) {
     let user = await getServerSession(authOptions)
     if (!user || !user.user || !user.user.name) return null;
-    return prisma.user.delete({
+
+    return prisma.user.update({
         where: {
             id: user.user.name
+        },
+        data: {
+            isDeleted: true
         }
     }).catch((error : Error) => {
         return error;
@@ -17,7 +21,11 @@ export default async function DeleteMe(form: FormData) {
 }
 
 export async function DeleteUserWithId(id: string) {
-    //TODO VERIFIER ROLE
+    const user = getServerSession(authOptions);
+
+    // if user is admin
+    
+
     return prisma.user.delete(
         {
             where: {
