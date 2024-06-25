@@ -1,18 +1,18 @@
 'use server';
-import {PostType, prisma} from '@/helpers/database';
-import {FormikValues} from "formik";
-import {GetUserWithId} from "@/app/actions/users/get";
-import {Prisma} from ".prisma/client";
+import { PostType, prisma } from '@/helpers/database';
+import { FormikValues } from "formik";
+import { GetUserWithId } from "@/app/actions/users/get";
+import { Prisma } from ".prisma/client";
 import PrismaClientValidationError = Prisma.PrismaClientValidationError;
 
 export default async function CreatePost(form: FormikValues, type: PostType) {
     // @ts-ignore
-    let user = await GetUserWithId(form.userId).catch((e: Error) => {return e;});
+    let user = await GetUserWithId(form.userId).catch((e: Error) => { return e; });
 
     if (user instanceof Error || user == null) return user;
 
-    switch(type) {
-        case PostType.DEFAULT :
+    switch (type) {
+        case PostType.DEFAULT:
             return CreateDefaultPost(form, type, user);
         case PostType.CULTURE:
             return CreateCulturePost(form, type, user);
