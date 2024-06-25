@@ -21,7 +21,6 @@ export default async function UpdateMe(form: FormData) {
             avatar: form.get('avatar') as string,
         }
     }).catch((error : Error) => {
-        console.log(error)
         return error;
     });
 }
@@ -44,7 +43,6 @@ export async function UpdateUserWithId(id: string, form: FormData) {
             }
         }
     ).catch((error: Error) => {
-        console.error(error);
         return error;
     });
 }

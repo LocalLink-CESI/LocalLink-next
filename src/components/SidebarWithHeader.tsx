@@ -1,67 +1,66 @@
-import React, { ReactNode } from 'react';
+'use client';
+
+import React, {ReactNode} from 'react';
 import {
-    IconButton,
     Avatar,
     Box,
+    BoxProps,
     CloseButton,
-    Flex,
-    HStack,
-    VStack,
-    Icon,
-    useColorModeValue,
-    Link,
     Drawer,
     DrawerContent,
-    Text,
-    useDisclosure,
-    BoxProps,
+    Flex,
     FlexProps,
+    HStack,
+    Icon,
+    IconButton,
+    Link,
     Menu,
     MenuButton,
-    MenuDivider,
     MenuItem,
     MenuList,
+    Text,
     Tooltip,
+    useColorModeValue,
+    useDisclosure,
+    VStack,
 } from '@chakra-ui/react';
-import {
-    FiHome,
-    FiSettings,
-    FiMenu,
-    FiBell,
-    FiChevronDown,
-    FiUser,
-} from 'react-icons/fi';
-import { IconType } from 'react-icons';
-import { useUserStore } from '@/providers/user-store-provider';
-import { usePathname } from 'next/navigation';
-import { User } from '@/stores/user-store';
+import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser,} from 'react-icons/fi';
+import {IconType} from 'react-icons';
+import {useUserStore} from '@/providers/user-store-provider';
+import {usePathname} from 'next/navigation';
+import {User} from '@/stores/user-store';
+import {useSession} from "next-auth/react";
+import {getServerSession} from "next-auth";
 
 interface LinkItemProps {
     name: string;
     icon: IconType;
     link?: string;
 }
-const LinkItems: Array<LinkItemProps> = [
-    { name: 'Accueil', icon: FiHome, link: '/' },
-    { name: "Notifications", icon: FiBell },
-    { name: 'Profil', icon: FiUser, link: '/profile' },
-    { name: 'Settings', icon: FiSettings },
 
+const LinkItems: Array<LinkItemProps> = [
+    {name: 'Accueil', icon: FiHome, link: '/'},
+    {name: "Notifications", icon: FiBell},
+    {name: 'Profil', icon: FiUser, link: '/profile'},
+    {name: 'Settings', icon: FiSettings},
 ];
 
+
 export default function SidebarWithHeader({
-    children,
-}: {
+                                              children,
+                                          }: {
     children: ReactNode;
 }) {
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const {isOpen, onOpen, onClose} = useDisclosure();
     const user = useUserStore((state) => state)
+
+
     return (
         <Flex h="100dvh" bg={"white"} direction={"column"}>
             <SidebarContent
                 border="0px"
                 onClose={() => onClose}
-                display={{ base: 'none', md: 'flex' }} user={user}
+                display={{base: 'none', md: 'flex'}} user={user}
             />
             <Drawer
                 autoFocus={false}
@@ -72,11 +71,12 @@ export default function SidebarWithHeader({
                 onOverlayClick={onClose}
                 size="full">
                 <DrawerContent>
-                    <SidebarContent onClose={onClose} user={user} />
+                    <SidebarContent onClose={onClose} user={user}/>
                 </DrawerContent>
             </Drawer>
-            <MobileNav onOpen={onOpen} />
-            <Box flex={"1"} border={"1px"} overflow={"scroll"} h={"100%"} borderTopLeftRadius={"15px"} borderColor={useColorModeValue('gray.200', 'brand.900')} ml={{ base: 0, md: 100 }} p="4">
+            <MobileNav onOpen={onOpen}/>
+            <Box flex={"1"} border={"1px"} overflow={"scroll"} h={"100%"} borderTopLeftRadius={"15px"}
+                 borderColor={useColorModeValue('gray.200', 'brand.900')} ml={{base: 0, md: 100}} p="4">
                 {children}
             </Box>
         </Flex>
@@ -88,14 +88,19 @@ interface SidebarProps extends BoxProps {
     user: User;
 }
 
-const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
+
+    const {data: session} = useSession()
+
+    console.log("session", session)
+
     return (
         <Flex
             transition="3s ease"
             bg={useColorModeValue('white', 'gray.900')}
             borderRight="1px"
             borderRightColor={useColorModeValue('gray.200', 'brand.900')}
-            w={{ base: 'full', md: 100 }}
+            w={{base: 'full', md: 100}}
             pos="fixed"
             top="0"
             h="full"
@@ -106,44 +111,47 @@ const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
                 <Text fontSize="2xl" fontFamily="Montserrat" fontWeight="bold" color={"black"}>
                     LL
                 </Text>
-                <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+                <CloseButton display={{base: 'flex', md: 'none'}} onClick={onClose}/>
             </Flex>
             <Flex direction="column">
                 {LinkItems.map((link) => (
-                    <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link} />
+                    <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link}/>
                 ))}
             </Flex>
-            <VStack spacing={{ base: '0', md: '6' }} _hover={{ bg: "brand.900" }}>
+            <VStack spacing={{base: '0', md: '6'}} _hover={{bg: "brand.900"}}>
                 <Flex alignItems={'center'}>
                     <Menu>
                         <MenuButton
                             py={2}
                             transition="all 0.3s"
-                            _focus={{ boxShadow: 'none', bg: "brand:900" }}>
+                            _focus={{boxShadow: 'none', bg: "brand:900"}}>
 
                             <HStack>
                                 <Avatar
                                     ignoreFallback={true}
                                     size={'sm'}
                                     src={
-                                        user.avatar
+                                        session?.session.user.avatar
                                     }
                                 />
                                 <VStack
-                                    display={{ base: 'none', md: 'flex' }}
+                                    display={{base: 'none', md: 'flex'}}
                                     alignItems="flex-start"
                                     spacing="1px"
                                     ml="0">
                                 </VStack>
-                                <Box display={{ base: 'none', md: 'flex' }}>
-                                    <FiChevronDown />
+                                <Box display={{base: 'none', md: 'flex'}}>
+                                    <FiChevronDown/>
                                 </Box>
                             </HStack>
                         </MenuButton>
                         <MenuList
                             bg={useColorModeValue('white', 'gray.900')}
                             borderColor={useColorModeValue('gray.200', 'brand.900')}>
-                            <MenuItem _hover={{ bg: "brand.900", color: "black", fontWeight: "700" }} transition={"all 0.2s ease"}>Déconnexion</MenuItem>
+                            <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
+                                      transition={"all 0.2s ease"}>Déconnexion</MenuItem>
+                            <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
+                                        transition={"all 0.2s ease"}>Account : {session?.session.user.email}</MenuItem>
                         </MenuList>
                     </Menu>
                 </Flex>
@@ -157,26 +165,27 @@ interface NavItemProps extends FlexProps {
     name: string;
     link?: string;
 }
-const NavItem = ({ icon, name, link, ...rest }: NavItemProps) => {
+
+const NavItem = ({icon, name, link, ...rest}: NavItemProps) => {
     const pathName = usePathname();
     return (
         <Tooltip label={name} aria-label={name} placement='right'>
-            <Link href={link} style={{ textDecoration: 'none' }}
-                _focus={{ boxShadow: 'none', bg: "brand.900" }}
-                mt={2}
-                p="4"
-                mx="4"
-                borderRadius="lg"
-                role="group"
-                cursor="pointer"
-                bg={pathName === link ? "brand.900" : "white"}
-                _active={{ bg: "brand.900" }}
-                transition={"all .4s ease"}
-                _hover={{
-                    bg: 'brand.900',
-                    color: 'white',
-                    transition: 'all .2s ease',
-                }}
+            <Link href={link} style={{textDecoration: 'none'}}
+                  _focus={{boxShadow: 'none', bg: "brand.900"}}
+                  mt={2}
+                  p="4"
+                  mx="4"
+                  borderRadius="lg"
+                  role="group"
+                  cursor="pointer"
+                  bg={pathName === link ? "brand.900" : "white"}
+                  _active={{bg: "brand.900"}}
+                  transition={"all .4s ease"}
+                  _hover={{
+                      bg: 'brand.900',
+                      color: 'white',
+                      transition: 'all .2s ease',
+                  }}
             >
                 <Flex
                     justify="center"
@@ -191,38 +200,39 @@ const NavItem = ({ icon, name, link, ...rest }: NavItemProps) => {
                     )}
                 </Flex>
             </Link>
-        </Tooltip >
+        </Tooltip>
     );
 };
 
 interface MobileProps extends FlexProps {
     onOpen: () => void;
 }
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+
+const MobileNav = ({onOpen, ...rest}: MobileProps) => {
     return (
         <Flex
             marginLeft="0px"
             border="0px"
-            ml={{ base: 0, md: 100 }}
-            px={{ base: 4, md: 4 }}
+            ml={{base: 0, md: 100}}
+            px={{base: 4, md: 4}}
             height="20"
             alignItems="center"
             bg={useColorModeValue('white', 'gray.900')}
             // borderBottomWidth="1px"
             // borderBottomColor={useColorModeValue('gray.200', 'brand.900')}
-            justifyContent={{ base: 'space-between', md: 'flex-end' }}
+            justifyContent={{base: 'space-between', md: 'flex-end'}}
             position={"sticky"}
             {...rest}>
             <IconButton
-                display={{ base: 'flex', md: 'none' }}
+                display={{base: 'flex', md: 'none'}}
                 onClick={onOpen}
                 variant="outline"
                 aria-label="open menu"
-                icon={<FiMenu />}
+                icon={<FiMenu/>}
             />
 
             <Text
-                display={{ base: 'flex', md: 'none' }}
+                display={{base: 'flex', md: 'none'}}
                 fontSize="2xl"
                 fontFamily="montserrat"
                 fontWeight="bold">
