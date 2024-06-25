@@ -1,6 +1,6 @@
 'use client';
 
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
 import {
     Avatar,
     Box,
@@ -24,12 +24,12 @@ import {
     useDisclosure,
     VStack,
 } from '@chakra-ui/react';
-import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser,} from 'react-icons/fi';
-import {IconType} from 'react-icons';
-import {useUserStore} from '@/providers/user-store-provider';
-import {usePathname} from 'next/navigation';
-import {User} from '@/stores/user-store';
-import {signOut, useSession} from "next-auth/react";
+import { FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser, } from 'react-icons/fi';
+import { IconType } from 'react-icons';
+import { useUserStore } from '@/providers/user-store-provider';
+import { usePathname, useRouter } from 'next/navigation';
+import { User } from '@/stores/user-store';
+import { useSession } from "next-auth/react";
 
 interface LinkItemProps {
     name: string;
@@ -37,45 +37,55 @@ interface LinkItemProps {
     link?: string;
 }
 
-const LinkItems: Array<LinkItemProps> = [{name: 'Accueil', icon: FiHome, link: '/'}, {
-    name: "Notifications",
-    icon: FiBell
-}, {name: 'Profil', icon: FiUser, link: '/profile'}, {name: 'Settings', icon: FiSettings},];
+const LinkItems: Array<LinkItemProps> = [
+    { name: 'Accueil', icon: FiHome, link: '/' },
+    { name: "Notifications", icon: FiBell },
+    { name: 'Profil', icon: FiUser, link: '/profile' },
+    { name: 'Settings', icon: FiSettings },
+];
 
 
 export default function SidebarWithHeader({
-                                              children,
-                                          }: {
+    children,
+}: {
     children: ReactNode;
 }) {
-    const {isOpen, onOpen, onClose} = useDisclosure();
+    const session = useSession()
+    console.log("session: ", session)
+    const path = usePathname()
+    if (!session || session.status === "unauthenticated" && path !== "/auth/signin" && path !== "/auth/signup") {
+        useRouter().push("/auth/signin")
+    }
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const user = useUserStore((state) => state)
 
 
-    return (<Flex h="100dvh" bg={"white"} direction={"column"}>
-        <SidebarContent
-            border="0px"
-            onClose={() => onClose}
-            display={{base: 'none', md: 'flex'}} user={user}
-        />
-        <Drawer
-            autoFocus={false}
-            isOpen={isOpen}
-            placement="left"
-            onClose={onClose}
-            returnFocusOnClose={false}
-            onOverlayClick={onClose}
-            size="full">
-            <DrawerContent>
-                <SidebarContent onClose={onClose} user={user}/>
-            </DrawerContent>
-        </Drawer>
-        <MobileNav onOpen={onOpen}/>
-        <Box flex={"1"} border={"1px"} overflow={"scroll"} h={"100%"} borderTopLeftRadius={"15px"}
-             borderColor={useColorModeValue('gray.200', 'brand.900')} ml={{base: 0, md: 100}} p="4">
-            {children}
-        </Box>
-    </Flex>);
+    return (
+        <Flex h="100dvh" bg={"white"} direction={"column"}>
+            <SidebarContent
+                border="0px"
+                onClose={() => onClose}
+                display={{ base: 'none', md: 'flex' }} user={user}
+            />
+            <Drawer
+                autoFocus={false}
+                isOpen={isOpen}
+                placement="left"
+                onClose={onClose}
+                returnFocusOnClose={false}
+                onOverlayClick={onClose}
+                size="full">
+                <DrawerContent>
+                    <SidebarContent onClose={onClose} user={user} />
+                </DrawerContent>
+            </Drawer>
+            <MobileNav onOpen={onOpen} />
+            <Box flex={"1"} border={"1px"} overflow={"scroll"} h={"100%"} borderTopLeftRadius={"15px"}
+                borderColor={useColorModeValue('gray.200', 'brand.900')} ml={{ base: 0, md: 100 }} p="4">
+                {children}
+            </Box>
+        </Flex>
+    );
 }
 
 interface SidebarProps extends BoxProps {
@@ -83,9 +93,9 @@ interface SidebarProps extends BoxProps {
     user: User;
 }
 
-const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
+const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
 
-    const {data: session} = useSession()
+    const { data: session } = useSession()
 
     let isLogged = !!session?.session.user
 
@@ -116,6 +126,25 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
 
         {isLogged && (
 
+    return (
+        <Flex
+            transition="3s ease"
+            bg={useColorModeValue('white', 'gray.900')}
+            borderRight="1px"
+            borderRightColor={useColorModeValue('gray.200', 'brand.900')}
+            w={{ base: 'full', md: 100 }}
+            pos="fixed"
+            top="0"
+            h="full"
+            direction={'column'}
+            justifyContent={'space-between'}
+            {...rest}>
+            <Flex h="20" alignItems="center" justifyContent="center">
+                <Text fontSize="2xl" fontFamily="Montserrat" fontWeight="bold" color={"black"}>
+                    LL
+                </Text>
+                <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+            </Flex>
             <Flex direction="column">
                 {LinkItems.map((link) => (
                     <NavItem key={link.name} icon={link.icon} name={link.name} link={link.link}/>))}
@@ -174,7 +203,7 @@ interface NavItemProps extends FlexProps {
     link?: string;
 }
 
-const NavItem = ({icon, name, link, ...rest}: NavItemProps) => {
+const NavItem = ({ icon, name, link, ...rest }: NavItemProps) => {
     const pathName = usePathname();
     return (<Tooltip label={name} aria-label={name} placement='right'>
         <Link href={link} style={{textDecoration: 'none'}}
