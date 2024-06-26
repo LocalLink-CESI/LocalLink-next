@@ -1,11 +1,8 @@
 'use server';
 
 import {PostType, prisma} from '@/helpers/database';
-import {getServerSession} from "next-auth";
-import {useSession} from "next-auth/react";
-import {authOptions} from "@/lib/authOptions";
 
-export default async function GetPostsWithPaginationAndType (pagination: {limit:number, offset:number}, type: PostType, cityId: number) : Promise<Array<any>> {
+export default async function GetPostsWithPaginationAndType(pagination: { limit: number, offset: number }, type: PostType, cityId: number): Promise<Array<any>> {
     // @ts-ignore
     return prisma[type as string].findMany({
         take: pagination.limit,
@@ -15,13 +12,26 @@ export default async function GetPostsWithPaginationAndType (pagination: {limit:
         },
         where: {
             cityId: cityId
+        },
+        include: {
+            likes: {
+                select: {
+                    userId: true
+                }
+            },
+            comments: {
+                select: {
+                    userId: true,
+                }
+            }
         }
     }).catch((e: Error) => {
+        console.error(e)
         return (e);
     });
 }
 
-export async function GetPostsWithPaginationFeed (pagination: {limit:number, offset:number}, cityId: number) {
+export async function GetPostsWithPaginationFeed(pagination: { limit: number, offset: number }, cityId: number) {
     let posts = [];
     let defaultPosts = await GetPostsWithPaginationAndType(pagination, PostType.DEFAULT, cityId);
     let culturePosts = await GetPostsWithPaginationAndType(pagination, PostType.CULTURE, cityId);
@@ -46,17 +56,62 @@ export async function GetPostsWithPaginationFeed (pagination: {limit:number, off
     return finalPosts;
 }
 
-export async function GetPostWithId (id: number) {
-    return prisma.post.findUnique({
+export async function GetPostWithIdAndType(id: number, type: PostType) {
+    let query = {
         where: {
             id: id
+        },
+        include: {
+            likes: {
+                select: {
+                    userId: true
+                }
+            },
+            comments: {
+                select: {
+                    userId: true
+                }
+            }
         }
-    }).catch((e: Error) => {
+    };
+
+    switch (type) {
+        case PostType.DEFAULT :
+            return GetPostWithId(query);
+        case PostType.CULTURE:
+            return GetCulturePostWithId(query);
+        case PostType.SALE:
+            return GetSalePostWithId(query);
+        case PostType.EVENT:
+            return GetEventPostWithId(query);
+    }
+}
+
+async function GetPostWithId(query) {
+    return prisma.post.findUnique(query).catch((e: Error) => {
         return (e);
     });
 }
 
-export async function GetSelfPosts (id: string) {
+async function GetCulturePostWithId(query) {
+    return prisma.culturePost.findUnique(query).catch((e: Error) => {
+        return (e);
+    });
+}
+
+async function GetSalePostWithId(query) {
+    return prisma.salePost.findUnique(query).catch((e: Error) => {
+        return (e);
+    });
+}
+
+async function GetEventPostWithId(query) {
+    return prisma.eventPost.findUnique(query).catch((e: Error) => {
+        return (e);
+    });
+}
+
+export async function GetSelfPosts(id: string) {
     return prisma.post.findMany({
         where: {
             userId: id
