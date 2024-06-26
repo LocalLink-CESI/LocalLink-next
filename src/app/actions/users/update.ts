@@ -28,7 +28,8 @@ export default async function UpdateMe(form: FormikValues) {
 }
 
 export async function UpdateUserWithId(id: string, form: FormData) {
-    //TODO VERIFIER ROLE
+    let user = await getServerSession(authOptions)
+    if (!user || !user.user || !user.user.name) return null;
     return prisma.user.update(
         {
             where: {
