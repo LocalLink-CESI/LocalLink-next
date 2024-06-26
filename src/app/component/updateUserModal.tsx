@@ -14,7 +14,7 @@ import {
     ModalOverlay,
     Select,
     Textarea,
-    useDisclosure
+    useDisclosure, Toast, useToast
 } from "@chakra-ui/react";
 import {Field, Form, Formik, FormikValues} from "formik";
 import {useSession} from "next-auth/react";
@@ -24,6 +24,8 @@ import User from "@/models/User";
 
 export default function UpdateUserModal({user}: { user: User }) {
     const {onOpen, onClose, isOpen} = useDisclosure();
+
+    let toast = useToast();
 
     const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
 
@@ -57,6 +59,15 @@ export default function UpdateUserModal({user}: { user: User }) {
     const handleSubmit = async (values : FormikValues) => {
         try {
             await UpdateUserWithId(user.id, values);
+
+            toast({
+                title: "Profil mis à jour",
+                description: "Le profil a été mis à jour avec succès",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+
             onClose();
         } catch (error) {
             console.error(error);
@@ -67,21 +78,14 @@ export default function UpdateUserModal({user}: { user: User }) {
         <>
             <Button
                 onClick={onOpen}
-                flex={1}
-                fontSize="sm"
-                rounded="full"
-                color="black"
-                variant="brandPrimaryButton"
-                px={10}
-                boxShadow="0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)"
             >
-                Modifier mon profil
+                Modifier le profil
             </Button>
 
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader>Modification de votre profil</ModalHeader>
+                    <ModalHeader>Modification du profil de {user.firstName} {user.lastName}</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                         <Formik initialValues={{

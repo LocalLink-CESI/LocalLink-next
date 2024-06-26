@@ -20,7 +20,7 @@ import {
     PopoverArrow,
     PopoverCloseButton,
     PopoverBody,
-    PopoverFooter,
+    PopoverFooter, useToast,
 } from '@chakra-ui/react'
 import {Heading, Text} from '@chakra-ui/layout'
 import {signOut, useSession} from "next-auth/react";
@@ -28,12 +28,14 @@ import {useRouter} from "next/navigation";
 import {Field, Form, Formik, FormikValues} from "formik";
 import React, {useEffect, useState} from "react";
 import GetCities from "@/app/actions/cities/get";
-import UpdateMe from "@/app/actions/users/update";
-import DeleteMe from "@/app/actions/users/delete";
 import ProfileLoading from "@/app/profile/loading";
+import {DeleteUserWithId} from "@/app/actions/users/delete";
+import {UpdateUserWithId} from "@/app/actions/users/update";
 
 
 export default function Account() {
+
+    let toast = useToast();
 
     const router = useRouter();
 
@@ -69,9 +71,18 @@ export default function Account() {
 
         const handleSubmit = async (values: FormikValues) => {
             try {
-                await UpdateMe(values);
+                await UpdateUserWithId(user.id, values);
 
-                window.location.reload();
+                toast({
+                    title: "Compte mis à jour",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } catch (error) {
                 console.error(error);
             }
@@ -79,10 +90,30 @@ export default function Account() {
 
         const handleAccountDeactivation = async () => {
             try {
-                await DeleteMe();
+                await DeleteUserWithId(user.id)
+
+                toast({
+                    title: "Compte désactivé",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                });
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+
                 await signOut();
             } catch (error) {
                 console.error(error);
+
+                toast({
+                    title: "Une erreur s'est produite",
+                    description: "Impossible de désactiver le compte",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
             }
         };
 
