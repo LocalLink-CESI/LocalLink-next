@@ -4,12 +4,19 @@ import {useSession} from "next-auth/react";
 import {redirect} from "next/navigation";
 import PostModal from "@/app/component/postModal";
 import {Key, useEffect, useState} from "react";
-import {GetPostsWithUserIdWithPagination} from "@/app/actions/posts/get";
+import {GetPostsWithUserId} from "@/app/actions/posts/get";
 import PostCard from "@components/Home/PostCard";
+import UserModal from "@/app/component/userModal";
+import {GetLikesByUserId} from "@/app/actions/likes/get";
+import {GetUserWithId} from "@/app/actions/users/get";
 import ProfileLoading from "@/app/profile/loading";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
+    const [likes, setLikes] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [user, setUser] = useState({});
+
     const session = useSession({
         required: true,
         onUnauthenticated() {
@@ -17,17 +24,23 @@ export default function Profile() {
         },
     });
 
-    const user = (session.data as any)?.session?.user;
-    const userId = user?.id;
+    let userId = null;
+    if (session.status === "authenticated" && session.data.session) {
+        userId = session.data.session?.user.id;
+    }
 
-    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        const posts = GetPostsWithUserIdWithPagination({limit: 10, offset: 0}, userId)
-        posts.then((data) => {
+        if (!userId) return;
+        const post = GetPostsWithUserId({limit: 10, offset: 0}, userId)
+        post.then((data) => {
             setPosts(data)
         })
 
+        const userData = GetUserWithId(userId)
+        userData.then((data) => {
+            setUser(data)
+        });
     }, [setPosts, userId])
 
     // const [likes, setLikes] = useState([]);
@@ -41,7 +54,6 @@ export default function Profile() {
 
     if (session.status === 'loading') return ProfileLoading();
 
-    if (!user) return null;
 
     return (
         <Flex direction={"column"} py={6} margin={"auto"} alignItems={"center"}>
@@ -129,7 +141,7 @@ export default function Profile() {
                             Aucun post pour le moment
                         </Text>
 
-                        {posts.map((post: any, index: Key) => {
+                        {posts.map((post, index: Key) => {
                             return (
                                 <PostCard key={index} post={post}/>
                             )
