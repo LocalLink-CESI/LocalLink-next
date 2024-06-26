@@ -14,9 +14,12 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/components/(.*)$': '<rootDir>/components/$1',
+    '^@/app/component/(.*)$': '<rootDir>/app/component/$1',
     '^@/functions/(.*)$': '<rootDir>/functions/$1',
     '^@/styles/(.*)$': '<rootDir>/styles/$1',
-    '^@/pages/(.*)$': '<rootDir>/pages/$1'
+    '^@/pages/(.*)$': '<rootDir>/pages/$1',
+    '^@/app/(.*)$': '<rootDir>/app/$1',
+    '^@/helpers/(.*)$': '<rootDir>/helpers/$1',
   },
   testEnvironment: 'node',
   roots: ['<rootDir>','<rootDir>/src', '<rootDir>/__tests__'],
