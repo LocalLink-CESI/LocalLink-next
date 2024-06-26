@@ -2,7 +2,7 @@ import {City} from "@/models/City";
 import {Post} from "@/models/Post";
 
 export default interface User {
-    id: number;
+    id: string;
     firstName: string;
     lastName: string;
     email: string;
