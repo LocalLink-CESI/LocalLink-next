@@ -1,13 +1,13 @@
 'use server';
 
-import {PostType, prisma} from '@/helpers/database';
+import { PostType, prisma } from '@/helpers/database';
 
 
 export async function GetAllPosts() {
     return prisma.post.findMany()
         .catch((e: Error) => {
-        return (e);
-    });
+            return (e);
+        });
 }
 
 
@@ -110,7 +110,7 @@ export async function GetPostWithIdAndType(id: number, type: PostType) {
     };
 
     switch (type) {
-        case PostType.DEFAULT :
+        case PostType.DEFAULT:
             return GetPostWithId(query);
         case PostType.CULTURE:
             return GetCulturePostWithId(query);
@@ -147,7 +147,7 @@ async function GetEventPostWithId(query) {
 
 
 
-export async function GetPostsWithUserIdWithPaginationWithType (pagination: { limit: number, offset: number }, type: PostType, userId: string) {
+export async function GetPostsWithUserIdWithPaginationWithType(pagination: { limit: number, offset: number }, type: PostType, userId: string) {
     return prisma[type as string].findMany({
         take: pagination.limit,
         skip: pagination.offset,
@@ -179,15 +179,17 @@ export async function GetPostsWithUserIdWithPaginationWithType (pagination: { li
                         }
                     }
                 }
-            }
+            },
         }
     }).catch((e: Error) => {
-        console.error(e)
         return (e);
     });
+
 }
 
-export async function GetPostsWithUserId (pagination: { limit: number, offset: number }, userId: string) {
+// 
+
+export async function GetPostsWithUserId(pagination: { limit: number, offset: number }, userId: string) {
     let posts = [];
     let defaultPosts = await GetPostsWithUserIdWithPaginationWithType(pagination, PostType.DEFAULT, userId);
     let culturePosts = await GetPostsWithUserIdWithPaginationWithType(pagination, PostType.CULTURE, userId);

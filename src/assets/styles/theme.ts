@@ -14,6 +14,8 @@ export const DefaultTheme = {
     l: '30px',
     m: '22px',
     s: '20px',
+    ms: '18px',
+    xs: '16px',
   },
   fontFamily: {
     primary: "'Avenir Book', sans-serif",

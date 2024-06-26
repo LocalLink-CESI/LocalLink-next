@@ -15,7 +15,7 @@ const ButtonNext: FC<Props> = ({ activeDate, onClick }) => {
       bg={DefaultTheme.colors.primaryButton}
       color={DefaultTheme.colors.white}
       isRound
-      size="sm"
+      size="xs"
       fontSize="15px"
       icon={<MdArrowForwardIos />}
       onClick={() => onClick(activeDate.getDate(), activeDate.getMonth() + 1)}
