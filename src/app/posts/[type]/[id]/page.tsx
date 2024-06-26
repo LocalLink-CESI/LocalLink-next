@@ -1,5 +1,5 @@
 'use client'
-import {GetPostWithId, GetPostWithIdAndType} from "@/app/actions/posts/get"
+import {GetPostWithIdAndType} from "@/app/actions/posts/get"
 import {GetUserWithId} from "@/app/actions/users/get";
 import PostCard from "@components/Home/PostCard"
 import {Flex} from "@chakra-ui/react";
@@ -7,6 +7,8 @@ import {useSession} from "next-auth/react"
 import {useRouter} from "next/navigation"
 import {useEffect, useState} from "react"
 import CommentCard from "@components/Home/CommentCard";
+import ProfileLoading from "@/app/profile/loading";
+
 
 export default function Page({params}: { params: { type: string, id: string } }) {
     const [post, setPost] = useState(null)
@@ -30,7 +32,7 @@ export default function Page({params}: { params: { type: string, id: string } })
             // router.push('/404')
         })
     }, [setPost])
-    if (!post) return <div>Loading...</div>
+    if (!post) return <ProfileLoading />
     return (
         <main>
             <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"} py={"1rem"}>

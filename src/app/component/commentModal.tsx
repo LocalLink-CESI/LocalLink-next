@@ -44,6 +44,10 @@ export default function CommentModal({isOpen, onClose, post, userId}) {
                                             duration: 3000,
                                             isClosable: true,
                                         });
+                                        // await 3000 ms
+                                        setTimeout(() => {
+                                            window.location.reload()
+                                        }, 3000)
                                     } catch (e) {
                                         console.error(e)
                                     }
