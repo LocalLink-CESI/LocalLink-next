@@ -10,7 +10,7 @@ import {
     Flex,
     Heading,
     Text,
-    Tooltip
+    Tooltip, useDisclosure
 } from "@chakra-ui/react";
 import {FiFeather, FiShare, FiThumbsUp} from "react-icons/fi";
 import {shadow, shadowHover} from "../../../theme";
@@ -21,12 +21,13 @@ import CommentModal from "@/app/component/commentModal";
 import {useSession} from "next-auth/react";
 import {Like} from "@/app/actions/likes/create";
 import {PostType} from "@/helpers/database";
+import {useRouter} from "next/navigation";
 
 export default function PostCard({ post }: { post: any }) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
     const router = useRouter()
     const {onOpen, onClose, isOpen} = useDisclosure();
-    const [postUser, setPostUser] = useState(null)
+    const [postUser, setPostUser] = useState(post.user)
     const [likes, setLikes] = useState(post.likes)
     const [likeCount, setLikeCount] = useState(post.likes.length)
     const [comments, setComments] = useState(post.comments)
@@ -89,10 +90,10 @@ export default function PostCard({ post }: { post: any }) {
                 <CardHeader>
                     <Flex gap='0'>
                         <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                            <Avatar name={user.firstName + " " + user.lastName} src={user.image} flexShrink={1}/>
+                            <Avatar name={postUser.firstName + " " + postUser.lastName} src={postUser.image} flexShrink={1}/>
                             <Box>
-                                <Heading size='sm'>{user.firstName + " " + user.lastName}</Heading>
-                                <Text fontSize="sm" color='gray.500'>{user.city.name}</Text>
+                                <Heading size='sm'>{postUser.firstName + " " + postUser.lastName}</Heading>
+                                <Text fontSize="sm" color='gray.500'>{postUser.city.name}</Text>
                             </Box>
                         </Flex>
                     </Flex>
@@ -105,13 +106,14 @@ export default function PostCard({ post }: { post: any }) {
                         {post.text}
                     </Text>
                 </CardBody>
-                {post.image ? (<Box aspectRatio={"16/9"} mx={0} position={"relative"}>
+                {post.media ? (<Box aspectRatio={"16/9"} mx={0} position={"relative"}>
                     <Image
                         fill={true}
-                        src={post.image}
+                        src={'/media/'+post.media}
                         alt='Exemple image for now'
                     />
                 </Box>) : null}
+                </Link>
 
 
                 <CardFooter
@@ -136,7 +138,6 @@ export default function PostCard({ post }: { post: any }) {
                         </Button></Tooltip>
                 </CardFooter>
                 <CommentModal isOpen={isOpen} onClose={onClose} post={post} userId={userId} />
-                </Link>
             </Card>
     )
 }

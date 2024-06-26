@@ -31,7 +31,7 @@ export default function Home() {
     };
 
     useEffect(() => {
-        const posts = GetPostsWithPaginationAndType({ limit: 10, offset: 0 }, PostType.DEFAULT, user?.cityId)
+        const posts = GetPostsWithPaginationFeed({ limit: 10, offset: 0 }, user?.cityId)
         posts.then((data) => {
             setPosts(data)
         })
