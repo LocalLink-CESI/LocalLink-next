@@ -23,6 +23,18 @@ export default async function GetPostsWithPaginationAndType(pagination: { limit:
                 select: {
                     userId: true,
                 }
+            },
+            user: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                    city: {
+                        select: {
+                            name: true
+                        }
+                    }
+                }
             }
         }
     }).catch((e: Error) => {
@@ -111,7 +123,39 @@ async function GetEventPostWithId(query) {
     });
 }
 
-export async function GetSelfPosts(id: string) {
+
+
+export async function GetPostsWithUserIdWithPagination (pagination: {limit:number, offset:number}, id: string) {
+    return prisma.post.findMany({
+        take: pagination.limit,
+        skip: pagination.offset,
+        orderBy: {
+            createdAt: 'desc'
+        },
+        where: {
+            userId: id
+        },
+        include: {
+            user: {
+                select: {
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                    city: {
+                        select: {
+                            name: true
+                        }
+                    }
+                }
+            },
+        }
+    }).catch((e: Error) => {
+        return (e);
+    });
+
+}
+
+export async function GetPostsWithUserId (id: string) {
     return prisma.post.findMany({
         where: {
             userId: id

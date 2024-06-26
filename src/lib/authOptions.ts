@@ -22,7 +22,6 @@ export const authOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials, req) {
-
                 if (!credentials) return null
 
                 try {
@@ -42,17 +41,7 @@ export const authOptions = {
         }),
 
         GoogleProvider({
-            profile(profile) {
-                return {
-                    id: profile.sub,
-                    name: profile.name,
-                    email: profile.email,
-                    image: profile.picture,
-                    role: "user"
-                }
-            },
-
-            clientId: googleId,
+                clientId: googleId,
             clientSecret: googleSecret,
         }),
     ],

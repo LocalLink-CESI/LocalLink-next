@@ -1,5 +1,4 @@
-import { useUserStore } from "@/providers/user-store-provider";
-import { Image } from "@chakra-ui/next-js";
+import {Image} from "@chakra-ui/next-js";
 import {
     Avatar,
     Box,
@@ -10,14 +9,11 @@ import {
     CardHeader,
     Flex,
     Heading,
-    IconButton,
     Text,
-    Tooltip,
-    useDisclosure
+    Tooltip
 } from "@chakra-ui/react";
-import { FiFeather, FiMoreHorizontal, FiShare, FiThumbsUp } from "react-icons/fi";
-import { shadow, shadowHover } from "../../../theme";
-import { useRouter } from "next/navigation";
+import {FiFeather, FiShare, FiThumbsUp} from "react-icons/fi";
+import {shadow, shadowHover} from "../../../theme";
 import Link from "next/link";
 import { GetUserWithId } from "@/app/actions/users/get";
 import { useEffect, useState } from "react";
@@ -93,29 +89,31 @@ export default function PostCard({ post }: { post: any }) {
                 <CardHeader>
                     <Flex gap='0'>
                         <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                            <Avatar name={postUser?.firstName + " " + postUser?.lastName} src={postUser?.image} flexShrink={1} />
+                            <Avatar name={user.firstName + " " + user.lastName} src={user.image} flexShrink={1}/>
                             <Box>
-                                <Heading size='sm'>{postUser?.firstName + " " + postUser?.lastName}</Heading>
-                                <Text fontSize="sm" color='gray.500'>{postUser?.city.name}</Text>
+                                <Heading size='sm'>{user.firstName + " " + user.lastName}</Heading>
+                                <Text fontSize="sm" color='gray.500'>{user.city.name}</Text>
                             </Box>
                         </Flex>
                     </Flex>
                 </CardHeader>
-                <CardBody style={{ paddingTop: 0 }}>
-                    <Text fontSize={18} fontWeight={600} >
+                <CardBody style={{paddingTop: 0}}>
+                    <Text fontSize={18} fontWeight={600}>
                         {post.title}
                     </Text>
                     <Text>
                         {post.text}
                     </Text>
                 </CardBody>
-                {post.media && (<Box aspectRatio={"16/9"} mx={0} position={"relative"}>
-                    <img
-                        src={"/media/" + post.media}
+                {post.image ? (<Box aspectRatio={"16/9"} mx={0} position={"relative"}>
+                    <Image
+                        fill={true}
+                        src={post.image}
                         alt='Exemple image for now'
                     />
-                </Box>)}
-                </Link>
+                </Box>) : null}
+
+
                 <CardFooter
                     justify='center'
                     flexWrap='wrap'
@@ -134,10 +132,11 @@ export default function PostCard({ post }: { post: any }) {
                             {/* {post.interactions.comments} */} {comments.length}
                         </Button></Tooltip>
                     <Tooltip label="Partager" aria-label="Partager" placement="bottom">
-                        <Button variant='brandGhostButton' leftIcon={<FiShare />}>
+                        <Button variant='brandGhostButton' leftIcon={<FiShare/>}>
                         </Button></Tooltip>
                 </CardFooter>
                 <CommentModal isOpen={isOpen} onClose={onClose} post={post} userId={userId} />
+                </Link>
             </Card>
     )
 }
