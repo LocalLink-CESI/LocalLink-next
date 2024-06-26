@@ -1,17 +1,16 @@
 'use client'
-import {Button, Flex, Heading, Image, Stack, Text, useDisclosure,} from '@chakra-ui/react';
+import {Avatar, Flex, Heading, Stack, Text,} from '@chakra-ui/react';
 import {useSession} from "next-auth/react";
 import {redirect} from "next/navigation";
 import PostModal from "@/app/component/postModal";
 import {Key, useEffect, useState} from "react";
-import GetPostsWithPaginationAndType, {GetSelfPosts} from "@/app/actions/posts/get";
+import {GetPostsWithUserIdWithPagination} from "@/app/actions/posts/get";
 import PostCard from "@components/Home/PostCard";
-import {PostType} from "@/helpers/database";
+import UserModal from "@/app/component/userModal";
+import {GetLikesByUserId} from "@/app/actions/likes/get";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
-    const {onOpen, onClose, isOpen} = useDisclosure();
-
     const session = useSession({
         required: true,
         onUnauthenticated() {
@@ -19,18 +18,28 @@ export default function Profile() {
         },
     });
 
-    const user = session.data?.session?.user;
+    const user = (session.data as any)?.session?.user;
     const userId = user?.id;
 
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        // Get posts from the city from the server actions
-        const posts = GetSelfPosts(userId);
+        const posts = GetPostsWithUserIdWithPagination({limit: 10, offset: 0}, userId)
         posts.then((data) => {
             setPosts(data)
         })
-    }, [setPosts])
+
+    }, [setPosts, userId])
+
+
+    const [likes, setLikes] = useState([]);
+
+    useEffect(() => {
+        const likes = GetLikesByUserId(userId)
+        likes.then((data) => {
+            setLikes(data)
+        })
+    }, [setLikes, userId])
 
     if (!user) return null;
 
@@ -44,13 +53,13 @@ export default function Profile() {
                 boxShadow={'xl'}
                 padding={4}>
                 <Flex flex={1}>
-                    <Image
-                        objectFit="cover"
-                        boxSize="100%"
-                        src={user.image}
-                        aspectRatio={"1/1"}
-                        borderRadius={"lg"}
-                        alt={"Photo de profil"}/>
+                    <Avatar name={user.firstName + " " + user.lastName} src={user.image}
+                            aspectRatio={"1/1"}
+                            borderRadius={"lg"}
+                            borderWidth={2}
+                            objectFit="cover"
+                            boxSize="100%"
+                    />
                 </Flex>
                 <Stack
                     flex={2}
@@ -94,25 +103,15 @@ export default function Profile() {
                     </Heading>
 
                     <Stack
-                        // width={'100%'}
                         mt={'2rem'}
                         direction={'row'}
                         padding={2}
                         justifyContent={'space-between'}
                         alignItems={'center'}>
 
-                        <PostModal isOpen={isOpen} onClose={onClose}/>
-                        <Button
-                            onClick={onOpen}
-                            flex={1}
-                            fontSize={'sm'}
-                            rounded={'full'}
-                            color={'black'}
-                            variant={"brandPrimaryButton"}
-                            px={10}
-                            boxShadow={'0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'}>
-                            Poster quelque chose !
-                        </Button>
+                        {/*<UserModal/>*/}
+
+                        <PostModal/>
                     </Stack>
 
                     <Stack
@@ -130,7 +129,7 @@ export default function Profile() {
                             Aucun post pour le moment
                         </Text>
 
-                        {posts.length > 0 && posts.map((post: any, index: Key) => {
+                        {posts.map((post: any, index: Key) => {
                             return (
                                 <PostCard key={index} post={post}/>
                             )
@@ -140,6 +139,51 @@ export default function Profile() {
 
                 </Stack>
             </Stack>
+
+            {likes && likes.length > 0 && (
+                <Stack
+                    borderRadius="lg"
+                    direction={{base: 'column', md: 'row'}}
+                    mt={"4rem"}
+                    padding={4}>
+                    <Stack
+                        flex={2}
+                        flexDirection="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        gap={"1rem"}
+                        p={1}
+                        pt={2}>
+                        <Heading fontSize={'2xl'} fontFamily={'body'} color={"black"}>
+                            Mes likes
+                        </Heading>
+
+                        <Stack
+                            width={'100%'}
+                            direction={'column'}
+                            padding={2}
+                            gap={"3rem"}
+                            justifyContent={'space-between'}
+                            alignItems={'center'}>
+                            <Text
+                                hidden={posts.length > 0}
+                                fontSize={'lg'}
+                                fontFamily={'body'}
+                                color={"black"}>
+                                Aucun post pour le moment
+                            </Text>
+
+                            {likes.map((post: any, index: Key) => {
+                                return (
+                                    <PostCard key={index} post={post}/>
+                                )
+                            })}
+
+                        </Stack>
+
+                    </Stack>
+                </Stack>
+            )}
         </Flex>
     )
 }

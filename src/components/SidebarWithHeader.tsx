@@ -26,9 +26,9 @@ import {
 } from '@chakra-ui/react';
 import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser} from 'react-icons/fi';
 import {IconType} from 'react-icons';
-import {redirect, usePathname, useRouter} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import {signOut, useSession} from 'next-auth/react';
-import {User} from "next-auth";
+import User from "@/models/User";
 
 interface LinkItemProps {
     name: string;
@@ -38,9 +38,9 @@ interface LinkItemProps {
 
 const LinkItems: Array<LinkItemProps> = [
     {name: 'Accueil', icon: FiHome, link: '/'},
-    {name: "Notifications", icon: FiBell},
+    // {name: "Notifications", icon: FiBell},
     {name: 'Profil', icon: FiUser, link: '/profile'},
-    {name: 'Settings', icon: FiSettings},
+    {name: 'Settings', icon: FiSettings, link: '/settings/account'},
 ];
 
 export default function SidebarWithHeader({children}: { children: ReactNode }) {
@@ -108,7 +108,7 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                         <Menu>
                             <MenuButton py={2} transition="all 0.3s" _focus={{boxShadow: 'none', bg: "brand:900"}}>
                                 <HStack>
-                                    <Avatar ignoreFallback size="sm" src={user.image}/>
+                                    <Avatar size="sm" name={user.firstName + " " + user.lastName} src={user.image}/>
                                     <VStack display={{base: 'none', md: 'flex'}} alignItems="flex-start" spacing="1px"
                                             ml="0"/>
                                     <Box display={{base: 'none', md: 'flex'}}>

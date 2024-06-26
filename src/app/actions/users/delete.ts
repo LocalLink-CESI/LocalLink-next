@@ -4,13 +4,13 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/helpers/database";
 import { authOptions } from "@/lib/authOptions";
 
-export default async function DeleteMe(form: FormData) {
+export default async function DeleteMe() {
     let user = await getServerSession(authOptions)
     if (!user || !user.user || !user.user.name) return null;
 
     return prisma.user.update({
         where: {
-            id: user.user.name
+            email: user.user.email
         },
         data: {
             isDeleted: true
