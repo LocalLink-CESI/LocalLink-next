@@ -28,7 +28,7 @@ export default function PostCard({ post }: { post: any }) {
     const router = useRouter()
     const {onOpen, onClose, isOpen} = useDisclosure();
     const [postUser, setPostUser] = useState(post.user)
-    const [likes, setLikes] = useState(post.likes)
+    const [likes, setLikes] = useState(post.likes.map((like) => like.userId))
     const [likeCount, setLikeCount] = useState(post.likes.length)
     const [comments, setComments] = useState(post.comments)
     const [commentCount, setCommentCount] = useState(post.comments.length)
@@ -67,16 +67,16 @@ export default function PostCard({ post }: { post: any }) {
 
     const handleLike = async (postId: number, type: PostType, userId: string) => {
         try {
+            console.log(likes)
             await Like(userId, postId, type)
             if (!likes.includes(userId)) {
                 let buff = likes
-                await buff.push(userId)
+                buff = [...buff, userId]
                 setLikes(buff)
                 setLikeCount(likeCount + 1)
             } else {
-                // Unlike
                 let buff = likes
-                await buff.splice(likes.indexOf(userId), 1)
+                buff = buff.filter((id) => id !== userId)
                 setLikes(buff)
                 setLikeCount(likeCount - 1)
             }
@@ -85,7 +85,7 @@ export default function PostCard({ post }: { post: any }) {
         }
     }
     return (
-            <Card maxW='xl' borderRadius={"20px"} boxShadow={shadow} cursor={"pointer"} transition={"box-shadow 0.2s ease-in-out"} _hover={{ boxShadow: shadowHover }}>
+            <Card w={"100%"} borderRadius={"20px"} boxShadow={shadow} cursor={"pointer"} transition={"box-shadow 0.2s ease-in-out"} _hover={{ boxShadow: shadowHover }}>
                 <Link href={"/posts/" + post.type + "/" + post.id}>
                 <CardHeader>
                     <Flex gap='0'>
