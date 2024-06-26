@@ -6,13 +6,13 @@ import {prisma} from "@/helpers/database";
 import {FormikValues} from "formik";
 
 export default async function UpdateMe(form: FormikValues) {
-    let user = await getServerSession(authOptions)
+    let session = await getServerSession(authOptions)
 
-    if (!user || !user.user || !user.user.name) return null;
+    if (!session || !session.user || !session.user.name) return null;
 
     return prisma.user.update({
         where: {
-            email: user.user.email
+            email: session.user.email
         },
         data: {
             firstName: form.firstName,
@@ -28,24 +28,33 @@ export default async function UpdateMe(form: FormikValues) {
 }
 
 export async function UpdateUserWithId(id: string, form: FormData) {
-    let user = await getServerSession(authOptions)
-    if (!user || !user.user || !user.user.name) return null;
-    return prisma.user.update(
-        {
-            where: {
-                id: id
-            },
-            data: {
-                firstName: form.get('firstName') as string,
-                lastName: form.get('lastName') as string,
-                email: form.get('email') as string,
-                password: form.get('password') as string,
-                cityId: form.get('cityId') as unknown as number,
-                bio: form.get('bio') as string,
-                image: form.get('image') as string,
-            }
+    const session = await getServerSession(authOptions);
+
+    const user = await prisma.user.findUnique({
+        where: {
+            email: session.user.email
         }
-    ).catch((error: Error) => {
-        return error;
     });
+
+    if (user.id === id || user.role === "ADMIN") {
+        return prisma.user.update(
+            {
+                where: {
+                    id: id
+                },
+                data: {
+                    firstName: form.get('firstName') as string,
+                    lastName: form.get('lastName') as string,
+                    email: form.get('email') as string,
+                    cityId: form.get('cityId') as unknown as number,
+                    bio: form.get('bio') as string,
+                    image: form.get('image') as string,
+                }
+            }
+        ).catch((error: Error) => {
+            return error;
+        });
+    }
+
+    return new Error("Unauthorized");
 }

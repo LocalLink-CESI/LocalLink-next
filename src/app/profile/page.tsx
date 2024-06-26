@@ -6,8 +6,7 @@ import PostModal from "@/app/component/postModal";
 import {Key, useEffect, useState} from "react";
 import {GetPostsWithUserIdWithPagination} from "@/app/actions/posts/get";
 import PostCard from "@components/Home/PostCard";
-import UserModal from "@/app/component/userModal";
-import {GetLikesByUserId} from "@/app/actions/likes/get";
+import ProfileLoading from "@/app/profile/loading";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
@@ -31,15 +30,16 @@ export default function Profile() {
 
     }, [setPosts, userId])
 
+    // const [likes, setLikes] = useState([]);
+    //
+    // useEffect(() => {
+    //     const likes = GetLikesByUserId(userId)
+    //     likes.then((data) => {
+    //         setLikes(data)
+    //     })
+    // }, [setLikes, userId])
 
-    const [likes, setLikes] = useState([]);
-
-    useEffect(() => {
-        const likes = GetLikesByUserId(userId)
-        likes.then((data) => {
-            setLikes(data)
-        })
-    }, [setLikes, userId])
+    if (session.status === 'loading') return ProfileLoading();
 
     if (!user) return null;
 
@@ -140,50 +140,50 @@ export default function Profile() {
                 </Stack>
             </Stack>
 
-            {likes && likes.length > 0 && (
-                <Stack
-                    borderRadius="lg"
-                    direction={{base: 'column', md: 'row'}}
-                    mt={"4rem"}
-                    padding={4}>
-                    <Stack
-                        flex={2}
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap={"1rem"}
-                        p={1}
-                        pt={2}>
-                        <Heading fontSize={'2xl'} fontFamily={'body'} color={"black"}>
-                            Mes likes
-                        </Heading>
+            {/*{likes && likes.length > 0 && (*/}
+            {/*    <Stack*/}
+            {/*        borderRadius="lg"*/}
+            {/*        direction={{base: 'column', md: 'row'}}*/}
+            {/*        mt={"4rem"}*/}
+            {/*        padding={4}>*/}
+            {/*        <Stack*/}
+            {/*            flex={2}*/}
+            {/*            flexDirection="column"*/}
+            {/*            justifyContent="center"*/}
+            {/*            alignItems="center"*/}
+            {/*            gap={"1rem"}*/}
+            {/*            p={1}*/}
+            {/*            pt={2}>*/}
+            {/*            <Heading fontSize={'2xl'} fontFamily={'body'} color={"black"}>*/}
+            {/*                Mes likes*/}
+            {/*            </Heading>*/}
 
-                        <Stack
-                            width={'100%'}
-                            direction={'column'}
-                            padding={2}
-                            gap={"3rem"}
-                            justifyContent={'space-between'}
-                            alignItems={'center'}>
-                            <Text
-                                hidden={posts.length > 0}
-                                fontSize={'lg'}
-                                fontFamily={'body'}
-                                color={"black"}>
-                                Aucun post pour le moment
-                            </Text>
+            {/*            <Stack*/}
+            {/*                width={'100%'}*/}
+            {/*                direction={'column'}*/}
+            {/*                padding={2}*/}
+            {/*                gap={"3rem"}*/}
+            {/*                justifyContent={'space-between'}*/}
+            {/*                alignItems={'center'}>*/}
+            {/*                <Text*/}
+            {/*                    hidden={posts.length > 0}*/}
+            {/*                    fontSize={'lg'}*/}
+            {/*                    fontFamily={'body'}*/}
+            {/*                    color={"black"}>*/}
+            {/*                    Aucun post pour le moment*/}
+            {/*                </Text>*/}
 
-                            {likes.map((post: any, index: Key) => {
-                                return (
-                                    <PostCard key={index} post={post}/>
-                                )
-                            })}
+            {/*                {likes.map((post: any, index: Key) => {*/}
+            {/*                    return (*/}
+            {/*                        <PostCard key={index} post={post}/>*/}
+            {/*                    )*/}
+            {/*                })}*/}
 
-                        </Stack>
+            {/*            </Stack>*/}
 
-                    </Stack>
-                </Stack>
-            )}
+            {/*        </Stack>*/}
+            {/*    </Stack>*/}
+            {/*)}*/}
         </Flex>
     )
 }

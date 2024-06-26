@@ -4,23 +4,23 @@ import {prisma} from "@/helpers/database";
 import CreateUser from "@/app/actions/users/create";
 import {GetUserWithId} from "@/app/actions/users/get";
 import {FormikValues} from "formik";
-import {session} from "next-auth/core/routes";
 
 const handler = NextAuth({
     providers: authOptions.providers,
 
     callbacks: {
-        redirect: async ({ url, baseUrl }) => {
+        redirect: async ({url, baseUrl}) => {
             return url.startsWith(baseUrl) ? url : baseUrl;
         },
 
-        session: async (session : any) => {
+        session: async (session: any) => {
             session.session.role = "user";
 
             try {
                 const user = await prisma.user.findUnique({
                     where: {
                         email: session.session.user.email,
+                        isDeleted: false
                     }
                 });
 
@@ -32,9 +32,9 @@ const handler = NextAuth({
                 } else {
                     const newUser: FormikValues = {
                         firstName: session.session.user.name.split(" ")[0],
-                        lastName:  session.session.user.name.split(" ")[1],
-                        email:  session.session.user.email,
-                        image:  session.session.user.image,
+                        lastName: session.session.user.name.split(" ")[1],
+                        email: session.session.user.email,
+                        image: session.session.user.image,
                         password: Math.random().toString(36).substring(7),
                         cityId: 1,
                         bio: "",
@@ -42,13 +42,11 @@ const handler = NextAuth({
 
                     await CreateUser(newUser);
 
-                    const createdUser = await prisma.user.findFirst({
+                    session.session.user = await prisma.user.findFirst({
                         where: {
-                            email:  session.session.user.email,
+                            email: session.session.user.email,
                         }
                     });
-
-                    session.session.user = createdUser;
                     session.session.role = "user";
                 }
             } catch (error) {

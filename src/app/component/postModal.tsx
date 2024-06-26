@@ -97,6 +97,7 @@ export default function PostModal() {
                                     async (values : FormikValues) => {
                                         try {
                                             await CreatePost(values, values.type)
+                                            window.location.reload()
                                             onClose()
                                         } catch (e) {
                                             console.error(e)
