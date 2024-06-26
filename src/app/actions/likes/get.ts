@@ -55,7 +55,8 @@ async function GetEventLike(postId: number, userId: string, type: PostType) {
         }
     }).catch((e) => {
         return e;
-import {prisma} from "@/helpers/database";
+    })
+}
 
 export async function GetLikesByUserId(userId: string) {
     return prisma.like.findMany({
@@ -75,4 +76,4 @@ export async function GetLikesByPostId(postId: number) {
     }).catch((e) => {
         console.log(e)
     })
-}}
+}
