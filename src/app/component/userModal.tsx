@@ -8,7 +8,6 @@ import {useSession} from "next-auth/react";
 import GetCities from "@/app/actions/cities/get";
 import UpdateMe from "@/app/actions/users/update";
 import {redirect} from "next/navigation";
-import CreatePost from "@/app/actions/posts/create";
 
 export default function UserModal() {
     const {onOpen, onClose, isOpen} = useDisclosure();

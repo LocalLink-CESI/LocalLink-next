@@ -109,8 +109,7 @@ export default function Profile() {
                         justifyContent={'space-between'}
                         alignItems={'center'}>
 
-
-                        <UserModal/>
+                        {/*<UserModal/>*/}
 
                         <PostModal/>
                     </Stack>
@@ -141,7 +140,7 @@ export default function Profile() {
                 </Stack>
             </Stack>
 
-            {likes.length > 0 && (
+            {likes && likes.length > 0 && (
                 <Stack
                     borderRadius="lg"
                     direction={{base: 'column', md: 'row'}}

@@ -38,9 +38,9 @@ interface LinkItemProps {
 
 const LinkItems: Array<LinkItemProps> = [
     {name: 'Accueil', icon: FiHome, link: '/'},
-    {name: "Notifications", icon: FiBell},
+    // {name: "Notifications", icon: FiBell},
     {name: 'Profil', icon: FiUser, link: '/profile'},
-    {name: 'Settings', icon: FiSettings},
+    {name: 'Settings', icon: FiSettings, link: '/settings/account'},
 ];
 
 export default function SidebarWithHeader({children}: { children: ReactNode }) {

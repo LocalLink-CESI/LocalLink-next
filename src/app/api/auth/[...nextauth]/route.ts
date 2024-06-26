@@ -4,17 +4,17 @@ import {prisma} from "@/helpers/database";
 import CreateUser from "@/app/actions/users/create";
 import {GetUserWithId} from "@/app/actions/users/get";
 import {FormikValues} from "formik";
+import {session} from "next-auth/core/routes";
 
 const handler = NextAuth({
     providers: authOptions.providers,
 
     callbacks: {
-        redirect: () => {
-            return "/";
+        redirect: async ({ url, baseUrl }) => {
+            return url.startsWith(baseUrl) ? url : baseUrl;
         },
 
-        session: async (session: any) => {
-
+        session: async (session : any) => {
             session.session.role = "user";
 
             try {
@@ -24,22 +24,17 @@ const handler = NextAuth({
                     }
                 });
 
-                session.session.role = user?.role || "user";
-
                 if (user) {
                     const userDataClean = await GetUserWithId(user.id);
-
                     userDataClean.password = undefined;
-
                     session.session.user = userDataClean;
-                }
-
-                if (!user) {
+                    session.session.role = user.role || "user";
+                } else {
                     const newUser: FormikValues = {
                         firstName: session.session.user.name.split(" ")[0],
-                        lastName: session.session.user.name.split(" ")[1],
-                        email: session.session.user.email,
-                        image: session.session.user.image,
+                        lastName:  session.session.user.name.split(" ")[1],
+                        email:  session.session.user.email,
+                        image:  session.session.user.image,
                         password: Math.random().toString(36).substring(7),
                         cityId: 1,
                         bio: "",
@@ -47,18 +42,17 @@ const handler = NextAuth({
 
                     await CreateUser(newUser);
 
-                    const userData = await prisma.user.findFirst({
+                    const createdUser = await prisma.user.findFirst({
                         where: {
-                            email: session.session.user.email,
+                            email:  session.session.user.email,
                         }
                     });
 
-                    session.session.user = userData;
-
+                    session.session.user = createdUser;
                     session.session.role = "user";
                 }
             } catch (error) {
-                return session;
+                console.error(error);
             }
 
             return session;
