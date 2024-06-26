@@ -1,8 +1,8 @@
 'use server';
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/lib/authOptions";
 
-import { prisma } from "@/helpers/database";
+import {prisma} from "@/helpers/database";
 import {FormikValues} from "formik";
 
 export default async function UpdateMe(form: FormikValues) {
@@ -22,7 +22,7 @@ export default async function UpdateMe(form: FormikValues) {
             bio: form.bio,
             image: form.image
         }
-    }).catch((error : Error) => {
+    }).catch((error: Error) => {
         return error;
     });
 }
