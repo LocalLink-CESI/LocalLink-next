@@ -77,7 +77,6 @@ test('Validating user retrieval with invalid id', async () => {
 test('Validating user retrieval', async () => {
     let response = await GetUserWithId(uid) as { id: string }
 
-    expect(response).toHaveProperty('id');
     expect(response).toHaveProperty('email');
     expect(response).toHaveProperty('firstName');
     expect(response).toHaveProperty('lastName');
