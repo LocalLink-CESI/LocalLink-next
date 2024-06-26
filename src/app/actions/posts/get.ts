@@ -138,17 +138,27 @@ async function GetEventPostWithId(query) {
 
 
 
-export async function GetPostsWithUserIdWithPagination (pagination: {limit:number, offset:number}, id: string) {
-    return prisma.post.findMany({
+export async function GetPostsWithUserIdWithPaginationWithType (pagination: { limit: number, offset: number }, type: PostType, userId: string) {
+    return prisma[type as string].findMany({
         take: pagination.limit,
         skip: pagination.offset,
         orderBy: {
             createdAt: 'desc'
         },
         where: {
-            userId: id
+            userId: userId
         },
         include: {
+            likes: {
+                select: {
+                    userId: true
+                }
+            },
+            comments: {
+                select: {
+                    userId: true,
+                }
+            },
             user: {
                 select: {
                     firstName: true,
@@ -160,20 +170,35 @@ export async function GetPostsWithUserIdWithPagination (pagination: {limit:numbe
                         }
                     }
                 }
-            },
+            }
         }
     }).catch((e: Error) => {
+        console.error(e)
         return (e);
     });
-
 }
 
-export async function GetPostsWithUserId (id: string) {
-    return prisma.post.findMany({
-        where: {
-            userId: id
-        }
-    }).catch((e: Error) => {
-        return (e);
+export async function GetPostsWithUserId (pagination: { limit: number, offset: number }, userId: string) {
+    let posts = [];
+    let defaultPosts = await GetPostsWithUserIdWithPaginationWithType(pagination, PostType.DEFAULT, userId);
+    let culturePosts = await GetPostsWithUserIdWithPaginationWithType(pagination, PostType.CULTURE, userId);
+    let salePosts = await GetPostsWithUserIdWithPaginationWithType(pagination, PostType.SALE, userId);
+    let eventPosts = await GetPostsWithUserIdWithPaginationWithType(pagination, PostType.EVENT, userId);
+
+    posts.push(defaultPosts);
+    posts.push(culturePosts);
+    posts.push(salePosts);
+    posts.push(eventPosts);
+
+    let types = [PostType.DEFAULT, PostType.CULTURE, PostType.SALE, PostType.EVENT];
+    let finalPosts = [];
+    //add the key type to all nested post
+    posts.forEach((postType, value) => {
+        postType.forEach((post) => {
+            post.type = types[value];
+            finalPosts.push(post);
+        });
     });
+
+    return finalPosts;
 }
