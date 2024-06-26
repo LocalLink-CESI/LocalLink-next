@@ -19,12 +19,7 @@ import React, {useEffect, useState} from "react";
 import CreateComment from "@/app/actions/comment/create";
 import {useSession} from "next-auth/react";
 
-export default function CommentModal({isOpen, onClose, post}) {
-    let session = useSession();
-    let userId = null;
-    if (session.status === "authenticated" && session.data.session) {
-        userId = session.data.session?.user.id;
-    }
+export default function CommentModal({isOpen, onClose, post, userId}) {
     let toast = useToast();
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
