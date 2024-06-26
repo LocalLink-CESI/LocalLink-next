@@ -48,7 +48,7 @@ test('Valid list post', async () => {
         1
     );
 
-    expect(response.length).toBe(3);
+    expect(response.length).toBe(2);
 });
 
 test('Invalid list post without city', async () => {

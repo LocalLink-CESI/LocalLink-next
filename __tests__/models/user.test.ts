@@ -3,9 +3,13 @@ import {GetUserWithId} from "@/app/actions/users/get";
 import {DeleteUserWithId} from "@/app/actions/users/delete";
 import {UpdateUserWithId} from "@/app/actions/users/update";
 import bcrypt from "bcryptjs";
+import {getServerSession} from "next-auth";
 
 let uid = "clxspgy360001fgxtmkfbq5r2";
 let randomMail = uid + "@test.mail";
+
+
+jest.mock("next-auth");
 
 
 //   ____ ____  _____    _  _____ _____
@@ -16,22 +20,23 @@ let randomMail = uid + "@test.mail";
 
 
 test('Validating user creation', async () => {
-    let form = new FormData();
-    form.append('firstName', 'John');
-    form.append('lastName', 'Doe');
-    form.append('email', randomMail);
-    form.append('password', '123456');
-    form.append('avatar', 'avatar.jpg');
-    form.append('bio', 'Hello World');
-    form.append('cityId', '1');
+    const form = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: randomMail,
+        password: '123456',
+        image: 'image.jpg',
+        bio: 'Hello World',
+        cityId: 1
+    }
 
-    let response = await CreateUser(form) as { id : string }
+    let response = await CreateUser(form) as { id: string }
 
     expect(response).toHaveProperty('id');
     expect(response).toHaveProperty('email');
     expect(response).toHaveProperty('firstName');
     expect(response).toHaveProperty('lastName');
-    expect(response).toHaveProperty('avatar');
+    expect(response).toHaveProperty('image');
     expect(response).toHaveProperty('bio');
     expect(response).toHaveProperty('cityId');
 
@@ -39,14 +44,15 @@ test('Validating user creation', async () => {
 });
 
 test('Validating user creation with invalid data', async () => {
-    let form = new FormData();
-    form.append('firstName', 'John');
-    form.append('lastName', 'Doe');
-    form.append('email', randomMail);
-    form.append('password', '123456');
-    form.append('avatar', 'avatar.jpg');
-    form.append('bio', 'Hello World');
-    form.append('cityId', '');
+    const form = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: randomMail,
+        password: '123456',
+        image: 'image.jpg',
+        bio: 'Hello World',
+        cityId: ''
+    }
 
     let response = await CreateUser(form) as Error
 
@@ -69,13 +75,13 @@ test('Validating user retrieval with invalid id', async () => {
 
 
 test('Validating user retrieval', async () => {
-    let response = await GetUserWithId(uid) as { id : string }
+    let response = await GetUserWithId(uid) as { id: string }
 
     expect(response).toHaveProperty('id');
     expect(response).toHaveProperty('email');
     expect(response).toHaveProperty('firstName');
     expect(response).toHaveProperty('lastName');
-    expect(response).toHaveProperty('avatar');
+    expect(response).toHaveProperty('image');
     expect(response).toHaveProperty('bio');
     expect(response).toHaveProperty('cityId');
 });
@@ -92,7 +98,6 @@ test('Validation of password hashing', async () => {
     let password = '123456';
     let hashedPassword = await bcrypt.hash(password, 10)
 
-    hashedPassword = await bcrypt.hash(password, 10)
     expect(await bcrypt.compare(password, hashedPassword)).toBe(true)
 });
 
@@ -112,37 +117,66 @@ test('Validation of password hashing with invalid password', async () => {
 
 
 test('Validation of update user', async () => {
-    let form = new FormData();
-    form.append('firstName', 'John');
-    form.append('lastName', 'Doe');
-    form.append('email', randomMail);
-    form.append('password', '123456');
-    form.append('avatar', 'avatar.jpg');
-    form.append('bio', 'Hello World');
-    form.append('cityId', "1");
 
-    let response = await UpdateUserWithId(uid, form) as { id : string }
+    let form = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: randomMail,
+        password: '123456',
+        image: 'image.jpg',
+        bio: 'Hello World',
+        cityId: 1
+    }
+
+    const mockSession = {
+        expires: new Date(Date.now() + 2 * 86400).toISOString(),
+
+        user: {
+            email: "jane.doe@example.com",
+            id: "clxspgy5i0003fgxtt3fq3yzg",
+            cityId: 1,
+            role: "ADMIN",
+        }
+
+    };
+    (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
+
+    let response = await UpdateUserWithId(uid, form);
 
     expect(response).toHaveProperty('id');
     expect(response).toHaveProperty('email');
     expect(response).toHaveProperty('firstName');
     expect(response).toHaveProperty('lastName');
-    expect(response).toHaveProperty('avatar');
+    expect(response).toHaveProperty('image');
     expect(response).toHaveProperty('bio');
     expect(response).toHaveProperty('cityId');
 });
 
 test('Validation of update user with invalid data', async () => {
-    let form = new FormData();
-    form.append('firstName', 'John');
-    form.append('lastName', 'Doe');
-    form.append('email', randomMail);
-    form.append('password', '123456');
-    form.append('avatar', 'avatar.jpg');
-    form.append('bio', 'Hello World');
-    form.append('cityId', '');
 
-    let response = await UpdateUserWithId(uid, form) as Error
+    let form = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: randomMail,
+        password: '123456',
+        image: 'image.jpg',
+        bio: 'Hello World',
+        cityId: ''
+    }
+
+    const mockSession = {
+        expires: new Date(Date.now() + 2 * 86400).toISOString(),
+
+        user: {
+            email: "jane.doe@example.com",
+            id: "clxspgy5i0003fgxtt3fq3yzg",
+            cityId: 1,
+            role: "ADMIN",
+        }
+
+    };
+    (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
+    let response = await UpdateUserWithId(uid, form) as Error;
 
     expect(response).toBeInstanceOf(Error);
 });
@@ -156,19 +190,43 @@ test('Validation of update user with invalid data', async () => {
 
 
 test('Validating user deletion', async () => {
-    let response = await DeleteUserWithId(uid) as { id : string }
+    const mockSession = {
+        expires: new Date(Date.now() + 2 * 86400).toISOString(),
+
+        user: {
+            email: "jane.doe@example.com",
+            id: "clxspgy5i0003fgxtt3fq3yzg",
+            cityId: 1,
+            role: "ADMIN",
+        }
+
+    };
+    (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
+    let response = await DeleteUserWithId(uid);
 
     expect(response).toHaveProperty('id');
     expect(response).toHaveProperty('email');
     expect(response).toHaveProperty('firstName');
     expect(response).toHaveProperty('lastName');
-    expect(response).toHaveProperty('avatar');
+    expect(response).toHaveProperty('image');
     expect(response).toHaveProperty('bio');
     expect(response).toHaveProperty('cityId');
 });
 
 
 test('Validating user deletion with invalid id', async () => {
+    const mockSession = {
+        expires: new Date(Date.now() + 2 * 86400).toISOString(),
+
+        user: {
+            email: "jane.doe@example.com",
+            id: "clxspgy5i0003fgxtt3fq3yzg",
+            cityId: 1,
+            role: "ADMIN",
+        }
+
+    };
+    (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
     let response = await DeleteUserWithId("invalid") as Error
 
     expect(response).toBeInstanceOf(Error);
