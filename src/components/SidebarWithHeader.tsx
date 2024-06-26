@@ -24,7 +24,7 @@ import {
     useDisclosure,
     VStack
 } from '@chakra-ui/react';
-import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser} from 'react-icons/fi';
+import {FiChevronDown, FiHome, FiMenu, FiSettings, FiUser} from 'react-icons/fi';
 import {IconType} from 'react-icons';
 import {usePathname, useRouter} from 'next/navigation';
 import {signOut, useSession} from 'next-auth/react';
@@ -85,6 +85,8 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
         border: useColorModeValue('gray.200', 'brand.900'),
     };
 
+    const router = useRouter();
+
     return (
         <Flex transition="3s ease" bg={menuColors.bg} borderRight="1px" borderRightColor={menuColors.border}
               w={{base: 'full', md: 100}} pos="fixed" top="0" h="full" direction="column"
@@ -125,6 +127,13 @@ const SidebarContent = ({user, onClose, ...rest}: SidebarProps) => {
                                           transition="all 0.2s ease">
                                     Account: {user.email}
                                 </MenuItem>
+
+                                {user.role === "ADMIN" && (
+                                    <MenuItem _hover={{bg: "brand.900", color: "black", fontWeight: "700"}}
+                                                transition="all 0.2s ease" onClick={() => router.push("/admin")}>
+                                            Admin
+                                    </MenuItem>
+                                )}
                             </MenuList>
                         </Menu>
                     )}

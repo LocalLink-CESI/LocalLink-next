@@ -81,7 +81,20 @@ export async function GetPostWithIdAndType(id: number, type: PostType) {
             },
             comments: {
                 select: {
-                    userId: true
+                    text: true,
+                    userId: true,
+                    user: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            image: true,
+                            city: {
+                                select: {
+                                    name: true
+                                }
+                            }
+                        }
+                    },
                 }
             }
         }
