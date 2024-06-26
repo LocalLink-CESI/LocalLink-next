@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text, useMediaQuery } from '@chakra-ui/react';
 import { DefaultTheme } from '../../assets/styles/theme';
 import ButtonNext from './Button/ButtonNext';
 import ButtonPrevious from './Button/ButtonPrevious';
@@ -35,7 +35,7 @@ const CalendarHeader: FC<Props> = ({ activeDate, onClick }) => {
       h="100%"
       display="flex"
       justifyContent="space-between"
-      fontSize={DefaultTheme.fontSize.s}
+      fontSize={DefaultTheme.fontSize.ms}
     >
       <Box h="100%" w="100%" display="flex" alignItems="center">
         <Text marginLeft="31px" fontFamily="Avenir Heavy">{`${months[activeDate.getMonth()]
@@ -45,7 +45,8 @@ const CalendarHeader: FC<Props> = ({ activeDate, onClick }) => {
       <Box display="flex" alignItems="center" marginRight="22px">
         <ButtonPrevious activeDate={activeDate} onClick={onClick} />
         <Text
-          margin="22px"
+          margin="20px 15px"
+          fontSize={DefaultTheme.fontSize.ms}
           fontFamily={DefaultTheme.fontFamily.medium}
           color={DefaultTheme.colors.primaryButton}
           cursor="pointer"

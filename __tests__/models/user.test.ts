@@ -1,5 +1,5 @@
 import CreateUser from "@/app/actions/users/create";
-import {GetUserWithId} from "@/app/actions/users/get";
+import {GetAllUsers, GetUserWithId} from "@/app/actions/users/get";
 import {DeleteUserWithId} from "@/app/actions/users/delete";
 import {UpdateUserWithId} from "@/app/actions/users/update";
 import bcrypt from "bcryptjs";
@@ -86,6 +86,40 @@ test('Validating user retrieval', async () => {
     expect(response).toHaveProperty('cityId');
 });
 
+test('Validating all users retrieval', async () => {
+    const mockSession = {
+        expires: new Date(Date.now() + 2 * 86400).toISOString(),
+
+        user: {
+            email: "jane.doe@example.com",
+            id: "clxspgy5i0003fgxtt3fq3yzg",
+            cityId: 1,
+            role: "ADMIN",
+        }
+    };
+    (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
+    let response = await GetAllUsers();
+
+    expect(response).not.toBeNull();
+    expect(response).not.toBeInstanceOf(Error);
+});
+
+test('Validating all users retrieval with invalid session', async () => {
+    const mockSession = {
+        expires: new Date(Date.now() - 2 * 86400).toISOString(),
+
+        user: {
+            email: "jane.deo@example.com",
+            id: "clxspgy5i0003fgxtt3fq3yzg",
+            cityId: 1,
+            role: "USER",
+        }
+    };
+    (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
+    let response = await GetAllUsers() as Error;
+
+    expect(response).toBeInstanceOf(Error);
+});
 
 //  ____   _    ____ ______        _____  ____  ____
 // |  _ \ / \  / ___/ ___\ \      / / _ \|  _ \|  _ \

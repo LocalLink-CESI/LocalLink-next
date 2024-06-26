@@ -63,8 +63,8 @@ const CalendarDays: FC<Props> = ({ activeDate, onClick, today }) => {
       {currentDays.map((day, index) => {
         return (
           <Box
-            w="72px"
-            h="52px"
+            aspectRatio={"3/3"}
+            w={"13%"}
             position="relative"
             border={`0.1px solid ${DefaultTheme.colors.lines}`}
             key={index}
@@ -85,7 +85,7 @@ const CalendarDays: FC<Props> = ({ activeDate, onClick, today }) => {
               position="absolute"
               right="7px"
               bottom="4px"
-              fontSize={DefaultTheme.fontSize.s}
+              fontSize={DefaultTheme.fontSize.xs}
               opacity={!day.currentMonth ? 0.3 : 1}
             >
               {`${day.number}`}

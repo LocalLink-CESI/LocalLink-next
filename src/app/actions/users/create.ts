@@ -21,17 +21,3 @@ export default async function CreateUser(form: FormikValues) {
         return error;
     });
 }
-
-
-export async function CreatePassword(email: string, password: string) {
-    return prisma.user.update({
-        where: {
-            email: email,
-        },
-        data: {
-            password: bcrypt.hashSync(password, 10),
-        }
-    }).catch((error: Error) => {
-        return error;
-    });
-}
