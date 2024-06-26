@@ -2,6 +2,15 @@
 
 import {PostType, prisma} from '@/helpers/database';
 
+
+export async function GetAllPosts() {
+    return prisma.post.findMany()
+        .catch((e: Error) => {
+        return (e);
+    });
+}
+
+
 export default async function GetPostsWithPaginationAndType(pagination: { limit: number, offset: number }, type: PostType, cityId: number): Promise<Array<any>> {
     // @ts-ignore
     return prisma[type as string].findMany({

@@ -1,3 +1,4 @@
+'use client';
 import React, {useEffect, useState} from "react";
 import {
     Button,
@@ -15,24 +16,16 @@ import {
     Textarea,
     useDisclosure
 } from "@chakra-ui/react";
-import {Field, Form, Formik} from "formik";
+import {Field, Form, Formik, FormikValues} from "formik";
 import {useSession} from "next-auth/react";
 import GetCities from "@/app/actions/cities/get";
-import UpdateMe from "@/app/actions/users/update";
-import {redirect} from "next/navigation";
+import {UpdateUserWithId} from "@/app/actions/users/update";
+import User from "@/models/User";
 
-export default function UserModal() {
+export default function UpdateUserModal({user}: { user: User }) {
     const {onOpen, onClose, isOpen} = useDisclosure();
+
     const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
-
-    const session = useSession({
-        required: true,
-        onUnauthenticated() {
-            redirect('/auth/signin')
-        },
-    });
-
-    const user = (session.data as any)?.session?.user;
 
     useEffect(() => {
         const fetchCities = async () => {
@@ -51,10 +44,19 @@ export default function UserModal() {
         fetchCities();
     }, []);
 
+    const session = useSession({
+        required: true,
+    });
 
-    const handleSubmit = async (values) => {
+    const sessionUser = (session.data as any)?.session?.user;
+
+    const role = sessionUser.role;
+
+    if (role !== "ADMIN" && sessionUser.id !== user.id) return null;
+
+    const handleSubmit = async (values : FormikValues) => {
         try {
-            await UpdateMe(values);
+            await UpdateUserWithId(user.id, values);
             onClose();
         } catch (error) {
             console.error(error);
@@ -89,6 +91,7 @@ export default function UserModal() {
                             bio: user.bio,
                             image: user.image,
                             cityId: user.cityId,
+                            role: user.role
                         }} onSubmit={handleSubmit}>
                             <Form>
                                 <Field name="firstName">
@@ -107,14 +110,14 @@ export default function UserModal() {
                                         </FormControl>
                                     )}
                                 </Field>
-                                {/*<Field name="email">*/}
-                                {/*    {({field}) => (*/}
-                                {/*        <FormControl>*/}
-                                {/*            <FormLabel>Email</FormLabel>*/}
-                                {/*            <Input {...field} placeholder="Email"/>*/}
-                                {/*        </FormControl>*/}
-                                {/*    )}*/}
-                                {/*</Field>*/}
+                                <Field name="email">
+                                    {({field}) => (
+                                        <FormControl>
+                                            <FormLabel>Email</FormLabel>
+                                            <Input {...field} placeholder="Email"/>
+                                        </FormControl>
+                                    )}
+                                </Field>
                                 <Field name="bio">
                                     {({field}) => (
                                         <FormControl>
@@ -139,6 +142,17 @@ export default function UserModal() {
                                                 {cities.map(city => (
                                                     <option key={city.id} value={city.id}>{city.name}</option>
                                                 ))}
+                                            </Select>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Field name="role">
+                                    {({field}) => (
+                                        <FormControl>
+                                            <FormLabel>Rôle</FormLabel>
+                                            <Select {...field} placeholder="Rôle">
+                                                <option value="USER">Utilisateur</option>
+                                                <option value="ADMIN">Administrateur</option>
                                             </Select>
                                         </FormControl>
                                     )}
