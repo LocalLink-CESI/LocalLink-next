@@ -9,6 +9,8 @@ import GetPostsWithPaginationAndType, { GetPostsWithPaginationFeed } from "./act
 import { PostType } from "@/helpers/database";
 import { Flex, Grid, useMediaQuery, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure, IconButton, Text, Container } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
+import ProfileLoading from "@/app/profile/loading";
+
 export default function Home() {
     const [activeDate, setActiveDate] = useState<Date>(new Date());
     const [posts, setPosts] = useState([]);
@@ -43,6 +45,8 @@ export default function Home() {
     const [isLargerThan1600] = useMediaQuery("(min-width: 1600px)");
     const [isLargerThan1400] = useMediaQuery("(min-width: 1400px)");
     const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
+    if (session.status === 'loading') return ProfileLoading();
+
     return (
         <main>
             <Flex justify="center" h="100%" mx={isLargerThan1400 ? "125" : isLargerThan1000 ? "50" : "1"} mt={"1rem"} py={"1rem"} direction={isLargerThan800 ? "row" : "column"} >

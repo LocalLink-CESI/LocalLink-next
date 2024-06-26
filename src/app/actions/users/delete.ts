@@ -1,11 +1,12 @@
 'use server';
-import { getServerSession } from "next-auth";
+import {getServerSession} from "next-auth";
 
-import { prisma } from "@/helpers/database";
-import { authOptions } from "@/lib/authOptions";
+import {prisma} from "@/helpers/database";
+import {authOptions} from "@/lib/authOptions";
 
 export default async function DeleteMe() {
     let user = await getServerSession(authOptions)
+
     if (!user || !user.user || !user.user.name) return null;
 
     return prisma.user.update({
@@ -15,24 +16,32 @@ export default async function DeleteMe() {
         data: {
             isDeleted: true
         }
-    }).catch((error : Error) => {
+    }).catch((error: Error) => {
         return error;
     });
 }
 
 export async function DeleteUserWithId(id: string) {
-    const user = getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
 
-    // if user is admin
-    
-
-    return prisma.user.delete(
-        {
-            where: {
-                id: id
-            }
+    const user = await prisma.user.findUnique({
+        where: {
+            email: session.user.email
         }
-    ).catch((error : Error) => {
-        return error;
     });
+
+    if (user.id === id || user.role === "ADMIN") {
+        return prisma.user.delete(
+            {
+                where: {
+                    id: id
+                }
+            }
+        ).catch((error: Error) => {
+            return error;
+        });
+
+    }
+
+    return new Error("Unauthorized");
 }

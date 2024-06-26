@@ -29,15 +29,15 @@ export default function PostCard({ post }: { post: any }) {
     const router = useRouter()
     const { onOpen, onClose, isOpen } = useDisclosure();
     const [postUser, setPostUser] = useState(post.user)
-    const [likes, setLikes] = useState(post.likes)
+    const [likes, setLikes] = useState(post.likes.map((like) => like.userId))
     const [likeCount, setLikeCount] = useState(post.likes.length)
     const [comments, setComments] = useState(post.comments)
     const [commentCount, setCommentCount] = useState(post.comments.length)
 
     let session = useSession();
     let userId = null;
-    if (session.status === "authenticated" && session?.data?.session) {
-        userId = session?.data?.session?.user?.id;
+    if (session.status === "authenticated" && (session as any)?.data?.session) {
+        userId = (session as any)?.data?.session?.user?.id;
     }
     // console.log(postUser)
     // const relativeDate = (date: Date) => {
@@ -68,16 +68,16 @@ export default function PostCard({ post }: { post: any }) {
 
     const handleLike = async (postId: number, type: PostType, userId: string) => {
         try {
+            console.log(likes)
             await Like(userId, postId, type)
             if (!likes.includes(userId)) {
                 let buff = likes
-                await buff.push(userId)
+                buff = [...buff, userId]
                 setLikes(buff)
                 setLikeCount(likeCount + 1)
             } else {
-                // Unlike
                 let buff = likes
-                await buff.splice(likes.indexOf(userId), 1)
+                buff = buff.filter((id) => id !== userId)
                 setLikes(buff)
                 setLikeCount(likeCount - 1)
             }

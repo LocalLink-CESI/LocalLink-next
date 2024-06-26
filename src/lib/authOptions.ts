@@ -1,9 +1,7 @@
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/helpers/database";
+import {prisma} from "@/helpers/database";
 import bcrypt from "bcryptjs";
-import {GetUserWithEmail} from "@/app/actions/users/get";
-import {FormikValues} from "formik";
 
 const googleId = process.env.GOOGLE_ID
 const googleSecret = process.env.GOOGLE_SECRET
@@ -18,8 +16,8 @@ export const authOptions = {
             type: "credentials",
             name: "Credentials",
             credentials: {
-                email: { label: "Email Address", type: "email" },
-                password: { label: "Password", type: "password" },
+                email: {label: "Email Address", type: "email"},
+                password: {label: "Password", type: "password"},
             },
             async authorize(credentials, req) {
                 if (!credentials) return null
@@ -27,12 +25,13 @@ export const authOptions = {
                 try {
                     const user = await prisma.user.findUnique({
                         where: {
-                            email: credentials.email
+                            email: credentials.email,
+                            isDeleted: false
                         }
                     });
 
                     return await bcrypt.compare(credentials.password, user.password) ? user : null
-                }catch (error) {
+                } catch (error) {
                     console.error(error)
                     return null
                 }
@@ -41,7 +40,7 @@ export const authOptions = {
         }),
 
         GoogleProvider({
-                clientId: googleId,
+            clientId: googleId,
             clientSecret: googleSecret,
         }),
     ],

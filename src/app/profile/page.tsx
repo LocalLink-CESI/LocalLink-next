@@ -3,15 +3,30 @@ import { Avatar, Flex, Heading, Stack, Text, useMediaQuery, } from '@chakra-ui/r
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import PostModal from "@/app/component/postModal";
-import { Key, useEffect, useState } from "react";
-import { GetPostsWithUserIdWithPagination } from "@/app/actions/posts/get";
-import PostCard from "@components/Home/PostCard";
-import UserModal from "@/app/component/userModal";
-import { GetLikesByUserId } from "@/app/actions/likes/get";
 
+import { Key, useEffect, useState } from "react";
+import { GetPostsWithUserId } from "@/app/actions/posts/get";
+import PostCard from "@components/Home/PostCard";
+import { GetLikesByUserId } from "@/app/actions/likes/get";
+import { GetUserWithId } from "@/app/actions/users/get";
+import ProfileLoading from "@/app/profile/loading";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
+    interface User {
+        firstName: string;
+        lastName: string;
+        image: string;
+        bio: string;
+    }
+
+    const [user, setUser] = useState<User>({
+        firstName: '',
+        lastName: '',
+        image: '',
+        bio: '',
+    });
+
     const session = useSession({
         required: true,
         onUnauthenticated() {
@@ -19,23 +34,38 @@ export default function Profile() {
         },
     });
 
-    const user = (session.data as any)?.session?.user;
-    const userId = user?.id;
+    let userId = null;
+    if (session.status === "authenticated" && (session as any).data.session) {
+        userId = (session as any).data.session?.user.id;
+    }
 
     const [posts, setPosts] = useState([]);
-    const [likes, setLikes] = useState([]);
+    const [likes, setLikes] = useState<any[] | void>([]);
     const [isLargerThan1200] = useMediaQuery("(min-width: 1200px)");
     const [isLargerThan600] = useMediaQuery("(min-width: 600px)");
     const [isLargerThan400] = useMediaQuery("(min-width: 400px)");
+
     useEffect(() => {
-        const posts = GetPostsWithUserIdWithPagination({ limit: 10, offset: 0 }, userId)
-        posts.then((data) => {
-            console.log(data, "data")
+        if (!userId) return;
+        const post = GetPostsWithUserId({ limit: 10, offset: 0 }, userId)
+        post.then((data) => {
             setPosts(data)
         })
 
+        const userData = GetUserWithId(userId)
+        userData.then((data) => {
+            setUser(data as User)
+        });
     }, [setPosts, userId])
 
+    // const [likes, setLikes] = useState([]);
+    //
+    // useEffect(() => {
+    //     const likes = GetLikesByUserId(userId)
+    //     likes.then((data) => {
+    //         setLikes(data)
+    //     })
+    // }, [setLikes, userId])
 
 
     useEffect(() => {
@@ -46,6 +76,9 @@ export default function Profile() {
     }, [setLikes, userId])
 
     if (!user) return null;
+    if (session.status === 'loading') return ProfileLoading();
+
+
     return (
         <Flex direction={"column"} py={6} margin={"auto"} mx={isLargerThan400 ? 0 : -6} alignItems={"center"}>
             <Stack
@@ -112,7 +145,7 @@ export default function Profile() {
                         justifyContent={'space-between'}
                         alignItems={'center'}>
 
-                        {/*<UserModal/>*/}
+                        {/*<UpdateUserModal/>*/}
 
                         <PostModal />
                     </Stack>
@@ -132,7 +165,7 @@ export default function Profile() {
                             Aucun post pour le moment
                         </Text>
 
-                        {posts.map((post: any, index: Key) => {
+                        {posts.map((post, index: Key) => {
                             return (
                                 <PostCard key={index} post={post} />
                             )
@@ -160,30 +193,11 @@ export default function Profile() {
                         <Heading fontSize={'2xl'} fontFamily={'body'} color={"black"}>
                             Mes likes
                         </Heading>
-
-                        <Stack
-                            width={'100%'}
-                            direction={'column'}
-                            padding={2}
-                            gap={"3rem"}
-                            justifyContent={'space-between'}
-                            alignItems={'center'}>
-                            <Text
-                                hidden={posts.length > 0}
-                                fontSize={'lg'}
-                                fontFamily={'body'}
-                                color={"black"}>
-                                Aucun post pour le moment
-                            </Text>
-
-                            {likes.map((post: any, index: Key) => {
-                                return (
-                                    <PostCard key={index} post={post} />
-                                )
-                            })}
-
-                        </Stack>
-
+                        {likes.map((post: any, index: Key) => {
+                            return (
+                                <PostCard key={index} post={post} />
+                            )
+                        })}
                     </Stack>
                 </Stack>
             )}

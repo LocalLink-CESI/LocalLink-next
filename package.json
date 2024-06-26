@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest --setupFiles dotenv/config"
   },
   "dependencies": {
     "@babel/preset-env": "^7.24.7",
@@ -23,6 +23,7 @@
     "babel-jest": "^29.7.0",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "formik": "^2.4.6",
     "framer-motion": "^11.2.11",
     "next": "14.2.2",

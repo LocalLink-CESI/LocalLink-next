@@ -18,7 +18,6 @@ export default async function CreateUser(form: FormikValues) {
             bio: form.bio,
         }
     }).catch((error: PrismaClientValidationError) => {
-        console.log(error);
         return error;
     });
 }

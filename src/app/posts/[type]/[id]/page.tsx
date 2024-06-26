@@ -1,30 +1,28 @@
 'use client'
 import {GetPostWithId, GetPostWithIdAndType} from "@/app/actions/posts/get"
-import { GetUserWithId } from "@/app/actions/users/get";
+import {GetUserWithId} from "@/app/actions/users/get";
 import PostCard from "@components/Home/PostCard"
-import { Avatar, Box, Button, Card, CardBody, CardFooter, CardHeader, Container, Flex, Heading, IconButton, Text, Tooltip } from "@chakra-ui/react";
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { use, useEffect, useState } from "react"
-import { shadow } from "../../../../../theme";
-import Image from "next/image";
-import { FiFeather, FiShare, FiThumbsUp } from "react-icons/fi";
+import {Flex} from "@chakra-ui/react";
+import {useSession} from "next-auth/react"
+import {useRouter} from "next/navigation"
+import {useEffect, useState} from "react"
+import CommentCard from "@components/Home/CommentCard";
 
-export default function Page({ params }: { params: { type:string ,id: string } }) {
+export default function Page({params}: { params: { type: string, id: string } }) {
     const [post, setPost] = useState(null)
-    const { data: session, status } = useSession()
+    const {data: session, status} = useSession()
     const user = (session as any)?.session?.user
     const router = useRouter()
     useEffect(() => {
         // Get post from the server actions
-        let post = GetPostWithIdAndType(parseInt(params.id), params.type )
+        let post = GetPostWithIdAndType(parseInt(params.id), params.type)
         post.then((data) => {
             // @ts-ignore
             data.type = params.type
             console.log(data, "data")
             const postUser = GetUserWithId((data as any).userId)
             postUser.then((user) => {
-                setPost({ ...data, user })
+                setPost({...data, user})
                 console.log(data, user, "data and user")
             })
         }).catch((e) => {
@@ -35,7 +33,17 @@ export default function Page({ params }: { params: { type:string ,id: string } }
     if (!post) return <div>Loading...</div>
     return (
         <main>
-            <PostCard post={post} />
+            <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"} py={"1rem"}>
+
+                <Flex w={"60%"} direction="column" alignItems={"center"} gap={"3rem"} height={"100%"}>
+                    <PostCard post={post}/>
+                    {post.comments.map((comment, index) => {
+                        return (
+                            <CommentCard key={index} comment={comment}/>
+                        )
+                    })}
+                </Flex>
+            </Flex>
         </main>
     )
 }
