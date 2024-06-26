@@ -20,7 +20,6 @@ import {Field, Form, Formik, FormikValues} from "formik";
 import {useSession} from "next-auth/react";
 import GetCities from "@/app/actions/cities/get";
 import {UpdateUserWithId} from "@/app/actions/users/update";
-import {GetUserWithId} from "@/app/actions/users/get";
 import User from "@/models/User";
 
 export default function UpdateUserModal({user}: { user: User }) {
