@@ -1,8 +1,8 @@
 'use server';
-import { getServerSession } from "next-auth";
+import {getServerSession} from "next-auth";
 
-import { prisma } from "@/helpers/database";
-import { authOptions } from "@/lib/authOptions";
+import {prisma} from "@/helpers/database";
+import {authOptions} from "@/lib/authOptions";
 
 export default async function DeleteMe() {
     let user = await getServerSession(authOptions)
@@ -15,16 +15,22 @@ export default async function DeleteMe() {
         data: {
             isDeleted: true
         }
-    }).catch((error : Error) => {
+    }).catch((error: Error) => {
         return error;
     });
 }
 
 export async function DeleteUserWithId(id: string) {
-    const user = getServerSession(authOptions);
+    const user = await getServerSession(authOptions);
 
-    // if user is admin
-    
+    const userAdmin = await prisma.user.findUnique({
+        where: {
+            email: user.user.email,
+            role: "ADMIN"
+        }
+    });
+
+    if (!userAdmin) return null;
 
     return prisma.user.delete(
         {
@@ -32,7 +38,7 @@ export async function DeleteUserWithId(id: string) {
                 id: id
             }
         }
-    ).catch((error : Error) => {
+    ).catch((error: Error) => {
         return error;
     });
 }

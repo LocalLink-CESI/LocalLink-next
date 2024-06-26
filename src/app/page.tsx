@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import GetPostsWithPaginationAndType, {GetPostsWithPaginationFeed} from "./actions/posts/get";
 import { PostType } from "@/helpers/database";
+import ProfileLoading from "@/app/profile/loading";
 
 export default function Home() {
     const [activeDate, setActiveDate] = useState<Date>(new Date());
@@ -37,6 +38,8 @@ export default function Home() {
         })
     }, [setPosts]
     )
+
+    if (session.status === 'loading') return ProfileLoading();
 
     return (
         <main>

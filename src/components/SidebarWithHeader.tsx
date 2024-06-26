@@ -24,7 +24,7 @@ import {
     useDisclosure,
     VStack
 } from '@chakra-ui/react';
-import {FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser} from 'react-icons/fi';
+import {FiChevronDown, FiHome, FiMenu, FiSettings, FiUser} from 'react-icons/fi';
 import {IconType} from 'react-icons';
 import {usePathname, useRouter} from 'next/navigation';
 import {signOut, useSession} from 'next-auth/react';

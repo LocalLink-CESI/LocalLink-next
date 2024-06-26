@@ -9,9 +9,18 @@ import {
     FormControl,
     FormLabel,
     Input,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
     Select,
     Stack,
-    Textarea
+    Textarea,
+    ButtonGroup,
+    PopoverHeader,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverBody,
+    PopoverFooter,
 } from '@chakra-ui/react'
 import {Heading, Text} from '@chakra-ui/layout'
 import {signOut, useSession} from "next-auth/react";
@@ -21,6 +30,7 @@ import React, {useEffect, useState} from "react";
 import GetCities from "@/app/actions/cities/get";
 import UpdateMe from "@/app/actions/users/update";
 import DeleteMe from "@/app/actions/users/delete";
+import ProfileLoading from "@/app/profile/loading";
 
 
 export default function Account() {
@@ -61,7 +71,8 @@ export default function Account() {
             try {
                 await UpdateMe(values);
 
-                router.push('/profile')
+
+                window.location.reload();
             } catch (error) {
                 console.error(error);
             }
@@ -75,6 +86,8 @@ export default function Account() {
                 console.error(error);
             }
         };
+
+        if (session.status === 'loading') return ProfileLoading();
 
         return (
             <Stack spacing={4} direction='column'>
@@ -168,7 +181,26 @@ export default function Account() {
 
                 <Stack direction='row' spacing={4} justifyContent='center'>
                     <Button onClick={() => signOut()}>Déconnexion</Button>
-                    <Button onClick={() => handleAccountDeactivation()} colorScheme='red'>Désactiver mon compte</Button>
+                    <Popover>
+                        <PopoverTrigger>
+                            <Button colorScheme='red'>Désactiver mon compte</Button>
+                        </PopoverTrigger>
+
+
+                        <PopoverContent>
+                            <PopoverHeader fontWeight='semibold'>Confirmation</PopoverHeader>
+                            <PopoverArrow />
+                            <PopoverCloseButton />
+                            <PopoverBody>
+                                Êtes-vous sûr de vouloir désactiver votre compte ?
+                            </PopoverBody>
+                            <PopoverFooter display='flex' justifyContent='flex-end'>
+                                <ButtonGroup size='sm'>
+                                    <Button onClick={() => handleAccountDeactivation()} colorScheme='red'>Désactiver</Button>
+                                </ButtonGroup>
+                            </PopoverFooter>
+                        </PopoverContent>
+                    </Popover>
                 </Stack>
             </Stack>
         )
