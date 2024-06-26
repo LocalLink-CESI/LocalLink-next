@@ -116,7 +116,7 @@ export default function Home() {
                             <DrawerOverlay>
                                 <DrawerContent>
                                     <DrawerCloseButton />
-                                    <Grid column={""} gap={6} mt={10}>
+                                    <Grid column={""} gap={6} mt={10} overflow={"scroll"}>
                                         <Grid column={""} gap={6}>
                                             <Flex
                                                 direction="column"
@@ -137,12 +137,16 @@ export default function Home() {
                                                 direction="column"
                                                 align="center"
                                                 justify="center"
-                                                bg="brand.900"
                                                 minW="200px"
                                                 minH="200px"
                                                 borderRadius="md"
                                             >
-                                                <h2>NEWS</h2>
+                                                <h2 style={{
+                                                    marginBottom: 30,
+                                                    fontSize: 25,
+                                                    fontWeight: 800,
+                                                    fontFamily: "Montserrat"
+                                                }}>NEWS</h2>
                                                 <p>Dernières nouvelles</p>
                                             </Flex>
                                         </Grid>
