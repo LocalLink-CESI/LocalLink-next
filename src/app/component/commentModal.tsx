@@ -30,7 +30,7 @@ export default function CommentModal({isOpen, onClose, post, userId}) {
                 <ModalBody>
                     <Formik initialValues={{
                         text: '',
-                        userId: post.userId,
+                        userId: userId,
                         postId: post.id,
                     }}
                             onSubmit={
