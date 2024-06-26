@@ -4,6 +4,22 @@ import { authOptions } from "@/lib/authOptions";
 
 import { prisma } from "@/helpers/database";
 
+export async function GetAllUsers() {
+    const session = await getServerSession(authOptions);
+
+    const user = await prisma.user.findUnique({
+        where: {
+            email: session.user.email
+        }
+    });
+
+    if (user.role !== "ADMIN") return new Error("Unauthorized");
+
+    return prisma.user.findMany().catch((error: Error) => {
+        return error;
+    });
+}
+
 export default async function GetMe() {
     let user = await getServerSession(authOptions)
     if (!user || !user.user || !user.user.name) return null;

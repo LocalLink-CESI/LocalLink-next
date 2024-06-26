@@ -71,7 +71,6 @@ export default function Account() {
             try {
                 await UpdateMe(values);
 
-
                 window.location.reload();
             } catch (error) {
                 console.error(error);

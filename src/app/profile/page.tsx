@@ -109,7 +109,7 @@ export default function Profile() {
                         justifyContent={'space-between'}
                         alignItems={'center'}>
 
-                        {/*<UserModal/>*/}
+                        {/*<UpdateUserModal/>*/}
 
                         <PostModal/>
                     </Stack>
