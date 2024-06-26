@@ -6,6 +6,7 @@ import {authOptions} from "@/lib/authOptions";
 
 export default async function DeleteMe() {
     let user = await getServerSession(authOptions)
+
     if (!user || !user.user || !user.user.name) return null;
 
     return prisma.user.update({
@@ -21,24 +22,26 @@ export default async function DeleteMe() {
 }
 
 export async function DeleteUserWithId(id: string) {
-    const user = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
 
-    const userAdmin = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
-            email: user.user.email,
-            role: "ADMIN"
+            email: session.user.email
         }
     });
 
-    if (!userAdmin) return null;
-
-    return prisma.user.delete(
-        {
-            where: {
-                id: id
+    if (user.id === id || user.role === "ADMIN") {
+        return prisma.user.delete(
+            {
+                where: {
+                    id: id
+                }
             }
-        }
-    ).catch((error: Error) => {
-        return error;
-    });
+        ).catch((error: Error) => {
+            return error;
+        });
+
+    }
+
+    return new Error("Unauthorized");
 }
