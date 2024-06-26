@@ -1,13 +1,14 @@
 'use client'
-import {Avatar, Flex, Heading, Stack, Text,} from '@chakra-ui/react';
-import {useSession} from "next-auth/react";
-import {redirect} from "next/navigation";
+import { Avatar, Flex, Heading, Stack, Text, useMediaQuery, } from '@chakra-ui/react';
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import PostModal from "@/app/component/postModal";
-import {Key, useEffect, useState} from "react";
-import {GetPostsWithUserIdWithPagination} from "@/app/actions/posts/get";
+import { Key, useEffect, useState } from "react";
+import { GetPostsWithUserIdWithPagination } from "@/app/actions/posts/get";
 import PostCard from "@components/Home/PostCard";
 import UserModal from "@/app/component/userModal";
-import {GetLikesByUserId} from "@/app/actions/likes/get";
+import { GetLikesByUserId } from "@/app/actions/likes/get";
+
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
@@ -22,17 +23,20 @@ export default function Profile() {
     const userId = user?.id;
 
     const [posts, setPosts] = useState([]);
-
+    const [likes, setLikes] = useState([]);
+    const [isLargerThan1200] = useMediaQuery("(min-width: 1200px)");
+    const [isLargerThan600] = useMediaQuery("(min-width: 600px)");
+    const [isLargerThan400] = useMediaQuery("(min-width: 400px)");
     useEffect(() => {
-        const posts = GetPostsWithUserIdWithPagination({limit: 10, offset: 0}, userId)
+        const posts = GetPostsWithUserIdWithPagination({ limit: 10, offset: 0 }, userId)
         posts.then((data) => {
+            console.log(data, "data")
             setPosts(data)
         })
 
     }, [setPosts, userId])
 
 
-    const [likes, setLikes] = useState([]);
 
     useEffect(() => {
         const likes = GetLikesByUserId(userId)
@@ -42,23 +46,22 @@ export default function Profile() {
     }, [setLikes, userId])
 
     if (!user) return null;
-
     return (
-        <Flex direction={"column"} py={6} margin={"auto"} alignItems={"center"}>
+        <Flex direction={"column"} py={6} margin={"auto"} mx={isLargerThan400 ? 0 : -6} alignItems={"center"}>
             <Stack
+                direction={"row"}
                 borderWidth="1px"
                 borderRadius="lg"
-                w={{sm: '100%', md: '800px'}}
-                direction={{base: 'column', md: 'row'}}
+                w={isLargerThan1200 ? "800px" : isLargerThan600 ? "500px" : "80%"}
                 boxShadow={'xl'}
                 padding={4}>
-                <Flex flex={1}>
+                <Flex flex={1} direction={"row"}>
                     <Avatar name={user.firstName + " " + user.lastName} src={user.image}
-                            aspectRatio={"1/1"}
-                            borderRadius={"lg"}
-                            borderWidth={2}
-                            objectFit="cover"
-                            boxSize="100%"
+                        aspectRatio={1}
+                        borderRadius={"lg"}
+                        borderWidth={2}
+                        objectFit="cover"
+                        boxSize="100%"
                     />
                 </Flex>
                 <Stack
@@ -86,8 +89,8 @@ export default function Profile() {
             </Stack>
 
             <Stack
+                w={isLargerThan1200 ? "auto" : "100%"}
                 borderRadius="lg"
-                direction={{base: 'column', md: 'row'}}
                 mt={"4rem"}
                 padding={4}>
                 <Stack
@@ -111,7 +114,7 @@ export default function Profile() {
 
                         {/*<UserModal/>*/}
 
-                        <PostModal/>
+                        <PostModal />
                     </Stack>
 
                     <Stack
@@ -131,7 +134,7 @@ export default function Profile() {
 
                         {posts.map((post: any, index: Key) => {
                             return (
-                                <PostCard key={index} post={post}/>
+                                <PostCard key={index} post={post} />
                             )
                         })}
 
@@ -143,7 +146,7 @@ export default function Profile() {
             {likes && likes.length > 0 && (
                 <Stack
                     borderRadius="lg"
-                    direction={{base: 'column', md: 'row'}}
+                    direction={{ base: 'column', md: 'row' }}
                     mt={"4rem"}
                     padding={4}>
                     <Stack
@@ -175,7 +178,7 @@ export default function Profile() {
 
                             {likes.map((post: any, index: Key) => {
                                 return (
-                                    <PostCard key={index} post={post}/>
+                                    <PostCard key={index} post={post} />
                                 )
                             })}
 

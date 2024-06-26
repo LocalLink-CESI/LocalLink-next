@@ -1,6 +1,6 @@
 'use server';
 
-import {PostType, prisma} from '@/helpers/database';
+import { PostType, prisma } from '@/helpers/database';
 
 export default async function GetPostsWithPaginationAndType(pagination: { limit: number, offset: number }, type: PostType, cityId: number): Promise<Array<any>> {
     // @ts-ignore
@@ -88,7 +88,7 @@ export async function GetPostWithIdAndType(id: number, type: PostType) {
     };
 
     switch (type) {
-        case PostType.DEFAULT :
+        case PostType.DEFAULT:
             return GetPostWithId(query);
         case PostType.CULTURE:
             return GetCulturePostWithId(query);
@@ -125,7 +125,7 @@ async function GetEventPostWithId(query) {
 
 
 
-export async function GetPostsWithUserIdWithPagination (pagination: {limit:number, offset:number}, id: string) {
+export async function GetPostsWithUserIdWithPagination(pagination: { limit: number, offset: number }, id: string) {
     return prisma.post.findMany({
         take: pagination.limit,
         skip: pagination.offset,
@@ -148,6 +148,16 @@ export async function GetPostsWithUserIdWithPagination (pagination: {limit:numbe
                     }
                 }
             },
+            likes: {
+                select: {
+                    userId: true
+                }
+            },
+            comments: {
+                select: {
+                    userId: true
+                }
+            }
         }
     }).catch((e: Error) => {
         return (e);
@@ -155,7 +165,7 @@ export async function GetPostsWithUserIdWithPagination (pagination: {limit:numbe
 
 }
 
-export async function GetPostsWithUserId (id: string) {
+export async function GetPostsWithUserId(id: string) {
     return prisma.post.findMany({
         where: {
             userId: id

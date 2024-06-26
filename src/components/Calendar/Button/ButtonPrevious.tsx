@@ -15,7 +15,7 @@ const ButtonPrevious: FC<Props> = ({ activeDate, onClick }) => {
       bg={DefaultTheme.colors.primaryButton}
       color={DefaultTheme.colors.white}
       isRound
-      size="sm"
+      size="xs"
       fontSize="15px"
       icon={<MdArrowBackIosNew />}
       onClick={() => onClick(activeDate.getDate(), activeDate.getMonth() - 1)}

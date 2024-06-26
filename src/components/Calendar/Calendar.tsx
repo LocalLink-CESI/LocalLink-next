@@ -16,8 +16,9 @@ const Calendar: FC<Props> = ({ activeDate, onClick }) => {
   return (
     <Box
       w="100%"
-      p={5}
-      px={0}
+      pb={10}
+      px={6}
+      pt={4}
       bg={DefaultTheme.colors.white}
       borderRadius="25px"
       overflow={"hidden"}
