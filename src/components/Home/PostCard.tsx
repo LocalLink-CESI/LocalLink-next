@@ -16,15 +16,15 @@ import {
 import { FiFeather, FiShare, FiThumbsUp } from "react-icons/fi";
 import { shadow, shadowHover } from "../../../theme";
 import Link from "next/link";
-import { GetUserWithId } from "@/app/actions/users/get";
-import { useEffect, useState } from "react";
+import {GetUserWithId} from "@/app/actions/users/get";
+import {useEffect, useState} from "react";
 import CommentModal from "@/app/component/commentModal";
 import { useSession } from "next-auth/react";
 import { Like } from "@/app/actions/likes/create";
 import { PostType } from "@/helpers/database";
 import { useRouter } from "next/navigation";
 
-export default function PostCard({ post }: { post: any }) {
+export default function PostCard({post}: { post: any }) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
     const router = useRouter()
     const { onOpen, onClose, isOpen } = useDisclosure();
@@ -109,6 +109,21 @@ export default function PostCard({ post }: { post: any }) {
                     <Text fontSize={isLargerThan1200 ? 16 : 14}>
                         {post.text}
                     </Text>
+                    {post.type === "eventPost" && (
+                        <>
+                            <Text fontSize={14}
+                                  color='gray.500'>Début: {post.startAt.toLocaleDateString("fr")}</Text>
+                            <Text fontSize={14}
+                                  color='gray.500'>Fin: {post.endAt.toLocaleDateString("fr")}</Text>
+                            {post.localisation && <Text fontSize={14} color='gray.500'>Lieu: {post.localisation}</Text>}
+                        </>
+                    )}
+
+                    {post.type === "salePost" && (
+                        <>
+                            <Text fontSize={14} color='gray.500'>Prix: {post.isDonation ? "Gratuit !" : post.price + "€"}</Text>
+                        </>
+                    )}
                 </CardBody>
                 {post.media ? (<Box aspectRatio={"16/9"} mx={0} position={"relative"}>
                     <Image
@@ -131,18 +146,20 @@ export default function PostCard({ post }: { post: any }) {
                 gap={4}
             >
                 <Tooltip label="J'aime" aria-label="J'aime" placement="bottom">
-                    <Button variant='brandGhostButton' leftIcon={<FiThumbsUp />} onClick={(e) => { handleLike(post.id, post.type, userId) }}>
+                    <Button variant='brandGhostButton' leftIcon={<FiThumbsUp/>} onClick={(e) => {
+                        handleLike(post.id, post.type, userId)
+                    }}>
                         {/* {post.interactions.likes} */} {likeCount}
                     </Button></Tooltip>
                 <Tooltip label="Commenter" aria-label="Commenter" placement="bottom">
-                    <Button variant='brandGhostButton' leftIcon={<FiFeather />} onClick={onOpen}>
+                    <Button variant='brandGhostButton' leftIcon={<FiFeather/>} onClick={onOpen}>
                         {/* {post.interactions.comments} */} {comments.length}
                     </Button></Tooltip>
                 <Tooltip label="Partager" aria-label="Partager" placement="bottom">
-                    <Button variant='brandGhostButton' leftIcon={<FiShare />}>
+                    <Button variant='brandGhostButton' leftIcon={<FiShare/>}>
                     </Button></Tooltip>
             </CardFooter>
-            <CommentModal isOpen={isOpen} onClose={onClose} post={post} userId={userId} />
+            <CommentModal isOpen={isOpen} onClose={onClose} post={post} userId={userId}/>
         </Card>
     )
 }

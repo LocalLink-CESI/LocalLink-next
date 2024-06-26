@@ -109,8 +109,6 @@ export default function PostModal() {
                                             isClosable: true,
                                         });
 
-                                        // await 1000
-
                                         setTimeout(() => {
                                             window.location.reload();
                                         }, 1000);
