@@ -22,7 +22,7 @@ export default function Home() {
         },
     });
 
-    const user = (session as any)?.session?.user
+    const user = (session.data as any)?.session?.user
 
     const onClickDate = (day: number, month: number) => {
         if (typeof day !== 'string' && day != -1) {
@@ -33,12 +33,12 @@ export default function Home() {
     };
 
     useEffect(() => {
+        if (!user) return
         const posts = GetPostsWithPaginationFeed({ limit: 10, offset: 0 }, user?.cityId)
         posts.then((data) => {
             setPosts(data)
         })
-    }, [setPosts]
-    )
+    }, [setPosts, user])
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLargerThan1000] = useMediaQuery("(min-width: 1000px)");
