@@ -2,7 +2,19 @@
 const nextConfig = {
     experimental: {
         forceSwcTransforms: true,
-    }
+    },
+    // images: {
+    //     remotePatterns: [
+    //         {
+    //             protocol: "https",
+    //             hostname: "lh3.googleusercontent.com",
+    //         },
+    //         {
+    //             protocol: "https",
+    //             hostname: "avatars.githubusercontent.com",
+    //         }
+    //     ],
+    // }
 };
 
 import withPWAInit from "@ducanh2912/next-pwa";

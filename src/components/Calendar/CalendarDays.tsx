@@ -1,6 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { DefaultTheme } from '../../assets/styles/theme';
+import { DefaultTheme } from '../../../assets/styles/theme';
 
 export interface ICalendarDay {
   currentMonth: boolean;

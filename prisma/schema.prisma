@@ -7,178 +7,138 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  id                 String    @id @default(cuid())
-  userId             String
-  providerType       String
-  providerId         String
-  providerAccountId  String
-  refreshToken       String?
-  accessToken        String?
-  accessTokenExpires DateTime?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  user               User      @relation(fields: [userId], references: [id])
-
-  @@unique([providerId, providerAccountId])
+enum PostType {
+  DEFAULT
+  EVENT
+  SALE
+  CULTURE
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  userId       String
-  expires      DateTime
-  sessionToken String   @unique
-  accessToken  String   @unique
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  user         User     @relation(fields: [userId], references: [id])
+model Category {
+  id   BigInt @id @default(autoincrement())
+  name String
+  post Post[]
+}
+
+enum Role {
+  USER
+  LEGISLATOR
+  ADMIN
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String          @unique
   emailVerified DateTime?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
 
   firstName String
-  lastName  String
+  lastName  String?
   bio       String?
-
-  password String
-  role     Role   @default(USER)
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
+  password  String
+  role      Role    @default(USER)
+  cityId    Int
+  city      City    @relation(fields: [cityId], references: [id])
 
   posts          Post[]
   likes          Like[]
-  userReads      UserRead[]
   comments       Comment[]
-  userInterested UserInterested[]
+  UserInterested UserInterested[]
 
-  messagesSent     Message[] @relation("sender")
-  messagesReceived Message[] @relation("receiver")
+  isDeactivated Boolean @default(false)
+  isDeleted     Boolean @default(false)
 
-  notifications Notification[]
-  eventPosts    EventPost[]
-  salePost      SalePost[]
-  culturePosts  CulturePost[]
-
-  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model VerificationRequest {
-  id         String   @id @default(cuid())
-  identifier String
-  token      String   @unique
-  expires    DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
-  @@unique([identifier, token])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
 }
 
 model Post {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
-
-  likes         Like[]
-  comments      Comment[]
-  notifications Notification[]
-}
-
-model EventPost {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
-
-  likes         Like[]
-  comments      Comment[]
-  notifications Notification[]
-
-  startAt      DateTime
-  endAt        DateTime
-  localisation String?
-
+  id             BigInt           @id @default(autoincrement())
+  title          String
+  text           String
+  media          Json?
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+  cityId         Int
+  city           City             @relation(fields: [cityId], references: [id])
+  likes          Like[]
+  comments       Comment[]
+  type           PostType
+  // EventPost specific fields
+  startAt        DateTime?
+  endAt          DateTime?
+  localisation   String?
   userInterested UserInterested[]
-}
+  // SalePost specific fields
+  categoryId     BigInt?
+  category       Category?        @relation(fields: [categoryId], references: [id])
+  price          Float?           @default(1)
+  isDonation     Boolean?
 
-model SalePost {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
   isVisible Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
-
-  likes         Like[]
-  comments      Comment[]
-  notifications Notification[]
-
-  categoryId BigInt
-  category   Category @relation(fields: [categoryId], references: [id])
-
-  price      Int?
-  isDonation Boolean
-}
-
-model CulturePost {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
-
-  likes         Like[]
-  comments      Comment[]
-  notifications Notification[]
-
-  userReads UserRead[]
 }
 
 model Like {
@@ -186,24 +146,18 @@ model Like {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  postId        BigInt?
-  post          Post?        @relation(fields: [postId], references: [id])
-  eventPost     EventPost?   @relation(fields: [eventPostId], references: [id])
-  eventPostId   BigInt?
-  salePost      SalePost?    @relation(fields: [salePostId], references: [id])
-  salePostId    BigInt?
-  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
-  culturePostId BigInt?
+  postId BigInt?
+  post   Post?   @relation(fields: [postId], references: [id])
 }
 
 model UserInterested {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  eventPostId BigInt
-  eventPost   EventPost @relation(fields: [eventPostId], references: [id])
+  postId BigInt
+  Post   Post   @relation(fields: [postId], references: [id])
 
-  @@id([userId, eventPostId])
+  @@id([userId, postId])
 }
 
 model City {
@@ -215,39 +169,13 @@ model City {
   latitude  String
   longitude String
 
-  users        User[]
-  posts        Post[]
-  eventPosts   EventPost[]
-  salePosts    SalePost[]
-  culturePosts CulturePost[]
-}
-
-model UserRead {
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  culturePostId BigInt
-  culturePost   CulturePost @relation(fields: [culturePostId], references: [id])
-
-  @@id([userId, culturePostId])
-}
-
-model Category {
-  id        BigInt     @id @default(autoincrement())
-  name      String
-  salePosts SalePost[]
-}
-
-enum Role {
-  USER
-  LEGISLATOR
-  ADMIN
+  users User[]
+  posts Post[]
 }
 
 model Comment {
-  id        BigInt   @id @default(autoincrement())
-  text      String
-  createdAt DateTime @default(now())
+  id   BigInt @id @default(autoincrement())
+  text String
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -255,51 +183,6 @@ model Comment {
   postId BigInt?
   post   Post?   @relation(fields: [postId], references: [id])
 
-  eventPostId BigInt?
-  eventPost   EventPost? @relation(fields: [eventPostId], references: [id])
-
-  salePostId BigInt?
-  salePost   SalePost? @relation(fields: [salePostId], references: [id])
-
-  culturePostId BigInt?
-  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
-}
-
-model Message {
-  id        BigInt   @id @default(autoincrement())
-  content   String
   createdAt DateTime @default(now())
-
-  senderId String
-  sender   User   @relation("sender", fields: [senderId], references: [id])
-
-  receiverId String
-  receiver   User   @relation("receiver", fields: [receiverId], references: [id])
-
-  notifications Notification[]
-}
-
-model Notification {
-  type   String // e.g., "like", "comment", "message"
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  postId BigInt?
-  post   Post?   @relation(fields: [postId], references: [id])
-
-  eventPostId BigInt?
-  eventPost   EventPost? @relation(fields: [eventPostId], references: [id])
-
-  salePostId BigInt?
-  salePost   SalePost? @relation(fields: [salePostId], references: [id])
-
-  culturePostId BigInt?
-  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
-
-  messageId BigInt?
-  message   Message? @relation(fields: [messageId], references: [id])
-
-  @@id([userId, type, createdAt])
+  updatedAt DateTime @updatedAt
 }

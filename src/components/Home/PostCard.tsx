@@ -18,7 +18,7 @@ import { shadow, shadowHover } from "../../../theme";
 import Link from "next/link";
 import {GetUserWithId} from "@/app/actions/users/get";
 import {useEffect, useState} from "react";
-import CommentModal from "@/app/component/commentModal";
+import CommentModal from "@components/Modals/commentModal";
 import { useSession } from "next-auth/react";
 import { Like } from "@/app/actions/likes/create";
 import { PostType } from "@/helpers/database";

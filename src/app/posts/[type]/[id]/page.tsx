@@ -1,12 +1,13 @@
 'use client'
-import {GetPostWithId, GetPostWithIdAndType} from "@/app/actions/posts/get"
+import {GetPostWithIdAndType} from "@/app/actions/posts/get"
 import {GetUserWithId} from "@/app/actions/users/get";
-import PostCard from "@components/Home/PostCard"
+import PostCard from "@/components/Home/PostCard"
 import {Flex} from "@chakra-ui/react";
 import {useSession} from "next-auth/react"
 import {useRouter} from "next/navigation"
 import {useEffect, useState} from "react"
-import CommentCard from "@components/Home/CommentCard";
+import CommentCard from "@/components/Home/CommentCard";
+import ProfileLoading from "@components/Loading";
 
 export default function Page({params}: { params: { type: string, id: string } }) {
     const [post, setPost] = useState(null)
@@ -30,12 +31,14 @@ export default function Page({params}: { params: { type: string, id: string } })
             // router.push('/404')
         })
     }, [setPost])
-    if (!post) return <div>Loading...</div>
+    if (!post) return <ProfileLoading/>
     return (
         <main>
-            <Flex justify="center" h="100%" mx="125" mt={"1rem"} overflow={"hidden"} py={"1rem"}>
+            <Flex justify="center" h="100%" mx={isLargerThan1200 ? "125" : "0"} w={isLargerThan700 ? "auto" : "100%"}
+                  mt={"1rem"} overflow={"hidden"} py={"1rem"}>
 
-                <Flex w={"60%"} direction="column" alignItems={"center"} gap={"3rem"} height={"100%"}>
+                <Flex w={isLargerThan700 ? "60%" : "100%"} direction="column" alignItems={"center"} gap={"3rem"}
+                      height={"100%"}>
                     <PostCard post={post}/>
                     {post.comments.map((comment, index) => {
                         return (

@@ -1,7 +1,7 @@
 import {City} from "@/models/City";
 import {Post} from "@/models/Post";
 
-export default interface User {
+export interface User {
     id: string;
     firstName: string;
     lastName: string;
@@ -15,6 +15,7 @@ export default interface User {
 export interface DetailedUser extends User {
     createdAt: Date;
     updatedAt: Date;
+
     city: City;
     posts: Post[];
 }

@@ -1,25 +1,22 @@
-'use client';
-
 import React from "react";
-import Login from "@components/Login";
+import LoginForm from "@/app/auth/signin/Form";
 import {redirect} from "next/navigation";
 import {useSession} from "next-auth/react";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/lib/authOptions";
 
 type Props = {
     searchParams: Record<"callbackUrl" | "error", string>;
 }
 
-const SignInPage = (props: Props) => {
+const SignInPage = async (props: Props) => {
+    const session = await getServerSession(authOptions);
 
-    useSession({
-        required: false,
-    });
+    if (session) {
+        redirect(props.searchParams.callbackUrl || "/");
+    }
 
-    return (
-        <>
-            <Login error={props.searchParams.error} callbackUrl={props.searchParams.callbackUrl} />
-        </>
-    )
+    return <LoginForm callbackUrl={props.searchParams.callbackUrl} error={props.searchParams.error} />;
 }
 
 export default SignInPage;

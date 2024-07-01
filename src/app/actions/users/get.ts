@@ -1,30 +1,15 @@
 'use server';
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
 
 import { prisma } from "@/helpers/database";
+import {User} from "@/models/User";
 
-export async function GetAllUsers() {
-    const session = await getServerSession(authOptions);
-
-    const user = await prisma.user.findUnique({
-        where: {
-            email: session.user.email
-        }
-    });
-
-    console.log(user);
-
-    if (!user || user.role !== "ADMIN") {
-        return new Error("Unauthorized");
-    }
-
+export async function GetAllUsers() : Promise<User[] | Error>{
     return prisma.user.findMany().catch((error: Error) => {
         return error;
     });
 }
 
-export async function GetUserWithId(id: string) {
+export async function GetUserWithId(id: string) : Promise<User | Error>{
     return prisma.user.findUnique({
         where: {
             id: id

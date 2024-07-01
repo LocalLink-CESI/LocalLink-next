@@ -1,7 +1,7 @@
 import { IconButton } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { MdArrowForwardIos } from 'react-icons/md';
-import { DefaultTheme } from '../../../assets/styles/theme';
+import { DefaultTheme } from '../../../../assets/styles/theme';
 
 type Props = {
   activeDate: Date;

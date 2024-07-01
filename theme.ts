@@ -1,6 +1,4 @@
 import { Button, defineStyle, defineStyleConfig, extendTheme, type ThemeConfig } from '@chakra-ui/react'
-import "@fontsource-variable/open-sans"
-import "@fontsource-variable/montserrat"
 const config: ThemeConfig = {
   initialColorMode: 'light',
   useSystemColorMode: false,

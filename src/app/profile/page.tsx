@@ -2,30 +2,22 @@
 import { Avatar, Flex, Heading, Stack, Text, useMediaQuery, } from '@chakra-ui/react';
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import PostModal from "@/app/component/postModal";
+import PostModal from "@components/Modals/postModal";
 
 import { Key, useEffect, useState } from "react";
 import { GetPostsWithUserId } from "@/app/actions/posts/get";
-import PostCard from "@components/Home/PostCard";
+import PostCard from "@/components/Home/PostCard";
 import { GetLikesByUserId } from "@/app/actions/likes/get";
 import { GetUserWithId } from "@/app/actions/users/get";
-import ProfileLoading from "@/app/profile/loading";
+import ProfileLoading from "@components/Loading";
+
+import {User} from "@/models/User";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
-    interface User {
-        firstName: string;
-        lastName: string;
-        image: string;
-        bio: string;
-    }
 
-    const [user, setUser] = useState<User>({
-        firstName: '',
-        lastName: '',
-        image: '',
-        bio: '',
-    });
+
+    const [user, setUser] = useState<User>();
 
     const session = useSession({
         required: true,
@@ -57,16 +49,6 @@ export default function Profile() {
             setUser(data as User)
         });
     }, [setPosts, userId])
-
-    // const [likes, setLikes] = useState([]);
-    //
-    // useEffect(() => {
-    //     const likes = GetLikesByUserId(userId)
-    //     likes.then((data) => {
-    //         setLikes(data)
-    //     })
-    // }, [setLikes, userId])
-
 
     useEffect(() => {
         const likes = GetLikesByUserId(userId)

@@ -24,14 +24,8 @@ type Props = {
     error?: string;
 }
 
-const Login = (props: Props) => {
+const LoginForm = (props: Props) => {
     const router = useRouter();
-    const [userName, setUserName] = React.useState<string>("");
-    const [password, setPassword] = React.useState<string>("");
-
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    }
 
     const handleGoogleSignIn = async () => {
         await signIn('google', {
@@ -48,8 +42,7 @@ const Login = (props: Props) => {
                 <Stack align={'center'}>
                     <Heading fontSize={'4xl'} w={"100%"}>Heureux de vous revoir !</Heading>
                     <Text fontSize={'lg'} color={'gray.600'}>
-                        Connectez-vous pour profiter de toutes nos <Text as={"span"}
-                                                                         color={'blue.400'}>fonctionalitées</Text> ✌️
+                        Connectez-vous pour profiter de toutes nos <Text color={'blue.400'}>fonctionalitées</Text> ✌️
                     </Text>
                 </Stack>
                 <Box
@@ -112,4 +105,4 @@ const Login = (props: Props) => {
         </Flex>
     )
 }
-export default Login;
+export default LoginForm;

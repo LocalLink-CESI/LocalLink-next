@@ -15,7 +15,7 @@ import {shadow, shadowHover} from "../../../theme";
 import Link from "next/link";
 import {Image} from "@chakra-ui/next-js";
 import {FiFeather, FiShare, FiThumbsUp} from "react-icons/fi";
-import CommentModal from "@/app/component/commentModal";
+import CommentModal from "@components/Modals/commentModal";
 
 export default function CommentCard({comment}: { comment: any }) {
     const {user, text} = comment

@@ -1,10 +1,10 @@
 import type { FC } from 'react';
 import { Box } from '@chakra-ui/react';
-import { DefaultTheme } from '../../assets/styles/theme';
+import { DefaultTheme } from '../../../assets/styles/theme';
 import CalendarHeader from './CalendarHeader';
 import DateHeader from './DateHeader';
 import CalendarDays from './CalendarDays';
-import { shadow } from '../../../theme';
+import { shadow } from '../../../../theme';
 
 type Props = {
   activeDate: Date;

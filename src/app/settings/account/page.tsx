@@ -28,7 +28,7 @@ import {useRouter} from "next/navigation";
 import {Field, Form, Formik, FormikValues} from "formik";
 import React, {useEffect, useState} from "react";
 import GetCities from "@/app/actions/cities/get";
-import ProfileLoading from "@/app/profile/loading";
+import ProfileLoading from "@components/Loading";
 import {DeleteUserWithId} from "@/app/actions/users/delete";
 import {UpdateUserWithId} from "@/app/actions/users/update";
 

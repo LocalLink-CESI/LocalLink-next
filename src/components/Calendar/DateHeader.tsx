@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import { DefaultTheme } from '../../assets/styles/theme';
+import { DefaultTheme } from '../../../assets/styles/theme';
 import { months } from './CalendarHeader';
 type Props = {
   activeDate: Date;

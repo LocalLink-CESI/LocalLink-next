@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Box, Text, useMediaQuery } from '@chakra-ui/react';
-import { DefaultTheme } from '../../assets/styles/theme';
+import { DefaultTheme } from '../../../assets/styles/theme';
 import ButtonNext from './Button/ButtonNext';
 import ButtonPrevious from './Button/ButtonPrevious';
 

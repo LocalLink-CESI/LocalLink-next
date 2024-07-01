@@ -9,13 +9,17 @@ import PrismaClientValidationError = Prisma.PrismaClientValidationError;
 export default async function CreateUser(form: FormikValues) {
     return prisma.user.create({
         data: {
+            name: form.name || form.firstName,
+            image: form.image,
+
             firstName: form.firstName,
             lastName: form.lastName,
-            email: form.email,
-            image: form.image,
-            password: await bcrypt.hash(form.password, 10),
-            cityId: form.cityId,
+
             bio: form.bio,
+            email: form.email,
+            cityId: form.cityId,
+
+            password: await bcrypt.hash(form.password, 10),
         }
     }).catch((error: PrismaClientValidationError) => {
         return error;

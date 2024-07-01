@@ -1,21 +1,23 @@
-'use client';
-
-import { SignUp } from "@components/RegisterForm";
-import {useSession} from "next-auth/react";
+import {RegisterForm} from "@/app/auth/signup/Form";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/lib/authOptions";
 import {redirect} from "next/navigation";
 
 type Props = {
     searchParams: Record<"callbackUrl" | "error", string>;
 }
 
-const SignUpPage = (props: Props) => {
+const SignUpPage = async (props: Props) => {
+    const session = await getServerSession(authOptions);
 
-    useSession({
-        required: false,
-    });
+    console.log(session);
+
+    if (session) {
+        redirect(props.searchParams.callbackUrl || "/");
+    }
 
     return (
-        <SignUp />
+        <RegisterForm />
     )
 }
 
