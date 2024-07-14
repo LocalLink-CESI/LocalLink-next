@@ -5,3 +5,10 @@ export interface Post {
     publishedAt: Date;
     authorId: bigint;
 }
+
+export enum PostType {
+    DEFAULT = 'post',
+    CULTURE = 'culturePost',
+    EVENT = 'eventPost',
+    SALE = 'salePost',
+}

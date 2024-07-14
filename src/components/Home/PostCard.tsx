@@ -10,7 +10,8 @@ import {
     Flex,
     Heading,
     Text,
-    Tooltip, useDisclosure,
+    Tooltip,
+    useDisclosure,
     useMediaQuery
 } from "@chakra-ui/react";
 import {FiFeather, FiShare, FiThumbsUp} from "react-icons/fi";
@@ -22,7 +23,7 @@ import CommentModal from "@/app/component/commentModal";
 import {useSession} from "next-auth/react";
 import {Like} from "@/app/actions/likes/create";
 import {PostType} from "@/helpers/database";
-import {usePathname, useRouter} from "next/navigation";
+import {useRouter} from "next/navigation";
 
 export default function PostCard({post}: { post: any }) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
@@ -67,10 +68,10 @@ export default function PostCard({post}: { post: any }) {
         })
     }, [setPostUser])
 
-    const handleLike = async (postId: number, type: PostType, userId: string) => {
+    const handleLike = async (postId: number, userId: string) => {
         try {
             console.log(likes)
-            await Like(userId, postId, type)
+            await Like(userId, postId)
             if (!likes.includes(userId)) {
                 let buff = likes
                 buff = [...buff, userId]
@@ -154,7 +155,7 @@ export default function PostCard({post}: { post: any }) {
             >
                 <Tooltip label="J'aime" aria-label="J'aime" placement="bottom">
                     <Button variant='brandGhostButton' leftIcon={<FiThumbsUp/>} onClick={(e) => {
-                        handleLike(post.id, post.type, userId)
+                        handleLike(post.id, userId)
                     }}>
                         {/* {post.interactions.likes} */} {likeCount}
                     </Button></Tooltip>

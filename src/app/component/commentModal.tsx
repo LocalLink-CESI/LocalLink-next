@@ -1,8 +1,7 @@
 import {
-    Button, Checkbox, Flex,
+    Button,
     FormControl,
     FormLabel,
-    Input,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -10,14 +9,12 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Select,
-    Toast,
-    Textarea, useToast
+    Textarea,
+    useToast
 } from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import CreateComment from "@/app/actions/comment/create";
-import {useSession} from "next-auth/react";
 
 export default function CommentModal({isOpen, onClose, post, userId}) {
     let toast = useToast();
@@ -36,7 +33,7 @@ export default function CommentModal({isOpen, onClose, post, userId}) {
                             onSubmit={
                                 async (values) => {
                                     try {
-                                        await CreateComment(values, post.type)
+                                        await CreateComment(values)
                                         onClose()
                                         toast({
                                             title: "Commentaire posté",
