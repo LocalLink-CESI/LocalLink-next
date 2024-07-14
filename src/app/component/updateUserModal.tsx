@@ -14,7 +14,8 @@ import {
     ModalOverlay,
     Select,
     Textarea,
-    useDisclosure, Toast, useToast
+    useDisclosure,
+    useToast
 } from "@chakra-ui/react";
 import {Field, Form, Formik, FormikValues} from "formik";
 import {useSession} from "next-auth/react";
@@ -56,7 +57,7 @@ export default function UpdateUserModal({user}: { user: User }) {
 
     if (role !== "ADMIN" && sessionUser.id !== user.id) return null;
 
-    const handleSubmit = async (values : FormikValues) => {
+    const handleSubmit = async (values: FormikValues) => {
         try {
             await UpdateUserWithId(user.id, values);
 

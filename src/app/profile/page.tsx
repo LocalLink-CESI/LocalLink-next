@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import PostModal from "@/app/component/postModal";
 
 import { Key, useEffect, useState } from "react";
-import { GetPostsWithUserId } from "@/app/actions/posts/get";
 import PostCard from "@components/Home/PostCard";
 import { GetLikesByUserId } from "@/app/actions/likes/get";
 import { GetUserWithId } from "@/app/actions/users/get";
@@ -47,10 +46,9 @@ export default function Profile() {
 
     useEffect(() => {
         if (!userId) return;
-        const post = GetPostsWithUserId({ limit: 10, offset: 0 }, userId)
-        post.then((data) => {
-            setPosts(data)
-        })
+        // post.then((data) => {
+        //     setPosts(data)
+        // })
 
         const userData = GetUserWithId(userId)
         userData.then((data) => {

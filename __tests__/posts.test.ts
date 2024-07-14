@@ -1,9 +1,6 @@
 import CreatePost from "../src/app/actions/posts/create";
 import {PostType} from "@/helpers/database";
-import GetPostsWithPaginationAndType, {GetPostsWithPaginationFeed, GetPostWithIdAndType} from "@/app/actions/posts/get";
 import DeletePost from "@/app/actions/posts/delete";
-import {Formik} from "formik";
-import {render, screen, waitFor} from '@testing-library/react'
 import {getServerSession} from "next-auth";
 jest.mock("next-auth");
 
