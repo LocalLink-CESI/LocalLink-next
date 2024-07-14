@@ -29,3 +29,6 @@ migrate:
 	# Run Prisma commands
 	docker-compose exec locallink-next npx prisma generate
 	docker-compose exec locallink-next npx prisma db push
+deploy:
+	git pull origin main
+	make restart-prod
