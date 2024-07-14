@@ -81,6 +81,7 @@ export function SignUp() {
     useEffect(() => {
         const fetchCities = async () => {
             try {
+                // @ts-ignore
                 const fetchedCities: City[] = await GetCities();
                 // Convert bigint to number for city ids
                 const convertedCities = fetchedCities.map(city => ({
