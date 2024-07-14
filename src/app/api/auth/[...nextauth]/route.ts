@@ -26,6 +26,7 @@ const handler = NextAuth({
 
                 if (user) {
                     const userDataClean = await GetUserWithId(user.id);
+                    // @ts-ignore
                     userDataClean.password = undefined;
                     session.session.user = userDataClean;
                     session.session.role = user.role || "user";

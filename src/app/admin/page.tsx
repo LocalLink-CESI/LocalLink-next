@@ -27,7 +27,9 @@ export default function Admin() {
         const posts = GetAllPosts()
         posts.then((data) => {
             console.log(data)
+            // @ts-ignore
             setPosts(data)
+            // @ts-ignore
             setFilteredPosts(data)
         })
 
@@ -41,7 +43,9 @@ export default function Admin() {
     useEffect(() => {
         const users = GetAllUsers()
         users.then((data) => {
+            // @ts-ignore
             setUsers(data)
+            // @ts-ignore
             setFilteredUsers(data)
         })
 

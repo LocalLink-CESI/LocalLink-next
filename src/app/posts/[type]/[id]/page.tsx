@@ -18,6 +18,7 @@ export default function Page({ params }: { params: { type: string, id: string } 
     const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
     useEffect(() => {
         // Get post from the server actions
+        // @ts-ignore
         let post = GetPostWithIdAndType(parseInt(params.id), params.type)
         post.then((data) => {
             // @ts-ignore
