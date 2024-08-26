@@ -15,7 +15,7 @@ import {
     Select,
     Text,
     Textarea,
-    useDisclosure
+    useDisclosure, Toast, useToast
 } from "@chakra-ui/react";
 import { Field, Form, Formik, FormikValues } from "formik";
 import React, { useEffect, useState } from "react";
@@ -27,6 +27,9 @@ import { useSession } from "next-auth/react";
 
 export default function PostModal() {
     const { onOpen, onClose, isOpen } = useDisclosure();
+
+    let toast = useToast();
+
 
     const [type, setType] = useState(PostType.DEFAULT);
     const [categories, setCategories] = useState([])
@@ -97,7 +100,19 @@ export default function PostModal() {
                                 async (values: FormikValues) => {
                                     try {
                                         await CreatePost(values, values.type)
-                                        window.location.reload()
+
+                                        toast({
+                                            title: "Succès",
+                                            description: "Post créé avec succès",
+                                            status: "success",
+                                            duration: 3000,
+                                            isClosable: true,
+                                        });
+
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 1000);
+
                                         onClose()
                                     } catch (e) {
                                         console.error(e)

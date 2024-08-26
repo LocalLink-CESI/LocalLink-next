@@ -2,7 +2,7 @@
 
 import {useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
-import {Box, Button, Select, Stack, Text} from "@chakra-ui/react";
+import {Box, Button, Select, Stack, Text, Toast, useToast} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import {GetAllPosts} from "@/app/actions/posts/get";
 import {GetAllUsers} from "@/app/actions/users/get";
@@ -17,6 +17,8 @@ export default function Admin() {
 
     const router = useRouter();
 
+    let toast = useToast();
+
     const [posts, setPosts] = useState([]);
 
     const [filteredPosts, setFilteredPosts] = useState([])
@@ -25,7 +27,9 @@ export default function Admin() {
         const posts = GetAllPosts()
         posts.then((data) => {
             console.log(data)
+            // @ts-ignore
             setPosts(data)
+            // @ts-ignore
             setFilteredPosts(data)
         })
 
@@ -39,7 +43,9 @@ export default function Admin() {
     useEffect(() => {
         const users = GetAllUsers()
         users.then((data) => {
+            // @ts-ignore
             setUsers(data)
+            // @ts-ignore
             setFilteredUsers(data)
         })
 
@@ -86,6 +92,7 @@ export default function Admin() {
         router.push("/");
     }
 
+
     return (
         <div>
             <h1>Admin Page</h1>
@@ -116,6 +123,18 @@ export default function Admin() {
 
                                         <Button onClick={async () => {
                                             await DeletePost(post.id, post.type)
+
+                                            toast({
+                                                title: "Post supprimé.",
+                                                description: "Le post a été supprimé avec succès.",
+                                                status: "success",
+                                                duration: 9000,
+                                                isClosable: true,
+                                            })
+
+                                            setTimeout(() => {
+                                                window.location.reload();
+                                            }, 1000);
                                         }}>Delete</Button>
                                     </Box>
                                 )
@@ -136,8 +155,20 @@ export default function Admin() {
                                         <UpdateUserModal user={user}/>
 
                                         <Button onClick={async () => {
-                                            DeleteUserWithId(user.id)
-                                        }}>Delete</Button>
+                                            await DeleteUserWithId(user.id)
+
+                                            toast({
+                                                title: "Utilisateur supprimé.",
+                                                description: "L'utilisateur a été supprimé avec succès.",
+                                                status: "success",
+                                                duration: 9000,
+                                                isClosable: true,
+                                            })
+
+                                            setTimeout(() => {
+                                                window.location.reload();
+                                            }, 1000);
+                                        }}>Supprimer</Button>
                                     </Box>
                                 )
                             })}

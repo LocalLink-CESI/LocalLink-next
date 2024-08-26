@@ -30,7 +30,7 @@ export default function CommentModal({isOpen, onClose, post, userId}) {
                 <ModalBody>
                     <Formik initialValues={{
                         text: '',
-                        userId: post.userId,
+                        userId: userId,
                         postId: post.id,
                     }}
                             onSubmit={
@@ -44,6 +44,10 @@ export default function CommentModal({isOpen, onClose, post, userId}) {
                                             duration: 3000,
                                             isClosable: true,
                                         });
+                                        // await 3000 ms
+                                        setTimeout(() => {
+                                            window.location.reload()
+                                        }, 3000)
                                     } catch (e) {
                                         console.error(e)
                                     }

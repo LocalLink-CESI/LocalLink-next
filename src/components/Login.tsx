@@ -66,7 +66,9 @@ const Login = (props: Props) => {
                             onSubmit={async (values, actions) => {
                                 try {
                                     await signIn("credentials", values);
-                                    router.push("/");
+                                    // router push to the home page
+                                    window.location.href = "/";
+
                                 } catch (error) {
                                     console.error(error);
                                 }

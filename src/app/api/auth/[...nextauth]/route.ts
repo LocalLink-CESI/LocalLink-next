@@ -26,13 +26,14 @@ const handler = NextAuth({
 
                 if (user) {
                     const userDataClean = await GetUserWithId(user.id);
+                    // @ts-ignore
                     userDataClean.password = undefined;
                     session.session.user = userDataClean;
                     session.session.role = user.role || "user";
                 } else {
                     const newUser: FormikValues = {
                         firstName: session.session.user.name.split(" ")[0],
-                        lastName: session.session.user.name.split(" ")[1],
+                        lastName: session.session.user.name.split(" ")[1] ?? "",
                         email: session.session.user.email,
                         image: session.session.user.image,
                         password: Math.random().toString(36).substring(7),

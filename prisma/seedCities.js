@@ -1,18 +1,21 @@
 const cities = require("./french_cities.json");
-const {city, $disconnect} = require("@prisma/client");
+const {city, PrismaClient} = require("@prisma/client");
 
 async function main() {
+    const prisma = new PrismaClient();
 
     // foreach element in french_cities.json
     // create a city in the database
+    await prisma.city.deleteMany({})
+
     for (let i = 0; i < 100; i++) {
-        const city = cities[i];
-        await city.create({
+        const ville = cities[i];
+        await prisma.city.create({
             data: {
-                name: city.city,
+                name: ville.city,
                 zipCode: "",
-                latitude: city.lat,
-                longitude: city.lng,
+                latitude: ville.lat,
+                longitude: ville.lng,
             },
         });
     }
@@ -22,7 +25,4 @@ main()
     .catch((e) => {
         console.error(e);
         process.exit(1);
-    })
-    .finally(async () => {
-        await $disconnect();
     });

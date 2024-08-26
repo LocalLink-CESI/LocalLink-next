@@ -175,32 +175,6 @@ export default function Profile() {
 
                 </Stack>
             </Stack>
-
-            {likes && likes.length > 0 && (
-                <Stack
-                    borderRadius="lg"
-                    direction={{ base: 'column', md: 'row' }}
-                    mt={"4rem"}
-                    padding={4}>
-                    <Stack
-                        flex={2}
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap={"1rem"}
-                        p={1}
-                        pt={2}>
-                        <Heading fontSize={'2xl'} fontFamily={'body'} color={"black"}>
-                            Mes likes
-                        </Heading>
-                        {likes.map((post: any, index: Key) => {
-                            return (
-                                <PostCard key={index} post={post} />
-                            )
-                        })}
-                    </Stack>
-                </Stack>
-            )}
         </Flex>
     )
 }

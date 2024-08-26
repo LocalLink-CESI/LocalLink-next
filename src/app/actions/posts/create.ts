@@ -76,7 +76,7 @@ async function CreateSalePost(form: FormikValues, type: PostType, user) {
             media: form.media,
 
             categoryId: form.categoryId,
-            price: form.price,
+            price: form.isDonation ? 0 : form.price,
             isDonation: form.isDonation,
         }
     }).catch((e: PrismaClientValidationError) => {
@@ -96,7 +96,7 @@ async function CreateEventPost(form: FormikValues, type: PostType, user) {
 
             startAt: new Date(form.startAt),
             endAt: new Date(form.endAt),
-            localisation: form.location
+            localisation: form.localisation
         }
     }).catch((e: PrismaClientValidationError) => {
         console.error(e)
