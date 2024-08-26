@@ -26,12 +26,6 @@ type Props = {
 
 const Login = (props: Props) => {
     const router = useRouter();
-    const [userName, setUserName] = React.useState<string>("");
-    const [password, setPassword] = React.useState<string>("");
-
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-    }
 
     const handleGoogleSignIn = async () => {
         await signIn('google', {

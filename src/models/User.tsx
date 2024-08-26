@@ -1,5 +1,6 @@
 import {City} from "@/models/City";
 import {Post} from "@/models/Post";
+import {Like} from "@/models/Like";
 
 export default interface User {
     id: string;
@@ -17,9 +18,5 @@ export interface DetailedUser extends User {
     updatedAt: Date;
     city: City;
     posts: Post[];
-}
-
-export interface UserWithToken {
-    user: User;
-    token: string;
+    likes: Like[];
 }

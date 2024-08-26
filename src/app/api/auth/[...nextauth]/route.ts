@@ -1,65 +1,74 @@
-import NextAuth from "next-auth";
+import NextAuth from "next-auth/next";
 import {authOptions} from "@/lib/authOptions";
 import {prisma} from "@/helpers/database";
-import CreateUser from "@/app/actions/users/create";
-import {GetUserWithId} from "@/app/actions/users/get";
-import {FormikValues} from "formik";
+import {CreateUserFromModel} from "@/app/actions/users/create";
+import User from "@/models/User";
+import {randomUUID} from "node:crypto";
 
 const handler = NextAuth({
-    providers: authOptions.providers,
+        providers: authOptions.providers,
 
-    callbacks: {
-        redirect: async ({url, baseUrl}) => {
-            return url.startsWith(baseUrl) ? url : baseUrl;
-        },
+        callbacks: {
+            async jwt({token, user}) {
+                return {...token, ...user};
+            },
 
-        session: async (session: any) => {
-            session.session.role = "user";
+            async session({session, token}: { session: any, token: any }) {
+                session.user = token as any;
 
-            try {
-                const user = await prisma.user.findUnique({
-                    where: {
-                        email: session.session.user.email,
-                        isDeleted: false
-                    }
-                });
 
-                if (user) {
-                    const userDataClean = await GetUserWithId(user.id);
-                    session.session.user = userDataClean;
-                    session.session.role = user.role || "user";
-                } else {
-                    const newUser: FormikValues = {
-                        firstName: session.session.user.name.split(" ")[0],
-                        lastName: session.session.user.name.split(" ")[1] ?? "",
-                        email: session.session.user.email,
-                        image: session.session.user.image,
-                        password: Math.random().toString(36).substring(7),
-                        cityId: 1,
-                        bio: "",
-                    };
+                console.log("--------------------");
 
-                    await CreateUser(newUser);
+                console.log(session);
 
-                    session.session.user = await prisma.user.findFirst({
+                console.log("--------------------");
+
+
+                try {
+                    const user = await prisma.user.findUnique({
                         where: {
-                            email: session.session.user.email,
+                            email: session.user.email,
+                            isDeleted: false
                         }
                     });
-                    session.session.role = "user";
+
+                    if (!user) {
+                        const newUser: User = {
+                            id: randomUUID(),
+                            firstName: session.user.name,
+                            lastName: session.user.name,
+                            email: session.user.email,
+                            cityId: 1,
+                            bio: "",
+                            image: session.user.image,
+                            role: "USER",
+                        }
+
+                        await CreateUserFromModel(newUser, randomUUID());
+
+                        session.user = await prisma.user.findFirst({
+                            where: {
+                                email: session.user.email,
+                            }
+                        });
+                        session.role = "user";
+                    }
+                } catch (error) {
+                    console.error(error);
                 }
-            } catch (error) {
-                console.error(error);
+
+                return session;
+            },
+        },
+
+        pages:
+            {
+                signIn: '/auth/signin',
+                signOut:
+                    '/auth/signout',
             }
-
-            return session;
-        }
-    },
-
-    pages: {
-        signIn: "/auth/signin",
-        newUser: "/auth/signup",
-    }
-})
+        ,
+    })
+;
 
 export {handler as GET, handler as POST};

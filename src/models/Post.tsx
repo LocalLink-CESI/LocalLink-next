@@ -7,8 +7,8 @@ export interface Post {
 }
 
 export enum PostType {
-    DEFAULT = 'post',
-    CULTURE = 'culturePost',
-    EVENT = 'eventPost',
-    SALE = 'salePost',
+    REGULAR = 'REGULAR',
+    EVENT = 'EVENT',
+    SALE = 'SALE',
+    CULTURE = 'CULTURE',
 }

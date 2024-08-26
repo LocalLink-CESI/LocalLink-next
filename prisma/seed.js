@@ -1,9 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require("bcryptjs");
 const prisma = new PrismaClient();
 
 const PostType = {
     SALE: 'SALE',
     EVENT: 'EVENT',
+    DONATION: 'DONATION',
 }
 
 async function main() {
@@ -52,7 +54,7 @@ async function main() {
             firstName: 'John',
             lastName: 'Doe',
             email: 'john.doe@example.com',
-            password: 'password',
+            password: await bcrypt.hash("password", 10),
             role: 'USER',
             cityId: city1.id,
         },
@@ -63,7 +65,7 @@ async function main() {
             firstName: 'Jane',
             lastName: 'Smith',
             email: 'jane.smith@example.com',
-            password: 'password',
+            password: await bcrypt.hash("password", 10),
             role: 'ADMIN',
             cityId: city2.id,
         },
@@ -79,7 +81,7 @@ async function main() {
             categoryId: category1.id,
             price: 1000,
             isDonation: false,
-            type: PostType.SALE,
+            postType: PostType.SALE,
         },
     });
 
@@ -92,7 +94,7 @@ async function main() {
             startAt: new Date('2024-07-20T09:00:00Z'),
             endAt: new Date('2024-07-20T12:00:00Z'),
             localisation: 'Central Park',
-            type: PostType.EVENT,
+            postType: PostType.EVENT,
         },
     });
 

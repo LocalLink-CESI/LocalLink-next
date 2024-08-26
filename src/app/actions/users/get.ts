@@ -30,7 +30,9 @@ export async function GetUserWithId(id: string) {
             id: id
         },
         include: {
-            city: true
+            city: true,
+            likes: true,
+            posts: true
         }
     }).catch((error: Error) => {
         return error;
