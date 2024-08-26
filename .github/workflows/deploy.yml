@@ -4,6 +4,9 @@ run-name: ${{ github.actor }} - ${{ github.event_name }} - ${{ github.sha }}
 
 env:
   CI: false
+  GOOGLE_ID: "TEST"
+  GOOGLE_SECRET: "TEST"
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 on:
   push:
     branches:
