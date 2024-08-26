@@ -201,7 +201,7 @@ export function SignUp() {
                         onSubmit={async (values, actions) => {
                             try {
                                 let user = await CreateUser(values);
-                                // Put the user in the next session and redirect to the signIn page to login
+                                // Put the user in the next session and redirect to the signin page to login
                                 router.push("/auth/signin")
 
                             } catch (error) {
