@@ -5,10 +5,9 @@ services:
       context: .
       target: next
     environment:
-      - GOOGLE_SECRET=TEST
-      - GOOGLE_ID=TEST
-      - DATABASE_URL=${DATABASE_URL}
-      - NODE_ENV=development
+        - NODE_ENV=development
+    env_file:
+      - .env
     ports:
       - "80:80"
     volumes:
