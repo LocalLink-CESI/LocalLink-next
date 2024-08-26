@@ -16,7 +16,7 @@ on:
       - main
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,10 +26,13 @@ jobs:
           node-version: 20.x
       - run: npm install
       - run: npm run lint
-      - name: Set up environment variables
-        run: |
-          echo "GOOGLE_ID=${{ secrets.GOOGLE_ID }}" >> $GITHUB_ENV
-          echo "GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}" >> $GITHUB_ENV
+      - run: |
+          cat .env.test > .env
+      - run: make test
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
       - run: |
           cat .env.test > .env
       - run: make test
