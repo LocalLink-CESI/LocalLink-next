@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import {FiMenu} from "react-icons/fi";
 import ProfileLoading from "@/app/profile/loading";
+import {GetCityPosts} from "@/app/actions/posts/get";
 
 export default function Home() {
     const [activeDate, setActiveDate] = useState<Date>(new Date());
@@ -40,11 +41,14 @@ export default function Home() {
         }
     };
 
+
     useEffect(() => {
         if (!user) return
-        // posts.then((data) => {
-        //     setPosts(data)
-        // })
+        let posts =  GetCityPosts(user?.cityId, 0, 10)
+         posts.then((data) => {
+             if (data instanceof Error) return console.error(data)
+             setPosts(data)
+        })
     }, [setPosts, user])
 
     const {isOpen, onOpen, onClose} = useDisclosure();

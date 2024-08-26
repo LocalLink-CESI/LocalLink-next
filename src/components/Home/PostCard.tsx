@@ -24,12 +24,9 @@ import {useSession} from "next-auth/react";
 import {Like} from "@/app/actions/likes/create";
 import {PostType} from "@/helpers/database";
 import {useRouter} from "next/navigation";
+import {Post} from ".prisma/client";
 
-export interface Post {
-    post : Post
-}
-
-export default function PostCard({post}: Post) {
+export default function PostCard({post}) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
     const router = useRouter()
     const url = window.location.hostname
