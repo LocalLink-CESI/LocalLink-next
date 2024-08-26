@@ -34,3 +34,6 @@ migrate:
 deploy:
 	git pull origin main
 	make restart-prod
+test:
+	docker compose up -d
+	docker compose exec locallink-next npm run test
