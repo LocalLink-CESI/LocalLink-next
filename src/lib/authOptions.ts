@@ -2,6 +2,7 @@ import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials";
 import {prisma} from "@/helpers/database";
 import bcrypt from "bcryptjs";
+import {Session} from "node:inspector";
 
 const googleId = process.env.GOOGLE_ID
 const googleSecret = process.env.GOOGLE_SECRET
@@ -15,28 +16,25 @@ export const authOptions = {
         CredentialsProvider({
             type: "credentials",
             name: "Credentials",
+
             credentials: {
-                email: {label: "Email Address", type: "email"},
-                password: {label: "Password", type: "password"},
+                email: { label: "Email", type: "email", placeholder: "john.doe@example.com" },
+                password: { label: "Password", type: "password" },
             },
             async authorize(credentials, req) {
-                if (!credentials) return null
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: credentials.email,
+                        isDeleted: false
+                    }
+                });
 
-                try {
-                    const user = await prisma.user.findUnique({
-                        where: {
-                            email: credentials.email,
-                            isDeleted: false
-                        }
-                    });
-
-                    return await bcrypt.compare(credentials.password, user.password) ? user : null
-                } catch (error) {
-                    console.error(error)
-                    return null
+                if (user && bcrypt.compareSync(credentials.password, user.password)) {
+                    return user;
+                } else {
+                    return null;
                 }
-
-            }
+            },
         }),
 
         GoogleProvider({

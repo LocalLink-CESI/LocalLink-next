@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PostType {
+  REGULAR
+  EVENT
+  SALE
+  CULTURE
+}
+
 model Account {
   id                 String    @id @default(cuid())
   userId             String
@@ -65,9 +72,6 @@ model User {
   messagesReceived Message[] @relation("receiver")
 
   notifications Notification[]
-  eventPosts    EventPost[]
-  salePost      SalePost[]
-  culturePosts  CulturePost[]
 
   isDeleted Boolean @default(false)
 }
@@ -102,83 +106,26 @@ model Post {
   likes         Like[]
   comments      Comment[]
   notifications Notification[]
-}
 
-model EventPost {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean @default(true)
+  // Type of the post
+  postType PostType
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
-
-  likes         Like[]
-  comments      Comment[]
-  notifications Notification[]
-
-  startAt      DateTime
-  endAt        DateTime
+  // Event-specific fields
+  startAt      DateTime?
+  endAt        DateTime?
   localisation String?
 
-  userInterested UserInterested[]
-}
-
-model SalePost {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
-
-  likes         Like[]
-  comments      Comment[]
-  notifications Notification[]
-
-  categoryId BigInt
-  category   Category @relation(fields: [categoryId], references: [id])
-
+  // Sale-specific fields
+  categoryId BigInt?
+  category   Category? @relation(fields: [categoryId], references: [id])
   price      Int?
-  isDonation Boolean
-}
+  isDonation Boolean?
 
-model CulturePost {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  cityId Int
-  city   City @relation(fields: [cityId], references: [id])
-
-  likes         Like[]
-  comments      Comment[]
-  notifications Notification[]
-
+  // Culture-specific fields
   userReads UserRead[]
+
+  // Additional fields specific to various post types
+  userInterested UserInterested[]
 }
 
 model Like {
@@ -186,24 +133,18 @@ model Like {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  postId        BigInt?
-  post          Post?        @relation(fields: [postId], references: [id])
-  eventPost     EventPost?   @relation(fields: [eventPostId], references: [id])
-  eventPostId   BigInt?
-  salePost      SalePost?    @relation(fields: [salePostId], references: [id])
-  salePostId    BigInt?
-  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
-  culturePostId BigInt?
+  postId BigInt?
+  post   Post?   @relation(fields: [postId], references: [id])
 }
 
 model UserInterested {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  eventPostId BigInt
-  eventPost   EventPost @relation(fields: [eventPostId], references: [id])
+  postId BigInt
+  post   Post   @relation(fields: [postId], references: [id])
 
-  @@id([userId, eventPostId])
+  @@id([userId, postId])
 }
 
 model City {
@@ -215,27 +156,24 @@ model City {
   latitude  String
   longitude String
 
-  users        User[]
-  posts        Post[]
-  eventPosts   EventPost[]
-  salePosts    SalePost[]
-  culturePosts CulturePost[]
+  users User[]
+  posts Post[]
 }
 
 model UserRead {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  culturePostId BigInt
-  culturePost   CulturePost @relation(fields: [culturePostId], references: [id])
+  postId BigInt
+  post   Post   @relation(fields: [postId], references: [id])
 
-  @@id([userId, culturePostId])
+  @@id([userId, postId])
 }
 
 model Category {
-  id        BigInt     @id @default(autoincrement())
-  name      String
-  salePosts SalePost[]
+  id    BigInt @id @default(autoincrement())
+  name  String
+  posts Post[]
 }
 
 enum Role {
@@ -254,15 +192,6 @@ model Comment {
 
   postId BigInt?
   post   Post?   @relation(fields: [postId], references: [id])
-
-  eventPostId BigInt?
-  eventPost   EventPost? @relation(fields: [eventPostId], references: [id])
-
-  salePostId BigInt?
-  salePost   SalePost? @relation(fields: [salePostId], references: [id])
-
-  culturePostId BigInt?
-  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
 }
 
 model Message {
@@ -288,15 +217,6 @@ model Notification {
 
   postId BigInt?
   post   Post?   @relation(fields: [postId], references: [id])
-
-  eventPostId BigInt?
-  eventPost   EventPost? @relation(fields: [eventPostId], references: [id])
-
-  salePostId BigInt?
-  salePost   SalePost? @relation(fields: [salePostId], references: [id])
-
-  culturePostId BigInt?
-  culturePost   CulturePost? @relation(fields: [culturePostId], references: [id])
 
   messageId BigInt?
   message   Message? @relation(fields: [messageId], references: [id])

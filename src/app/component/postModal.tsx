@@ -99,7 +99,7 @@ export default function PostModal() {
                             onSubmit={
                                 async (values: FormikValues) => {
                                     try {
-                                        await CreatePost(values, values.type)
+                                        await CreatePost(values)
 
                                         toast({
                                             title: "Succès",
