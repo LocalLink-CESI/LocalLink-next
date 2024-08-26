@@ -4,10 +4,6 @@ start:
 seed:
 	docker compose up -d
 	docker compose exec locallink-next node prisma/seed.js
-test:
-	make seed
-	docker compose up -d
-	docker compose exec locallink-next npm run test
 seed-cities:
 	docker compose up -d
 	docker compose exec locallink-next node prisma/seedCities.js
@@ -42,6 +38,7 @@ test:
 	# Run Prisma commands
 	docker compose -f docker-compose.test.yml exec locallink-next npx prisma generate
 	docker compose -f docker-compose.test.yml exec locallink-next npx prisma db push
+	docker compose exec locallink-next node prisma/seed.js
 
 	make seed
 	docker compose -f docker-compose.test.yml exec locallink-next npm run test
