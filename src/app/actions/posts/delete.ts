@@ -2,8 +2,9 @@
 import {PostType, prisma} from '@/helpers/database';
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/authOptions";
+import {instanceOf} from "prop-types";
 
-export default async function DeletePost(id: number, type: PostType) {
+export default async function DeletePost(id: number) {
     const session = await getServerSession(authOptions);
 
     if (!session) {
@@ -17,15 +18,18 @@ export default async function DeletePost(id: number, type: PostType) {
     });
 
 
-    const post = await prisma[type as string].findUnique({
+    const post = await prisma.post.findUnique({
         where: {
             id: id
         }
     });
 
+    if (!post) {
+        return new Error("Post not found");
+    }
 
-    if (user.role !== "ADMIN" || user.id !== post.userId) {
-        return prisma[type as string].delete({
+    if (user.id == post.userId || user.role == "ADMIN") {
+        return prisma.post.delete({
             where: {
                 id: id
             }

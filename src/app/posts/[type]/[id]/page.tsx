@@ -16,12 +16,9 @@ export default function Page({params}: { params: { type: string, id: number } })
     useEffect(() => {
         let post = GetPostById(params.id)
         post.then((data) => {
-            data.type = params.type
-            console.log(data, "data")
             const postUser = GetUserWithId((data as any).userId)
             postUser.then((user) => {
                 setPost({...data, user})
-                console.log(data, user, "data and user")
             })
         }).catch((e) => {
             console.error(e)

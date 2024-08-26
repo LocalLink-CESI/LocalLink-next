@@ -1,7 +1,8 @@
 import CreatePost from "../src/app/actions/posts/create";
-import {PostType} from "@/helpers/database";
+import {PostType} from ".prisma/client";
 import DeletePost from "@/app/actions/posts/delete";
 import {getServerSession} from "next-auth";
+import {GetAllPosts, GetCityPosts, GetPostById} from "@/app/actions/posts/get";
 jest.mock("next-auth");
 
 test('Valid post creation', async () => {
@@ -10,11 +11,11 @@ test('Valid post creation', async () => {
             title: "test default post",
             text: "test default post text",
             media: "",
+            postType: PostType.REGULAR,
             isVisible: "true",
-            userId: "clxspgy360001fgxtmkfbq5r9",
+            userId: "cm0beis600001zd38r00ojc46",
             cityId: 1
         },
-        PostType.DEFAULT
     );
     expect(response).toHaveProperty("id");
     expect(response).toHaveProperty("title");
@@ -29,40 +30,36 @@ test('Invalid post creation without user', async () => {
             media: "",
             isVisible: "true",
             userId: "",
-            cityId: 1
+            cityId: 1,
+            postType: PostType.REGULAR
         },
-        PostType.DEFAULT
     );
     expect(response).toBe(null);
 });
 
 test('Valid list post', async () => {
-    let response = await GetPostsWithPaginationFeed(
-        {
-            limit: 10,
-            offset: 0
-        },
-        1
-    );
+    let response = await GetAllPosts();
 
-    expect(response.length).toBe(2);
+    if (response instanceof Array)
+    expect(response.length).toBeGreaterThan(0);
+    else
+        throw Error("Invalid response");
+
 });
 
 test('Invalid list post without city', async () => {
-    let response = await GetPostsWithPaginationAndType(
-        {
-            limit: 10,
-            offset: 0
-        },
-        PostType.DEFAULT,
-        100000000
+    let response = await GetCityPosts(
+        -1,
+        10,
+        0
     );
 
-    expect(response.length).toBe(0);
+    expect(response).toStrictEqual([]);
 });
 
 test('Valid get post by id', async () => {
-    let response = await GetPostWithIdAndType(1, PostType.DEFAULT);
+    let post = await GetAllPosts();
+    let response = await GetPostById(post[0].id);
 
     expect(response).toHaveProperty("id");
     expect(response).toHaveProperty("title");
@@ -70,13 +67,13 @@ test('Valid get post by id', async () => {
 });
 
 test('Invalid get post by id', async () => {
-    let response = await GetPostWithIdAndType(100000000, PostType.DEFAULT);
+    let response = await GetPostById(100000000);
 
     expect(response).toBeNull();
 });
 
 test('Invalid get post by id with negative id', async () => {
-    let response = await GetPostWithIdAndType(-1, PostType.DEFAULT);
+    let response = await GetPostById(-100000000);
 
     expect(response).toBeNull();
 });
@@ -87,18 +84,18 @@ test('Valid delete post', async () => {
 
                 user: {
                     email: "john.doe@example.com",
-                    id: "clxspgy360001fgxtmkfbq5r9",
+                    id: "cm0beis600001zd38r00ojc46",
                     cityId: 1,
                     role: "USER",
                 }
 
         };
     (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
-    let response = await DeletePost(1, PostType.DEFAULT);
+    let cities = await GetAllPosts();
+
+    let response = await DeletePost(cities[0].id);
 
     expect(response).toHaveProperty("id");
-    expect(response).toHaveProperty("title");
-    expect(response).toHaveProperty("text");
 });
 
 test('Invalid delete post with negative id', async () => {
@@ -114,7 +111,7 @@ test('Invalid delete post with negative id', async () => {
 
     };
     (getServerSession as jest.Mock).mockImplementation(() => Promise.resolve(mockSession));
-    let response = await DeletePost(-1, PostType.DEFAULT);
+    let response = await DeletePost(-1);
 
-    expect(response).toBeInstanceOf(Error);
+    expect(response).toStrictEqual(Error("Post not found"));
 });

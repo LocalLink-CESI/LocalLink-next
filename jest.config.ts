@@ -11,7 +11,6 @@ const config: Config = {
   },
   moduleDirectories: ['node_modules', 'src'],
   modulePaths: ["<rootDir>/src"],
-  setupFiles: ["<rootDir>/__test__/setup-tests.ts"],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@/components/(.*)$': '<rootDir>/components/$1',

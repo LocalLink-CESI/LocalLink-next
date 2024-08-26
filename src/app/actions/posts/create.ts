@@ -5,6 +5,7 @@ import {GetUserWithId} from "@/app/actions/users/get";
 
 import {Prisma} from ".prisma/client";
 import PrismaClientValidationError = Prisma.PrismaClientValidationError;
+import {PostType} from ".prisma/client";
 
 export default async function CreatePost(form: FormikValues) {
     let user = await GetUserWithId(form.userId).catch((e: Error) => {
@@ -21,7 +22,7 @@ export default async function CreatePost(form: FormikValues) {
                 console.error(err);
             });
         } catch (e) {
-            console.error(e);
+            return e;
         }
 
 
@@ -35,9 +36,10 @@ export default async function CreatePost(form: FormikValues) {
             userId: form.userId,
             cityId: user.cityId,
             media: form.media,
-            postType: form.postType
+            postType: form.postType as PostType,
         }
     }).catch((e: PrismaClientValidationError) => {
+        console.error("BVBVVVBBBBBBBBBBBBBBBBB");
         return e;
     });
 }
