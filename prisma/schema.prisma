@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PostType {
+  REGULAR
+  EVENT
+  SALE
+  CULTURE
+}
+
 model Account {
   id                 String    @id @default(cuid())
   userId             String
@@ -78,13 +85,6 @@ model VerificationRequest {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, token])
-}
-
-enum PostType {
-  REGULAR
-  EVENT
-  SALE
-  CULTURE
 }
 
 model Post {

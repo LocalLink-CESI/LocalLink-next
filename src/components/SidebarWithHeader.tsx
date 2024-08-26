@@ -45,9 +45,10 @@ const LinkItems: Array<LinkItemProps> = [
 
 export default function SidebarWithHeader({ children }: { children: ReactNode }) {
     const session = useSession();
+    const user = session.data?.user
+
     const path = usePathname();
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const user = (session.data as any)?.session?.user as any;
 
     const router = useRouter();
 
@@ -128,7 +129,7 @@ const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
                                     Account: {user?.email}
                                 </MenuItem>
 
-                                {user.role === "ADMIN" && (
+                                {user?.role === "ADMIN" && (
                                     <MenuItem _hover={{ bg: "brand.900", color: "black", fontWeight: "700" }}
                                         transition="all 0.2s ease" onClick={() => router.push("/admin")}>
                                         Admin

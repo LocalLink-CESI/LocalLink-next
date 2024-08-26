@@ -1,9 +1,9 @@
 'use client'
 import "./globals.css";
 import * as React from 'react'
-import { Providers } from './providers'
+import Providers from "@/app/Providers";
 import SidebarWithHeader from "@/components/SidebarWithHeader";
-import { metadata, viewport } from './metadata';
+import { metadata    } from './metadata';
 
 export default function RootLayout({
     children,
