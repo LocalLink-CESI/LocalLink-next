@@ -29,6 +29,8 @@ export const authOptions = {
                     }
                 });
 
+                console.log("USER", user);
+
                 if (user && bcrypt.compareSync(credentials.password, user.password)) {
                     return user;
                 } else {

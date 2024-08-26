@@ -2,8 +2,6 @@
 import {GetUserWithId} from "@/app/actions/users/get";
 import PostCard from "@components/Home/PostCard"
 import {Flex, useMediaQuery} from "@chakra-ui/react";
-import {useSession} from "next-auth/react"
-import {useRouter} from "next/navigation"
 import {useEffect, useState} from "react"
 import CommentCard from "@components/Home/CommentCard";
 import ProfileLoading from "@/app/profile/loading";
@@ -11,16 +9,13 @@ import {GetPostById} from "@/app/actions/posts/get";
 
 export default function Page({params}: { params: { type: string, id: number } }) {
     const [post, setPost] = useState(null)
-    const {data: session, status} = useSession()
-    const user = (session as any)?.session?.user
-    const router = useRouter()
+
     const [isLargerThan1200] = useMediaQuery("(min-width: 1200px)");
     const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
+
     useEffect(() => {
-        // Get post from the server actions
         let post = GetPostById(params.id)
         post.then((data) => {
-            // @ts-ignore
             data.type = params.type
             console.log(data, "data")
             const postUser = GetUserWithId((data as any).userId)
@@ -30,10 +25,11 @@ export default function Page({params}: { params: { type: string, id: number } })
             })
         }).catch((e) => {
             console.error(e)
-            // router.push('/404')
         })
-    }, [setPost])
+    }, [params.id, params.type, setPost])
+
     if (!post) return <ProfileLoading/>
+
     return (
         <main>
             <Flex justify="center" h="100%" mx={isLargerThan1200 ? "125" : "0"} w={isLargerThan700 ? "auto" : "100%"}
