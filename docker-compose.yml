@@ -6,6 +6,8 @@ services:
       target: next
     environment:
       - NODE_ENV=development
+      - GOOGLE_ID=${GOOGLE_ID}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
     env_file:
       - .env
     ports:
