@@ -6,8 +6,6 @@ services:
       target: next
     environment:
       - NODE_ENV=development
-    env_file:
-      - .env.test
     ports:
       - "80:80"
     volumes:
