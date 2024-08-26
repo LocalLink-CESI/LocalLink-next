@@ -7,7 +7,7 @@ services:
     environment:
       - GOOGLE_SECRET=TEST
       - GOOGLE_ID=TEST
-      - DATABASE_URL=${{ secrets.DATABASE_URL }}
+      - DATABASE_URL=${DATABASE_URL}
       - NODE_ENV=development
     ports:
       - "80:80"
