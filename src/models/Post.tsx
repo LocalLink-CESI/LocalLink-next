@@ -2,8 +2,11 @@ export interface Post {
     id: bigint;
     title: string;
     content: string;
-    publishedAt: Date;
-    authorId: bigint;
+    type: PostType;
+    cityId: bigint;
+    userId: bigint;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export enum PostType {

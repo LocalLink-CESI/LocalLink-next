@@ -4,7 +4,6 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/authOptions";
 
 export default async function DeletePost(id: number, type: PostType) {
-    // check if user is allowed to delete post
     const session = await getServerSession(authOptions);
 
     if (!session) {

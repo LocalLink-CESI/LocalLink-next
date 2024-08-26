@@ -2,6 +2,7 @@
 import {prisma} from '@/helpers/database';
 import {FormikValues} from "formik";
 import {GetUserWithId} from "@/app/actions/users/get";
+
 import {Prisma} from ".prisma/client";
 import PrismaClientValidationError = Prisma.PrismaClientValidationError;
 
@@ -27,22 +28,16 @@ export default async function CreatePost(form: FormikValues) {
         form.media = uuid + ".png";
     }
 
-    // return prisma.post.create({
-    //     data: {
-    //         text: form.text,
-    //         media: form.media,
-    //         userId: form.userId,
-    //         cityId: user.cityId,
-    //         type: form.type,
-    //         categoryId: form.categoryId,
-    //         price: form.price,
-    //         category: {
-    //             connect: {
-    //                 id: form.categoryId
-    //             }
-    //         },
-    //     }
-    // }).catch((e: PrismaClientValidationError) => {
-    //     return e;
-    // });
+    return prisma.post.create({
+        data: {
+            title: form.title,
+            text: form.text,
+            userId: form.userId,
+            cityId: user.cityId,
+            media: form.media,
+            postType: form.postType
+        }
+    }).catch((e: PrismaClientValidationError) => {
+        return e;
+    });
 }
