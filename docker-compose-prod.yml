@@ -8,14 +8,43 @@ services:
       - NODE_ENV=development
     env_file:
       - .env
-    ports:
-      - "3000:80"
     volumes:
       - ".:/app"
     command: ["npm", "run", "dev"]
     depends_on:
       locallink-db:
         condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`locallink.site`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      - "traefik.http.services.whoami.loadbalancer.server.port=80"
+      - "traefik.docker.network=internet"
+    networks:
+      - locallink
+
+  traefik:
+    image: "traefik:v3.1"
+    container_name: "traefik"
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=hamoncelian@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "443:443"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - locallink
 
   locallink-db:
     container_name: locallink-db
@@ -34,13 +63,21 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - locallink
 
-  locallink-adminer:
-    container_name: locallink-adminer
-    image: adminer
-    #    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      locallink-db:
-        condition: service_healthy
+  # locallink-adminer:
+  #   container_name: locallink-adminer
+  #   image: adminer
+  #   #    restart: always
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     locallink-db:
+  #       condition: service_healthy
+
+networks:
+  locallink:
+    driver: bridge
+    external: true
+    name: locallink

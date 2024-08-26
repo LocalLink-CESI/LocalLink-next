@@ -13,6 +13,8 @@ seed-cities:
 	docker compose exec locallink-next node prisma/seedCities.js
 start-prod:
 	docker compose -f docker-compose-prod.yml up -d
+stop-prod:
+	docker compose -f docker-compose-prod.yml down
 stop:
 	docker compose down
 restart:
@@ -20,8 +22,8 @@ restart:
 	docker compose up -d
 	make migrate
 restart-prod:
-	docker compose -f docker-compose-prod.yml down
-	docker compose -f docker-compose-prod.yml up -d
+	make stop-prod
+	make start-prod
 migrate:
 	# Wait for the database to become healthy
 	docker compose exec locallink-db pg_isready -U postgres -q -h locallink-db
