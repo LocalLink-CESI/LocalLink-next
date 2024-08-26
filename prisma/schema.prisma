@@ -87,6 +87,13 @@ model VerificationRequest {
   @@unique([identifier, token])
 }
 
+enum PostType {
+  REGULAR
+  EVENT
+  SALE
+  CULTURE
+}
+
 model Post {
   id        BigInt  @id @default(autoincrement())
   title     String
