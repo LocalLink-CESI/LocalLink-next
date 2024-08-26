@@ -36,4 +36,5 @@ deploy:
 	make restart-prod
 test:
 	docker compose -f docker-compose.test.yml up -d
+	make migrate
 	docker compose exec locallink-next npm run test
