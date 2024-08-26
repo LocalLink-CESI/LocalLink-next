@@ -36,5 +36,10 @@ deploy:
 	make restart-prod
 test:
 	docker compose -f docker-compose.test.yml up -d
-	make migrate
-	docker compose exec locallink-next npm run test
+	# Wait for the database to become healthy
+	docker compose -f docker-compose.test.yml exec locallink-db pg_isready -U postgres -q -h locallink-db
+
+	# Run Prisma commands
+	docker compose -f docker-compose.test.yml exec locallink-next npx prisma generate
+	docker compose -f docker-compose.test.yml exec locallink-next npx prisma db push
+	docker compose -f docker-compose.test.yml exec locallink-next npm run test
