@@ -35,5 +35,5 @@ deploy:
 	git pull origin main
 	make restart-prod
 test:
-	docker compose up -d
+	docker compose -f docker-compose.test.yml up -d
 	docker compose exec locallink-next npm run test
