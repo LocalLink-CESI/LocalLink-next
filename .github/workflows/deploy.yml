@@ -30,6 +30,8 @@ jobs:
         run: |
           echo "GOOGLE_ID=${{ secrets.GOOGLE_ID }}" >> $GITHUB_ENV
           echo "GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }}" >> $GITHUB_ENV
+      - run: |
+          cat .env.test > .env
       - run: make test
 
   deploy:

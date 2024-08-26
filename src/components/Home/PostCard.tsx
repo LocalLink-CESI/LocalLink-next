@@ -25,7 +25,11 @@ import {Like} from "@/app/actions/likes/create";
 import {PostType} from "@/helpers/database";
 import {useRouter} from "next/navigation";
 
-export default function PostCard({post}: { post: any }) {
+export interface Post {
+    post : Post
+}
+
+export default function PostCard({post}: Post) {
     // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
     const router = useRouter()
     const url = window.location.hostname
