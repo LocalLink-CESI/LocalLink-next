@@ -58,11 +58,11 @@ export default function SidebarWithHeader({ children }: { children: ReactNode })
 
     return (
         <Flex h="100dvh" bg="white" direction="column">
-            <SidebarContent onClose={onClose} display={{ base: 'none', md: 'flex' }} user={user} />
+            <SidebarContent onClose={onClose} display={{ base: 'none', md: 'flex' }} user={user as User} />
             <Drawer autoFocus={false} isOpen={isOpen} placement="left" onClose={onClose} returnFocusOnClose={false}
                 onOverlayClick={onClose} size="full">
                 <DrawerContent>
-                    <SidebarContent onClose={onClose} user={user} />
+                    <SidebarContent onClose={onClose} user={user as User} />
                 </DrawerContent>
             </Drawer>
             <MobileNav onOpen={onOpen} />
