@@ -24,7 +24,7 @@ import {
     useDisclosure,
     VStack
 } from '@chakra-ui/react';
-import { FiBell, FiChevronDown, FiHome, FiMenu, FiSettings, FiUser } from 'react-icons/fi';
+import { FiChevronDown, FiHome, FiMenu, FiSettings, FiUser } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { usePathname, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
@@ -52,7 +52,7 @@ export default function SidebarWithHeader({ children }: { children: ReactNode })
 
     const router = useRouter();
 
-    if (!session || (session.status === "unauthenticated" && path !== "/auth/signIn" && path !== "/auth/signup")) {
+    if (!session || (session.status === "unauthenticated" && path !== "/auth/signin" && path !== "/auth/signup")) {
         router.push("/auth/signin");
     }
 
