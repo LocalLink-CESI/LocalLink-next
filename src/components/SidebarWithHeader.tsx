@@ -52,7 +52,7 @@ export default function SidebarWithHeader({ children }: { children: ReactNode })
 
     const router = useRouter();
 
-    if (!session || (session.status === "unauthenticated" && path !== "/auth/signin" && path !== "/auth/signup")) {
+    if (!session || (session.status === "unauthenticated" && path !== "/auth/signIn" && path !== "/auth/signup")) {
         router.push("/auth/signin");
     }
 

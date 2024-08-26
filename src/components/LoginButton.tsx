@@ -7,7 +7,7 @@ import Link from "next/link";
 export const LoginButton = () => {
     return (
         <Button>
-            <Link href={"/auth/signin"}>Login</Link>
+            <Link href={"/auth/signIn"}>Login</Link>
         </Button>
     )
 }

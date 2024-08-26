@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react";
 import CreateUser from "@/app/actions/users/create";
 import GetCities from "@/app/actions/cities/get";
-import { Formik, Field, Form, FormikHelpers } from 'formik';
-import {City} from "@/models/City";
+import { Formik, Field, Form } from 'formik';
 
 import {
     Flex,
@@ -26,8 +25,7 @@ import {
     Select
 } from '@chakra-ui/react'
 import {brandPrimary} from '../../theme';
-import {useSession} from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 
@@ -203,7 +201,7 @@ export function SignUp() {
                         onSubmit={async (values, actions) => {
                             try {
                                 let user = await CreateUser(values);
-                                // Put the user in the next session and redirect to the signin page to login
+                                // Put the user in the next session and redirect to the signIn page to login
                                 router.push("/auth/signin")
 
                             } catch (error) {

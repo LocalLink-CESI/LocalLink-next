@@ -2,7 +2,6 @@
 
 import React from "react";
 import Login from "@components/Login";
-import {redirect} from "next/navigation";
 import {useSession} from "next-auth/react";
 
 type Props = {
