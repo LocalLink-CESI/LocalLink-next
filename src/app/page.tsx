@@ -2,7 +2,7 @@
 
 import PostCard from "@/components/Home/PostCard";
 import Calendar from '../components/Calendar/Calendar';
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import GetPostsWithPaginationAndType, { GetPostsWithPaginationFeed } from "./actions/posts/get";
@@ -10,11 +10,12 @@ import { PostType } from "@/helpers/database";
 import { Flex, Grid, useMediaQuery, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure, IconButton, Text, Container } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
 import ProfileLoading from "@/app/profile/loading";
+import { GetLikesByUserId } from "./actions/likes/get";
 
 export default function Home() {
     const [activeDate, setActiveDate] = useState<Date>(new Date());
     const [posts, setPosts] = useState([]);
-
+    const [likes, setLikes] = useState<any[] | void>([]);
     const session = useSession({
         required: true,
         onUnauthenticated() {
@@ -40,6 +41,18 @@ export default function Home() {
         })
     }, [setPosts, user])
 
+    useEffect(() => {
+        if (!user) return
+        const likes = GetLikesByUserId(user.id)
+        likes.then((data) => {
+            // Get only the post IDs in the likes
+            setLikes((data as { id: bigint; userId: string; postId: bigint; eventPostId: bigint; salePostId: bigint; culturePostId: bigint; }[])?.map((like) => like.postId))
+        })
+    }, [setLikes, user?.id])
+    useEffect(() => {
+        console.log(likes, "likes")
+    }, [likes])
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLargerThan1000] = useMediaQuery("(min-width: 1000px)");
     const [isLargerThan1600] = useMediaQuery("(min-width: 1600px)");
@@ -53,7 +66,7 @@ export default function Home() {
 
                 <Flex order={isLargerThan800 ? 0 : 3} w={isLargerThan800 ? isLargerThan1000 ? "70%" : isLargerThan1600 ? "100%" : "60%" : "100%"} direction="column" alignItems={"center"} gap={"3rem"} height={"100%"}>
                     {posts.map((post, index) => (
-                        <PostCard key={index} post={post} />
+                        <PostCard key={index} post={post} userLikes={likes} setUserLikes={setLikes} />
                     ))}
                 </Flex>
 
