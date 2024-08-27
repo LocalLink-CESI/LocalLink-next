@@ -44,7 +44,7 @@ const handler = NextAuth({
                             firstName: session.user.name.split(" ")[0] || "?",
                             lastName: session.user.name.split(" ")[1] || "?",
                             email: session.user.email,
-                            cityId: 313,
+                            cityId: 315,
                             bio: "",
                             image: session.user.image,
                             role: "USER",

@@ -4,6 +4,7 @@ import {authOptions} from "@/lib/authOptions";
 
 import {prisma} from "@/helpers/database";
 import {FormikValues} from "formik";
+import {Role} from "@/models/User";
 
 export async function UpdateUserWithId(id: string, form: FormikValues) {
     const session = await getServerSession(authOptions);
@@ -27,7 +28,7 @@ export async function UpdateUserWithId(id: string, form: FormikValues) {
                     cityId: Number(form.cityId),
                     bio: form.bio,
                     image: form.image,
-                    role: user.role === "ADMIN" ? form.role : 'USER'
+                    role: user.role === "ADMIN" ? form.role : Role.USER
                 }
             }
         ).catch((error: Error) => {

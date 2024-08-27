@@ -1,4 +1,4 @@
-import CreatePost from "../src/app/actions/posts/create";
+import CreatePost from "@/app/actions/posts/create";
 import {PostType} from ".prisma/client";
 import DeletePost from "@/app/actions/posts/delete";
 import {getServerSession} from "next-auth";

@@ -88,12 +88,12 @@ model VerificationRequest {
 }
 
 model Post {
-  id        BigInt  @id @default(autoincrement())
-  title     String
-  text      String
-  media     Json?
-  isVisible Boolean @default(true)
+  id    BigInt @id @default(autoincrement())
+  title String
+  text  String
+  media Json?
 
+  isVisible Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

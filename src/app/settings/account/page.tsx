@@ -66,12 +66,13 @@ export default function Account() {
     }, []);
 
     if (session.data) {
+        const user = session.data.user
 
-        const user = (session.data as any)?.session?.user;
+        console.log(user)
 
         const handleSubmit = async (values: FormikValues) => {
             try {
-                await UpdateUserWithId(user.id, values);
+                await UpdateUserWithId(user?.id, values);
 
                 toast({
                     title: "Compte mis à jour",

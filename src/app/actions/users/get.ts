@@ -13,15 +13,11 @@ export async function GetAllUsers() {
         }
     });
 
-    console.log(user);
-
     if (!user || user.role !== "ADMIN") {
         return new Error("Unauthorized");
     }
 
-    return prisma.user.findMany().catch((error: Error) => {
-        return error;
-    });
+    return prisma.user.findMany()
 }
 
 export async function GetUserWithId(id: string) {
@@ -34,7 +30,5 @@ export async function GetUserWithId(id: string) {
             likes: true,
             posts: true
         }
-    }).catch((error: Error) => {
-        return error;
-    });
+    })
 }

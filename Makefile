@@ -34,6 +34,7 @@ test:
 	docker compose -f docker-compose.test.yml up -d
 	docker compose -f docker-compose.test.yml exec locallink-db pg_isready -U postgres -q -h locallink-db
 	docker compose -f docker-compose.test.yml exec locallink-next npx prisma generate
-	docker compose -f docker-compose.test.yml exec locallink-next npx prisma db push
+	docker compose -f docker-compose.test.yml exec locallink-next npx prisma db push --force-reset
 	docker compose exec locallink-next node prisma/seed.js
+	docker compose exec locallink-next node prisma/seedCities.js
 	docker compose -f docker-compose.test.yml exec locallink-next npm run test
