@@ -20,30 +20,28 @@ import {
 import { Field, Form, Formik, FormikValues } from "formik";
 import React, { useEffect, useState } from "react";
 import CreatePost from "@/app/actions/posts/create";
-import { PostType, postTypeMap, postTypeValuesMap } from "@/helpers/database";
+import { postTypeMap, postTypeValuesMap, PostType } from "@/helpers/database";
 import { Category } from "@prisma/client";
 import GetCategories from "@/app/actions/categories/get";
 import { useSession } from "next-auth/react";
+import { PostType as TruePostType } from ".prisma/client";
 
 export default function PostModal() {
     const { onOpen, onClose, isOpen } = useDisclosure();
 
     let toast = useToast();
 
-
-    const [type, setType] = useState(PostType.DEFAULT);
+    const [type, setType] = useState("REGULAR");
     const [categories, setCategories] = useState([])
     const [mediaPreview, setMediaPreview] = useState('');
 
     const handleTypeChange = (e) => {
         setType(e.target.value);
+        console.log(e.target.value)
     }
 
-    let session = useSession();
-    let userId = null;
-    if (session.status === "authenticated" && (session.data as any).session) {
-        userId = (session.data as any).session?.user.id;
-    }
+    const session = useSession();
+    const userId = session.data?.user.id;
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -94,12 +92,13 @@ export default function PostModal() {
                             isDonation: false,
                             categoryId: 1,
                             localisation: '',
-                            type: PostType.DEFAULT,
+                            type: TruePostType.REGULAR,
                         }}
                             onSubmit={
                                 async (values: FormikValues) => {
                                     try {
-                                        await CreatePost(values)
+                                        let response = await CreatePost(values)
+                                        console.log(response);
 
                                         toast({
                                             title: "Succès",

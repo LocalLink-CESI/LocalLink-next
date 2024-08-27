@@ -11,7 +11,7 @@ test('Valid post creation', async () => {
             title: "test default post",
             text: "test default post text",
             media: "",
-            postType: PostType.REGULAR,
+            type: PostType.REGULAR,
             isVisible: "true",
             userId: "cm0beis600001zd38r00ojc46",
             cityId: 1
@@ -31,7 +31,7 @@ test('Invalid post creation without user', async () => {
             isVisible: "true",
             userId: "",
             cityId: 1,
-            postType: PostType.REGULAR
+            type: PostType.REGULAR
         },
     );
     expect(response).toBe(null);

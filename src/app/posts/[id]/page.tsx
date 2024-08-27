@@ -14,12 +14,9 @@ export default function Page({params}: { params: { type: string, id: number } })
     const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
 
     useEffect(() => {
-        let post = GetPostById(params.id)
+        let post = GetPostById(params.id, true)
         post.then((data) => {
-            const postUser = GetUserWithId((data as any).userId)
-            postUser.then((user) => {
-                setPost({...data, user})
-            })
+            setPost(data)
         }).catch((e) => {
             console.error(e)
         })

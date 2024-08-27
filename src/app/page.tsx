@@ -31,7 +31,8 @@ export default function Home() {
         },
     });
 
-    const user = (session.data as any)?.session?.user
+    let user = null;
+    if (session.data) user = session.data.user;
 
     const onClickDate = (day: number, month: number) => {
         if (typeof day !== 'string' && day != -1) {
@@ -43,8 +44,11 @@ export default function Home() {
 
 
     useEffect(() => {
-        if (!user) return
-        let posts =  GetCityPosts(user?.cityId, 0, 10)
+        if (!user) return;
+        console.log(user)
+
+        let posts= GetCityPosts(user?.cityId, 10, 1)
+
          posts.then((data) => {
              if (data instanceof Error) return console.error(data)
              setPosts(data)

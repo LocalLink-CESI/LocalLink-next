@@ -12,7 +12,9 @@ export default async function CreatePost(form: FormikValues) {
         return e;
     });
 
-    if (user instanceof Error || user == null) return user;
+    if (user instanceof Error) {
+        return user;
+    }
 
     if (form.media) {
         const b64 = form.media.replace(/^data:image\/png;base64,/, "")
@@ -36,10 +38,9 @@ export default async function CreatePost(form: FormikValues) {
             userId: form.userId,
             cityId: user.cityId,
             media: form.media,
-            postType: form.postType as PostType,
+            postType: form.type as PostType,
         }
     }).catch((e: PrismaClientValidationError) => {
-        console.error("BVBVVVBBBBBBBBBBBBBBBBB");
-        return e;
+        console.error(e);
     });
 }

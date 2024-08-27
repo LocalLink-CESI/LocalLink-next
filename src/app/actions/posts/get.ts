@@ -25,6 +25,19 @@ export async function GetCityPosts(cityId: number, limit: number, offset: number
         where: {
             cityId: cityId
         },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                    city: true,
+                }
+            },
+            likes: true,
+            comments: true,
+        },
         take: limit,
         skip: offset
     }).catch((e: Error) => {
@@ -32,10 +45,58 @@ export async function GetCityPosts(cityId: number, limit: number, offset: number
     });
 }
 
-export async function GetPostById(id: number) {
+export async function GetPostById(id: number, includeComments: boolean = false) {
     return prisma.post.findUnique({
         where: {
             id: id
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                    city: true,
+                }
+            },
+            likes: true,
+            comments: {
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            image: true,
+                            city: true,
+                        }
+                    }
+                }
+            },
+        }
+    }).catch((e: Error) => {
+        return (e);
+    });
+}
+
+export async function GetPostByUserId(userId: string) {
+    return prisma.post.findMany({
+        where: {
+            userId: userId
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                    city: true,
+                }
+            },
+            likes: true,
+            comments: true,
         }
     }).catch((e: Error) => {
         return (e);

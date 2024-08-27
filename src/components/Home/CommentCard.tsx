@@ -3,7 +3,7 @@ import {shadow, shadowHover} from "../../../theme";
 
 export default function CommentCard({comment}: { comment: any }) {
     const {user, text} = comment
-    console.log(user, text)
+
     return (
         <Card w={"100%"} borderRadius={"20px"} boxShadow={shadow} cursor={"pointer"}
               transition={"box-shadow 0.2s ease-in-out"} _hover={{boxShadow: shadowHover}}>

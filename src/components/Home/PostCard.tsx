@@ -38,27 +38,9 @@ export default function PostCard({post}) {
     const [commentCount, setCommentCount] = useState(post.comments.length)
 
     let session = useSession();
-    let userId = null;
-    if (session.status === "authenticated" && (session as any)?.data?.session) {
-        userId = (session as any)?.data?.session?.user?.id;
-    }
-    // console.log(postUser)
-    // const relativeDate = (date: Date) => {
-    //     const diff = new Date().getTime() - date.getTime()
-    //     const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    //     if (days > 0) {
-    //         return `Il y a ${days} jours`
-    //     }
-    //     const hours = Math.floor(diff / (1000 * 60 * 60))
-    //     if (hours > 0) {
-    //         return `Il y a ${hours} heures`
-    //     }
-    //     const minutes = Math.floor(diff / (1000 * 60))
-    //     if (minutes >= 0) {
-    //         return `Il y a ${minutes} minutes`
-    //     }
-    //     return ""
-    // }
+    let userId = session.data?.user.id;
+
+
     useEffect(() => {
         const postUserFetch = GetUserWithId(post.userId)
         postUserFetch.then((data) => {
@@ -94,7 +76,7 @@ export default function PostCard({post}) {
     return (
         <Card w={isLargerThan1200 ? "auto" : "75%"} borderRadius={"20px"} boxShadow={shadow} cursor={"pointer"}
               transition={"box-shadow 0.2s ease-in-out"} _hover={{boxShadow: shadowHover}}>
-            <Link href={"/posts/" + post.type + "/" + post.id}>
+            <Link href={"/posts/" + post.id}>
                 <CardHeader>
                     <Flex gap='0'>
                         <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>

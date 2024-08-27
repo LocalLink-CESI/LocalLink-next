@@ -1,4 +1,5 @@
 import {PrismaClient} from "@prisma/client";
+import {PostType as TruePostType} from ".prisma/client";
 
 export const prisma = new PrismaClient()
 
@@ -17,10 +18,10 @@ export const postTypeMap = {
 }
 
 export const postTypeValuesMap = {
-    'DEFAULT': PostType.DEFAULT,
-    'EVENT': PostType.EVENT,
-    'CULTURE': PostType.CULTURE,
-    'SALE': PostType.SALE,
+    'DEFAULT': TruePostType.REGULAR,
+    'EVENT': TruePostType.EVENT,
+    'CULTURE': TruePostType.CULTURE,
+    'SALE': TruePostType.SALE,
 }
 
 export type PrismaPostType = 'post' | 'culturePost' | 'eventPost' | 'salePost';
