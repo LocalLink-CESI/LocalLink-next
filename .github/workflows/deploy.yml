@@ -1,6 +1,7 @@
 name: CI
 
 run-name: ${{ github.actor }} - ${{ github.event_name }} - ${{ github.sha }}
+runs-on: self-hosted
 
 env:
   CI: false

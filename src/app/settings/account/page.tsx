@@ -68,8 +68,6 @@ export default function Account() {
     if (session.data) {
         const user = session.data.user
 
-        console.log(user)
-
         const handleSubmit = async (values: FormikValues) => {
             try {
                 await UpdateUserWithId(user?.id, values);
