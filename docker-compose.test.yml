@@ -5,13 +5,16 @@ services:
       context: .
       target: next
     environment:
-        - NODE_ENV=development
+      - NODE_ENV=development
+      - GOOGLE_ID=${GOOGLE_ID}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
+      - DATABASE_URL=postgres://postgres:password@locallink-db:5432/postgres
     env_file:
       - .env
-      - .env.local
       - .env.test
+      - .env.local
     ports:
-      - "80:80"
+      - "3000:80"
     volumes:
       - ".:/app"
     command: ["npm", "run", "dev"]
@@ -36,13 +39,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  locallink-adminer:
-    container_name: locallink-adminer
-    image: adminer
-    #    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      locallink-db:
-        condition: service_healthy
