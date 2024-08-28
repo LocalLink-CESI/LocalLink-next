@@ -31,7 +31,7 @@ jobs:
       CI: false
       GOOGLE_ID: "TEST"
       GOOGLE_SECRET: "TEST"
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 18.x

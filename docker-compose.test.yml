@@ -1,23 +1,23 @@
 services:
-  locallink-next:
-    container_name: locallink-next
+  locallink-next-test:
+    container_name: locallink-next-test
     build:
       context: .
       target: next
     ports:
-      - "3000:80"
+      - "3030:80"
     volumes:
       - ".:/app"
     command: [ "npm", "run", "dev" ]
     depends_on:
-      locallink-db:
+      locallink-db-test:
         condition: service_healthy
     limits:
       cpus: '1'
       memory: 1024M
 
-  locallink-db:
-    container_name: locallink-db
+  locallink-db-test:
+    container_name: locallink-db-test
     image: postgres
     restart: always
     environment:
@@ -27,7 +27,7 @@ services:
     volumes:
       - ./postgres:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 5s
