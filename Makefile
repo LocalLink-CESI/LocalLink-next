@@ -18,6 +18,7 @@ restart:
 	docker compose up -d
 	make migrate
 restart-prod:
+	npx next build
 	make stop-prod
 	make start-prod
 migrate:
@@ -29,8 +30,6 @@ migrate:
 	docker compose exec locallink-next npx prisma db push
 deploy:
 	git pull origin main
-	npx next build
-	make restart-prod
 test:
 	git checkout main
 	npm i
