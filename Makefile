@@ -18,8 +18,8 @@ restart:
 	docker compose up -d
 	make migrate
 restart-prod:
-	docker compose -f docker-compose-prod.yml exec locallink-next npx next build
 	make stop-prod
+	docker compose -f docker-compose-prod.yml exec locallink-next npx next build
 	make start-prod
 migrate:
 	# Wait for the database to become healthy
