@@ -41,7 +41,7 @@ export default function PostModal() {
     }
 
     const session = useSession();
-    const userId = session.data?.user.id;
+    const userId = (session.data?.user as { id?: string })?.id;
 
     useEffect(() => {
         const fetchCategories = async () => {

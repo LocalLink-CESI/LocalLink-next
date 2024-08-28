@@ -1,11 +1,11 @@
 'use server';
-import {prisma} from '@/helpers/database';
-import {FormikValues} from "formik";
-import {GetUserWithId} from "@/app/actions/users/get";
+import { prisma } from '@/helpers/database';
+import { FormikValues } from "formik";
+import { GetUserWithId } from "@/app/actions/users/get";
 
-import {Prisma} from ".prisma/client";
+import { Prisma } from ".prisma/client";
 import PrismaClientValidationError = Prisma.PrismaClientValidationError;
-import {PostType} from ".prisma/client";
+import { PostType } from ".prisma/client";
 
 export default async function CreatePost(form: FormikValues) {
     let user = await GetUserWithId(form.userId).catch((e: Error) => {
@@ -36,7 +36,7 @@ export default async function CreatePost(form: FormikValues) {
             title: form.title,
             text: form.text,
             userId: form.userId,
-            cityId: user.cityId,
+            cityId: user?.cityId,
             media: form.media,
             postType: form.type as PostType,
         }

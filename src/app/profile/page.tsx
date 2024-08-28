@@ -1,15 +1,15 @@
 'use client'
-import {Avatar, Flex, Heading, Stack, Text, useMediaQuery,} from '@chakra-ui/react';
-import {useSession} from "next-auth/react";
-import {redirect} from "next/navigation";
+import { Avatar, Flex, Heading, Stack, Text, useMediaQuery, } from '@chakra-ui/react';
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import PostModal from "@/app/component/postModal";
 
-import {Key, useEffect, useState} from "react";
+import { Key, useEffect, useState } from "react";
 import PostCard from "@components/Home/PostCard";
-import {GetLikesByUserId} from "@/app/actions/likes/get";
-import {GetUserWithId} from "@/app/actions/users/get";
+import { GetLikesByUserId } from "@/app/actions/likes/get";
+import { GetUserWithId } from "@/app/actions/users/get";
 import ProfileLoading from "@/app/profile/loading";
-import {GetPostByUserId} from "@/app/actions/posts/get";
+import { GetPostByUserId } from "@/app/actions/posts/get";
 
 // So that page would have the users profile information with an "edit" somewhere, maybe a place to pin some posts, and a place to see the posts they've made.
 export default function Profile() {
@@ -34,9 +34,9 @@ export default function Profile() {
         },
     });
 
-    const userId = session.data?.user.id;
+    const userId = (session.data?.user as { id?: string })?.id;
 
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<any[] | Error>([]);
     const [likes, setLikes] = useState<any[] | void>([]);
     const [isLargerThan1200] = useMediaQuery("(min-width: 1200px)");
     const [isLargerThan600] = useMediaQuery("(min-width: 600px)");
@@ -88,11 +88,11 @@ export default function Profile() {
                 padding={4}>
                 <Flex flex={1} direction={"row"}>
                     <Avatar name={user.firstName + " " + user.lastName} src={user.image}
-                            aspectRatio={1}
-                            borderRadius={"lg"}
-                            borderWidth={2}
-                            objectFit="cover"
-                            boxSize="100%"
+                        aspectRatio={1}
+                        borderRadius={"lg"}
+                        borderWidth={2}
+                        objectFit="cover"
+                        boxSize="100%"
                     />
                 </Flex>
                 <Stack
@@ -145,7 +145,7 @@ export default function Profile() {
 
                         {/*<UpdateUserModal/>*/}
 
-                        <PostModal/>
+                        <PostModal />
                     </Stack>
 
                     <Stack
@@ -157,7 +157,7 @@ export default function Profile() {
                         alignItems={'center'}>
 
                         {
-                            posts.length > 0 &&
+                            Array.isArray(posts) && posts.length > 0 &&
                             <Text
                                 hidden={posts.length > 0}
                                 fontSize={'lg'}
@@ -167,9 +167,9 @@ export default function Profile() {
                             </Text>
                         }
 
-                        {posts.map((post, index: Key) => {
+                        {Array.isArray(posts) && posts.map((post, index: Key) => {
                             return (
-                                <PostCard key={index} post={post}/>
+                                <PostCard key={index} post={post} />
                             )
                         })}
 

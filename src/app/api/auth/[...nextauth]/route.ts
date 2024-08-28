@@ -1,19 +1,19 @@
 import NextAuth from "next-auth/next";
-import {authOptions} from "@/lib/authOptions";
-import {prisma} from "@/helpers/database";
-import {CreateUserFromModel} from "@/app/actions/users/create";
-import User, {Role} from "@/models/User";
-import {randomUUID} from "node:crypto";
+import { authOptions } from "@/lib/authOptions";
+import { prisma } from "@/helpers/database";
+import CreateUserFromModel from "@/app/actions/users/create";
+import User, { Role } from "@/models/User";
+import { randomUUID } from "node:crypto";
 
 const handler = NextAuth({
     providers: authOptions.providers,
 
     callbacks: {
-        async jwt({token, user}) {
-            return {...token, ...user};
+        async jwt({ token, user }) {
+            return { ...token, ...user };
         },
 
-        async session({session, token}: { session: any, token: any }) {
+        async session({ session, token }: { session: any, token: any }) {
             try {
                 const user = await prisma.user.findUnique({
                     where: {
@@ -63,4 +63,4 @@ const handler = NextAuth({
     },
 });
 
-export {handler as GET, handler as POST};
+export { handler as GET, handler as POST };
