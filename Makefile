@@ -30,6 +30,7 @@ migrate:
 	docker compose exec locallink-next npx prisma db push
 deploy:
 	git pull origin main
+	make restart-prod
 test:
 	git checkout main
 	npm i
