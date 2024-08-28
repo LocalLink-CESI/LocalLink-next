@@ -6,7 +6,6 @@ env:
   CI: false
   GOOGLE_ID: "TEST"
   GOOGLE_SECRET: "TEST"
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 on:
   push:
     branches:
@@ -32,7 +31,6 @@ jobs:
       CI: false
       GOOGLE_ID: "TEST"
       GOOGLE_SECRET: "TEST"
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -42,8 +40,6 @@ jobs:
           node-version: 18.x
       - run: |
           cat .env.test > .env
-      - run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
       - run: make test
 
   deploy:
