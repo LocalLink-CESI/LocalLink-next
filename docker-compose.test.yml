@@ -10,14 +10,13 @@ services:
       - GOOGLE_SECRET=${GOOGLE_SECRET}
       - DATABASE_URL=postgres://postgres:password@locallink-db:5432/postgres
     env_file:
-      - .env
       - .env.test
       - .env.local
     ports:
       - "3000:80"
     volumes:
       - ".:/app"
-    command: ["npm", "run", "dev"]
+    command: [ "npm", "run", "dev" ]
     depends_on:
       locallink-db:
         condition: service_healthy
@@ -35,7 +34,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
