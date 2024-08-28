@@ -40,6 +40,9 @@ jobs:
           node-version: 18.x
       - run: |
           cat .env.test > .env
+
+      - run: echo $DATABASE_URL
+      - run: cat .env
       - run: make test
 
   deploy:
