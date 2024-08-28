@@ -197,7 +197,7 @@ export function SignUp() {
                             lastName: "",
                             password: "",
                             email: "",
-                            cityId: 1,
+                            cityId: cities[0].id,
                             bio: "",
                             image: "",
                             role: Role.USER,
