@@ -26,8 +26,8 @@ migrate:
 	docker compose exec locallink-next npx prisma db push
 deploy:
 	git pull
-	docker compose -f docker-compose-prod.yml down
 	docker compose -f docker-compose-prod.yml npx next build
+	docker compose -f docker-compose-prod.yml down
 	docker compose -f docker-compose-prod.yml up -d
 test:
 	git checkout main
