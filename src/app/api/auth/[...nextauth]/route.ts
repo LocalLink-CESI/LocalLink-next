@@ -27,13 +27,15 @@ const handler = NextAuth({
                     session.role = user.role;
                 }
 
+                const cities = await prisma.city.findMany();
+
                 if (!user) {
                     const newUser: User = {
                         id: randomUUID(),
                         firstName: session.user.name.split(" ")[0] || "?",
                         lastName: session.user.name.split(" ")[1] || "?",
                         email: session.user.email,
-                        cityId: 1,
+                        cityId: cities[0].id,
                         bio: "",
                         image: session.user.image,
                         role: Role.USER
