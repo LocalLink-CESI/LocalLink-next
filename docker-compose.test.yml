@@ -12,6 +12,9 @@ services:
     depends_on:
       locallink-db:
         condition: service_healthy
+    limits:
+      cpus: '1'
+      memory: 1024M
 
   locallink-db:
     container_name: locallink-db
