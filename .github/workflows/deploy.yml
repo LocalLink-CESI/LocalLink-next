@@ -44,6 +44,7 @@ jobs:
           echo "GOOGLE_ID=test" >> .env
           echo "GOOGLE_SECRET=tesst" >> .env
           echo "DATABASE_URL=${ secrets.DATABASE_URL }" >> .env
+      - run: cat .env
       - run: make test
 
   deploy:
