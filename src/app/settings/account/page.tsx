@@ -22,15 +22,15 @@ import {
     PopoverBody,
     PopoverFooter, useToast,
 } from '@chakra-ui/react'
-import {Heading, Text} from '@chakra-ui/layout'
-import {signOut, useSession} from "next-auth/react";
-import {useRouter} from "next/navigation";
-import {Field, Form, Formik, FormikValues} from "formik";
-import React, {useEffect, useState} from "react";
+import { Heading, Text } from '@chakra-ui/layout'
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Field, Form, Formik, FormikValues } from "formik";
+import React, { useEffect, useState } from "react";
 import GetCities from "@/app/actions/cities/get";
 import ProfileLoading from "@/app/profile/loading";
-import {DeleteUserWithId} from "@/app/actions/users/delete";
-import {UpdateUserWithId} from "@/app/actions/users/update";
+import { DeleteUserWithId } from "@/app/actions/users/delete";
+import { UpdateUserWithId } from "@/app/actions/users/update";
 
 
 export default function Account() {
@@ -59,11 +59,12 @@ export default function Account() {
     }, []);
 
     if (session.data) {
-        const user = session.data.user
+        const user = session.data.user as { name?: string; email?: string; image?: string; firstName?: string; lastName?: string; bio?: string; cityId?: number; };
 
+        const userId = (session.data?.user as { id?: string })?.id;
         const handleSubmit = async (values: FormikValues) => {
             try {
-                await UpdateUserWithId(user?.id, values);
+                await UpdateUserWithId(userId, values);
 
                 toast({
                     title: "Compte mis à jour",
@@ -82,7 +83,7 @@ export default function Account() {
 
         const handleAccountDeactivation = async () => {
             try {
-                await DeleteUserWithId(user.id)
+                await DeleteUserWithId(userId)
 
                 toast({
                     title: "Compte désactivé",
@@ -116,7 +117,7 @@ export default function Account() {
                 <Card>
                     <CardHeader>
                         <Stack spacing={4} direction='column'>
-                            <Avatar name={user.firstName + " " + user.lastName} src={user.image}/>
+                            <Avatar name={user.firstName + " " + user.lastName} src={user.image} />
                             <Heading size='md'>Compte</Heading>
                             <Text fontSize='sm' color='gray.500'>Gérez vos informations personnelles</Text>
                         </Stack>
@@ -137,18 +138,18 @@ export default function Account() {
                                 <Stack spacing={4} direction='column'>
                                     <Stack spacing={4} direction='row'>
                                         <Field name="firstName">
-                                            {({field}) => (
+                                            {({ field }) => (
                                                 <FormControl>
                                                     <FormLabel>Prénom</FormLabel>
-                                                    <Input {...field} placeholder="Prénom"/>
+                                                    <Input {...field} placeholder="Prénom" />
                                                 </FormControl>
                                             )}
                                         </Field>
                                         <Field name="lastName">
-                                            {({field}) => (
+                                            {({ field }) => (
                                                 <FormControl>
                                                     <FormLabel>Nom</FormLabel>
-                                                    <Input {...field} placeholder="Nom"/>
+                                                    <Input {...field} placeholder="Nom" />
                                                 </FormControl>
                                             )}
                                         </Field>
@@ -163,16 +164,16 @@ export default function Account() {
                                     {/*</Field>*/}
                                     <Stack spacing={4} direction='row'>
                                         <Field name="image">
-                                            {({field}) => (
+                                            {({ field }) => (
                                                 <FormControl>
                                                     <FormLabel>Image</FormLabel>
-                                                    <Input {...field} placeholder="Image"/>
+                                                    <Input {...field} placeholder="Image" />
                                                 </FormControl>
                                             )}
                                         </Field>
 
                                         <Field name="cityId">
-                                            {({field}) => (
+                                            {({ field }) => (
                                                 <FormControl>
                                                     <FormLabel>Ville</FormLabel>
                                                     <Select {...field} placeholder="Ville">
@@ -186,10 +187,10 @@ export default function Account() {
                                     </Stack>
 
                                     <Field name="bio">
-                                        {({field}) => (
+                                        {({ field }) => (
                                             <FormControl>
                                                 <FormLabel>Bio</FormLabel>
-                                                <Textarea {...field} placeholder="Bio"/>
+                                                <Textarea {...field} placeholder="Bio" />
                                             </FormControl>
                                         )}
                                     </Field>

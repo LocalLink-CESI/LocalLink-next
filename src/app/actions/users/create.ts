@@ -2,8 +2,8 @@
 
 import { prisma } from '@/helpers/database';
 import bcrypt from "bcryptjs";
-import {FormikValues} from "formik";
-import {Prisma} from ".prisma/client";
+import { FormikValues } from "formik";
+import { Prisma } from ".prisma/client";
 import PrismaClientValidationError = Prisma.PrismaClientValidationError;
 import User from "@/models/User";
 
@@ -23,7 +23,7 @@ import User from "@/models/User";
 //     });
 // }
 
-export async function CreateUserFromModel(user : User, password: string) {
+export default async function CreateUserFromModel(user: User, password: string) {
     return prisma.user.create({
         data: {
             firstName: user.firstName,

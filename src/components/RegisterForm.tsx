@@ -24,8 +24,9 @@ import {
     Input,
     Select
 } from '@chakra-ui/react'
-import {brandPrimary} from '../../theme';
+import { brandPrimary } from '../../theme';
 import { useRouter } from "next/navigation";
+import { Role } from "@/models/User";
 
 
 
@@ -200,10 +201,14 @@ export function SignUp() {
                         }}
                         onSubmit={async (values, actions) => {
                             try {
-                                let user = await CreateUser(values);
+                                let user = await CreateUser({
+                                    ...values,
+                                    bio: "",
+                                    image: "",
+                                    role: Role.USER,
+                                }, values.password);
                                 // Put the user in the next session and redirect to the signin page to login
                                 router.push("/auth/signin")
-
                             } catch (error) {
                             }
                         }}
@@ -248,7 +253,7 @@ export function SignUp() {
                                 </Field>
 
                                 <Field>
-                                    {({field, form}) => (
+                                    {({ field, form }) => (
                                         <FormControl mt={4} isRequired>
                                             <FormLabel>Ville</FormLabel>
                                             <Select

@@ -1,9 +1,9 @@
-import {CreateUserFromModel} from "@/app/actions/users/create";
-import {GetAllUsers, GetUserWithId} from "@/app/actions/users/get";
-import {DeleteUserWithId} from "@/app/actions/users/delete";
-import {UpdateUserWithId} from "@/app/actions/users/update";
+import CreateUserFromModel from "@/app/actions/users/create";
+import { GetAllUsers, GetUserWithId } from "@/app/actions/users/get";
+import { DeleteUserWithId } from "@/app/actions/users/delete";
+import { UpdateUserWithId } from "@/app/actions/users/update";
 import bcrypt from "bcryptjs";
-import {getServerSession} from "next-auth";
+import { getServerSession } from "next-auth";
 import User, { Role } from "@/models/User";
 
 let uid = "clxspgy360001fgxtmkfbq5r2";
@@ -21,7 +21,7 @@ jest.mock("next-auth");
 
 
 test('Validating user creation', async () => {
-    const form : User = {
+    const form: User = {
         firstName: 'John',
         lastName: 'Doe',
         email: randomMail,
@@ -51,7 +51,7 @@ test('Validating user creation', async () => {
 });
 
 test('Validating user creation with invalid data', async () => {
-    const form : User = {
+    const form: User = {
         firstName: 'John',
         lastName: 'Doe',
         email: randomMail,
