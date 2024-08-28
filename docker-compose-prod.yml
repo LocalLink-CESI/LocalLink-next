@@ -10,7 +10,7 @@ services:
       - .env
     volumes:
       - ".:/app"
-    command: ["npm", "run", "dev"]
+    command: ["npm", "run", "start"]
     depends_on:
       locallink-db:
         condition: service_healthy
