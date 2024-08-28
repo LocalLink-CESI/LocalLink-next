@@ -14,13 +14,14 @@ export async function DeleteUserWithId(id: string) {
     });
 
     if (user.id === id || user.role === "ADMIN") {
-        return prisma.user.delete(
-            {
-                where: {
-                    id: id
-                }
+        return prisma.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                isDeleted: true
             }
-        ).catch((error: Error) => {
+        }).catch((error: Error) => {
             return error;
         });
     }

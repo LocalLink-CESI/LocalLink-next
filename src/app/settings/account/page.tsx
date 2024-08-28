@@ -37,14 +37,7 @@ export default function Account() {
 
     let toast = useToast();
 
-    const router = useRouter();
-
-    const session = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push('/auth/signin')
-        },
-    });
+    const session = useSession();
 
     const [cities, setCities] = useState<{ id: number; name: string; }[]>([]);
 
@@ -67,8 +60,6 @@ export default function Account() {
 
     if (session.data) {
         const user = session.data.user
-
-        console.log(user)
 
         const handleSubmit = async (values: FormikValues) => {
             try {

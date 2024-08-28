@@ -2,77 +2,65 @@ import NextAuth from "next-auth/next";
 import {authOptions} from "@/lib/authOptions";
 import {prisma} from "@/helpers/database";
 import {CreateUserFromModel} from "@/app/actions/users/create";
-import User from "@/models/User";
+import User, {Role} from "@/models/User";
 import {randomUUID} from "node:crypto";
 
 const handler = NextAuth({
-        providers: authOptions.providers,
+    providers: authOptions.providers,
 
-        callbacks: {
-            async jwt({token, user}) {
-                return {...token, ...user};
-            },
+    callbacks: {
+        async jwt({token, user}) {
+            return {...token, ...user};
+        },
 
-            async session({session, token}: { session: any, token: any }) {
-                session.user = token as any;
-
-
-                console.log("--------------------");
-
-                console.log(session);
-
-                console.log("--------------------");
-
-
-                try {
-                    const user = await prisma.user.findUnique({
-                        where: {
-                            email: session.user.email,
-                            isDeleted: false
-                        }
-                    });
-
-                    console.log("--------------------");
-
-                    console.log("USER",user);
-
-                    console.log("SESSION",session);
-
-                    if (!user) {
-                        const newUser: User = {
-                            id: randomUUID(),
-                            firstName: session.user.name.split(" ")[0] || "?",
-                            lastName: session.user.name.split(" ")[1] || "?",
-                            email: session.user.email,
-                            cityId: 315,
-                            bio: "",
-                            image: session.user.image,
-                            role: "USER",
-                        }
-
-                        await CreateUserFromModel(newUser, randomUUID());
-
-                        session.user = await prisma.user.findFirst({
-                            where: {
-                                email: session.user.email,
-                            }
-                        });
-                        session.role = "user";
+        async session({session, token}: { session: any, token: any }) {
+            try {
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: session.user.email,
+                        isDeleted: false
                     }
-                } catch (error) {
-                    console.error(error);
+                });
+
+                if (user) {
+                    session.user = user;
+                    session.role = user.role;
                 }
 
-                return session;
-            },
-        },
+                if (!user) {
+                    const newUser: User = {
+                        id: randomUUID(),
+                        firstName: session.user.name.split(" ")[0] || "?",
+                        lastName: session.user.name.split(" ")[1] || "?",
+                        email: session.user.email,
+                        cityId: 1,
+                        bio: "",
+                        image: session.user.image,
+                        role: Role.USER
+                    }
 
-        pages: {
-                signIn: '/auth/signin',
-                signOut: '/auth/signOut',
-                newUser: '/auth/signUp',
+                    await CreateUserFromModel(newUser, randomUUID());
+
+                    session.user = await prisma.user.findUnique({
+                        where: {
+                            email: session.user.email,
+                        }
+                    });
+                    session.role = session.user.role;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
+            return session;
         },
-    })
-;
+    },
+
+    pages: {
+        signIn: '/auth/signin',
+        signOut: '/auth/signOut',
+        newUser: '/auth/signUp',
+    },
+});
 
 export {handler as GET, handler as POST};
