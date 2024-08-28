@@ -17,10 +17,6 @@ restart:
 	docker compose down
 	docker compose up -d
 	make migrate
-restart-prod:
-	make stop-prod
-	npx next build
-	make start-prod
 migrate:
 	# Wait for the database to become healthy
 	docker compose exec locallink-db pg_isready -U postgres -q -h locallink-db
@@ -29,8 +25,10 @@ migrate:
 	docker compose exec locallink-next npx prisma generate
 	docker compose exec locallink-next npx prisma db push
 deploy:
-	git pull origin main
-	make restart-prod
+	git pull
+	docker compose -f docker-compose-prod.yml down
+	npx next build
+	docker compose -f docker-compose-prod.yml up -d
 test:
 	git checkout main
 	npm i
