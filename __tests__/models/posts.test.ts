@@ -34,7 +34,7 @@ test('Invalid post creation without user', async () => {
             type: PostType.REGULAR
         },
     );
-    expect(response).toBe(null);
+    expect(response).toBe(undefined);
 });
 
 test('Valid list post', async () => {
