@@ -266,7 +266,7 @@ export default function PostModal() {
                                             <Field name='categoryId'>
                                                 {({field, form}) => (
                                                     <FormControl mt={4} isRequired>
-                                                        <FormLabel>Type d'article</FormLabel>
+                                                        <FormLabel>Type d&apos;article</FormLabel>
                                                         <Select
                                                             name="categoryId"
                                                             id="categoryId"
