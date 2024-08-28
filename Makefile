@@ -31,6 +31,8 @@ deploy:
 	git pull origin main
 	make restart-prod
 test:
+	git checkout main
+	cat .env.test > .env
 	npm i
 	docker compose -f docker-compose.test.yml up -d
 	docker compose -f docker-compose.test.yml exec locallink-db pg_isready -U postgres -q -h locallink-db
