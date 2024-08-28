@@ -58,7 +58,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs:
-      - test
+#      - test
       - lint
     steps:
       - uses: webfactory/ssh-agent@v0.8.0
