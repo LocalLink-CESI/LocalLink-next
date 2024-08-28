@@ -31,6 +31,7 @@ deploy:
 	git pull origin main
 	make restart-prod
 test:
+	npm i
 	docker compose -f docker-compose.test.yml up -d
 	docker compose -f docker-compose.test.yml exec locallink-db pg_isready -U postgres -q -h locallink-db
 	docker compose -f docker-compose.test.yml exec locallink-next npx prisma generate
