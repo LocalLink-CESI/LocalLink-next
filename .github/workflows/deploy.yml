@@ -45,7 +45,15 @@ jobs:
           echo "GOOGLE_SECRET=tesst" >> .env
           echo "DATABASE_URL=${{secrets.DATABASE_URL}}" >> .env
       - run: cat .env
-      - run: make test
+      - run: npm i
+      - run: docker compose -f docker-compose.yml up -d
+      - run: docker compose -f docker-compose.yml exec locallink-db pg_isready -U postgres -q -h locallink-db
+      - run: docker compose -f docker-compose.yml exec locallink-next npx prisma generate
+      - run: docker compose -f docker-compose.yml exec locallink-next npx prisma db push --force-reset
+      - run: docker compose -f docker-compose.yml exec locallink-next node prisma/seed.js
+      - run: docker compose -f docker-compose.yml exec locallink-next node prisma/seedCities.js
+      - run: docker compose -f docker-compose.yml exec locallink-next npm run test
+
 
   deploy:
     runs-on: ubuntu-latest
