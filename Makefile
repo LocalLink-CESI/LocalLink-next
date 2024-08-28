@@ -18,7 +18,7 @@ restart:
 	docker compose up -d
 	make migrate
 restart-prod:
-	npx next build
+	docker compose -f docker-compose-prod.yml exec locallink-next npx next build
 	make stop-prod
 	make start-prod
 migrate:
