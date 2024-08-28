@@ -27,7 +27,7 @@ migrate:
 deploy:
 	git pull
 	docker compose -f docker-compose-prod.yml down
-	npx next build
+	docker compose -f docker-compose-prod.yml npx next build
 	docker compose -f docker-compose-prod.yml up -d
 test:
 	git checkout main
