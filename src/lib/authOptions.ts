@@ -21,6 +21,7 @@ export const authOptions = {
                 email: { label: "Email", type: "email", placeholder: "john.doe@example.com" },
                 password: { label: "Password", type: "password" },
             },
+
             async authorize(credentials, req) {
                 const user = await prisma.user.findUnique({
                     where: {
@@ -28,6 +29,8 @@ export const authOptions = {
                         isDeleted: false
                     }
                 });
+
+                console.log("CREDENTIAL", credentials);
 
                 console.log("USER", user);
 

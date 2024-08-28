@@ -198,15 +198,13 @@ export function SignUp() {
                             password: "",
                             email: "",
                             cityId: 1,
+                            bio: "",
+                            image: "",
+                            role: Role.USER,
                         }}
                         onSubmit={async (values, actions) => {
                             try {
-                                let user = await CreateUserFromModel({
-                                    ...values,
-                                    bio: "",
-                                    image: "",
-                                    role: Role.USER,
-                                }, values.password);
+                                let user = await CreateUserFromModel(values, values.password);
                                 // Put the user in the next session and redirect to the signin page to login
                                 router.push("/auth/signin")
                             } catch (error) {
