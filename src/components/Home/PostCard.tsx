@@ -147,11 +147,10 @@ export default function PostCard({ post }) {
                 <Tooltip label="Partager" aria-label="Partager" placement="bottom">
                     <Button variant='brandGhostButton' leftIcon={<FiShare />} onClick={
                         () => {
-                            console.log("http://" + url + ":3000" + "/posts/" + post.type + "/" + post.id);
                             navigator.share({
                                 title: post.title,
                                 text: post.text,
-                                url: "http://" + url + ":3000" + "/posts/" + post.type + "/" + post.id
+                                url: "https://locallink.site/posts/" + post.id
                             })
                         }
                     }>
