@@ -39,6 +39,12 @@ export default async function CreatePost(form: FormikValues) {
             cityId: user?.cityId,
             media: form.media,
             postType: form.type as PostType,
+            startAt: form.startAt,
+            endAt: form.endAt,
+            isDonation: form.isDonation,
+            categoryId: form.categoryId,
+            localisation: form.localisation,
+            price: form.price,
         }
     }).catch((e: PrismaClientValidationError) => {
         console.error(e);

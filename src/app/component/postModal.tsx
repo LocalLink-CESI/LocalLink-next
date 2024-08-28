@@ -17,17 +17,17 @@ import {
     Textarea,
     useDisclosure, Toast, useToast
 } from "@chakra-ui/react";
-import { Field, Form, Formik, FormikValues } from "formik";
-import React, { useEffect, useState } from "react";
+import {Field, Form, Formik, FormikValues} from "formik";
+import React, {useEffect, useState} from "react";
 import CreatePost from "@/app/actions/posts/create";
-import { postTypeMap, postTypeValuesMap, PostType } from "@/helpers/database";
-import { Category } from "@prisma/client";
+import {postTypeMap, postTypeValuesMap, PostType} from "@/helpers/database";
+import {Category} from "@prisma/client";
 import GetCategories from "@/app/actions/categories/get";
-import { useSession } from "next-auth/react";
-import { PostType as TruePostType } from ".prisma/client";
+import {useSession} from "next-auth/react";
+import {PostType as TruePostType} from ".prisma/client";
 
 export default function PostModal() {
-    const { onOpen, onClose, isOpen } = useDisclosure();
+    const {onOpen, onClose, isOpen} = useDisclosure();
 
     let toast = useToast();
 
@@ -76,72 +76,77 @@ export default function PostModal() {
             </Button>
 
             <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
+                <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>Poster quelque chose</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton/>
                     <ModalBody>
                         <Formik initialValues={{
                             title: '',
                             text: '',
                             media: null,
                             userId: userId,
-                            startAt: '',
-                            endAt: '',
-                            price: 0,
+                            startAt: null,
+                            endAt: null,
+                            price: null,
                             isDonation: false,
-                            categoryId: 1,
-                            localisation: '',
+                            categoryId: null,
+                            localisation: null,
                             type: TruePostType.REGULAR,
                         }}
-                            onSubmit={
-                                async (values: FormikValues) => {
-                                    try {
-                                        let response = await CreatePost(values)
-                                        console.log(response);
+                                onSubmit={
+                                    async (values: FormikValues) => {
+                                        try {
+                                            if (values.type === TruePostType.EVENT) {
+                                                if (values.startAt !== null) values.startAt = new Date(values.startAt).toISOString()
+                                                if (values.endAt !== null) values.endAt = new Date(values.endAt).toISOString()
+                                            }
 
-                                        toast({
-                                            title: "Succès",
-                                            description: "Post créé avec succès",
-                                            status: "success",
-                                            duration: 3000,
-                                            isClosable: true,
-                                        });
+                                            let response = await CreatePost(values)
+                                            console.log(response);
 
-                                        setTimeout(() => {
-                                            window.location.reload();
-                                        }, 1000);
+                                            toast({
+                                                title: "Succès",
+                                                description: "Post créé avec succès",
+                                                status: "success",
+                                                duration: 3000,
+                                                isClosable: true,
+                                            });
 
-                                        onClose()
-                                    } catch (e) {
-                                        console.error(e)
+                                            setTimeout(() => {
+                                                window.location.reload();
+                                            }, 1000);
+
+                                            onClose()
+                                        } catch (e) {
+                                            console.error(e)
+                                        }
                                     }
-                                }
-                            }>
+                                }>
                             {(props) => (
                                 <Form>
                                     <Field name='title'>
-                                        {({ field, form }) => (
+                                        {({field, form}) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Titre</FormLabel>
                                                 <Input min={3} max={100} type='text' {...field}
-                                                    placeholder='Un super post' />
+                                                       placeholder='Un super post'/>
                                             </FormControl>
                                         )}
                                     </Field>
 
                                     <Field name='text'>
-                                        {({ field, form }) => (
+                                        {({field, form}) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Contenu</FormLabel>
                                                 <Textarea type='text' {...field} max={1024}
-                                                    placeholder="Il se passe quelque chose d'incroyable dans notre quartier !" />
+                                                          placeholder="Il se passe quelque chose d'incroyable dans notre quartier !"/>
                                             </FormControl>
                                         )}
                                     </Field>
 
                                     <Field name='media'>
-                                        {({ field, form }) => (
+                                        {({field, form}) => (
                                             <FormControl mt={4}>
                                                 <FormLabel>Media {mediaPreview == 'error' &&
                                                     (<Text as={'span'} bg={"red.500"} bgClip="text">
@@ -171,7 +176,7 @@ export default function PostModal() {
                                                 {mediaPreview != '' && mediaPreview != 'error' &&
                                                     // eslint-disable-next-line @next/next/no-img-element
                                                     <img src={mediaPreview} alt="Image preview"
-                                                        style={{ width: '100px' }} />
+                                                         style={{width: '100px'}}/>
                                                 }
 
 
@@ -180,7 +185,7 @@ export default function PostModal() {
                                     </Field>
 
                                     <Field name='type'>
-                                        {({ field, form }) => (
+                                        {({field, form}) => (
                                             <FormControl mt={4} isRequired>
                                                 <FormLabel>Type de post</FormLabel>
                                                 <Select
@@ -194,7 +199,7 @@ export default function PostModal() {
                                                     {
                                                         (Object.keys(PostType) as Array<keyof typeof PostType>).map(type => (
                                                             <option key={type}
-                                                                value={postTypeValuesMap[type]}>{postTypeMap[type]}</option>
+                                                                    value={postTypeValuesMap[type]}>{postTypeMap[type]}</option>
                                                         ))
                                                     }
                                                 </Select>
@@ -203,28 +208,28 @@ export default function PostModal() {
                                     </Field>
 
                                     {/* EVENEMENT */}
-                                    {props.values.type as string === PostType.EVENT && (
+                                    {props.values.type as string === TruePostType.EVENT && (
                                         <>
                                             <Field name='startAt'>
-                                                {({ field, form }) => (
+                                                {({field, form}) => (
                                                     <FormControl mt={4} isRequired>
                                                         <FormLabel>Date de début</FormLabel>
-                                                        <Input type='date' {...field} />
+                                                        <Input type='datetime-local' {...field} />
                                                     </FormControl>
                                                 )}
                                             </Field>
 
                                             <Field name='endAt'>
-                                                {({ field, form }) => (
+                                                {({field, form}) => (
                                                     <FormControl mt={4} isRequired>
                                                         <FormLabel>Date de fin</FormLabel>
-                                                        <Input type='date' {...field} />
+                                                        <Input type='datetime-local' {...field} />
                                                     </FormControl>
                                                 )}
                                             </Field>
 
                                             <Field name='localisation'>
-                                                {({ field, form }) => (
+                                                {({field, form}) => (
                                                     <FormControl mt={4} isRequired>
                                                         <FormLabel>Où se passe l&apos;événement ?</FormLabel>
                                                         <Input type='text' {...field} />
@@ -235,11 +240,11 @@ export default function PostModal() {
                                     )}
 
                                     {/* VENTE OU DON */}
-                                    {props.values.type as string === PostType.SALE && (
+                                    {props.values.type as string === TruePostType.SALE && (
                                         <>
                                             <Flex direction={"row"}>
                                                 <Field name='isDonation'>
-                                                    {({ field, form }) => (
+                                                    {({field, form}) => (
                                                         <FormControl mt={4}>
                                                             <FormLabel>Est ce un don ?</FormLabel>
                                                             <Checkbox
@@ -249,17 +254,17 @@ export default function PostModal() {
                                                 </Field>
 
                                                 <Field name='price'>
-                                                    {({ field, form }) => (
+                                                    {({field, form}) => (
                                                         <FormControl mt={4} isRequired>
                                                             <FormLabel>Prix</FormLabel>
                                                             <Input type='number' {...field}
-                                                                isDisabled={props.values.isDonation} />
+                                                                   isDisabled={props.values.isDonation}/>
                                                         </FormControl>
                                                     )}
                                                 </Field>
                                             </Flex>
                                             <Field name='categoryId'>
-                                                {({ field, form }) => (
+                                                {({field, form}) => (
                                                     <FormControl mt={4} isRequired>
                                                         <FormLabel>Type de post</FormLabel>
                                                         <Select
@@ -270,7 +275,7 @@ export default function PostModal() {
                                                             {
                                                                 categories.map(category => (
                                                                     <option key={category.id}
-                                                                        value={category.id}>{category.name}</option>
+                                                                            value={category.id}>{category.name}</option>
                                                                 ))
                                                             }
                                                         </Select>
@@ -283,9 +288,9 @@ export default function PostModal() {
                                     <ModalFooter justifyContent={'end'}>
                                         <>
                                             <Button mr={3} rounded={'md'}
-                                                color={'black'}
-                                                isLoading={props.isSubmitting}
-                                                variant={"brandPrimaryButton"} type="submit">
+                                                    color={'black'}
+                                                    isLoading={props.isSubmitting}
+                                                    variant={"brandPrimaryButton"} type="submit">
                                                 Poster
                                             </Button>
                                             <Button onClick={onClose}>Annuler</Button>

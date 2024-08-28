@@ -22,12 +22,11 @@ import { useEffect, useState } from "react";
 import CommentModal from "@/app/component/commentModal";
 import { useSession } from "next-auth/react";
 import { Like } from "@/app/actions/likes/create";
-import { PostType } from "@/helpers/database";
+import { PostType } from ".prisma/client";
 import { useRouter } from "next/navigation";
 import { Post } from ".prisma/client";
 
 export default function PostCard({ post }) {
-    // For now all posts will just be from the current user while theres no backend to fetch details from a user's id
     const router = useRouter()
     const url = window.location.hostname
     const { onOpen, onClose, isOpen } = useDisclosure();
@@ -53,7 +52,6 @@ export default function PostCard({ post }) {
 
     const handleLike = async (postId: number, userId: string) => {
         try {
-            console.log(likes)
             await Like(userId, postId)
             if (!likes.includes(userId)) {
                 let buff = likes
@@ -99,7 +97,7 @@ export default function PostCard({ post }) {
                     <Text fontSize={isLargerThan1200 ? 16 : 14}>
                         {post.text}
                     </Text>
-                    {post.type === "eventPost" && (
+                    {post.postType === PostType.EVENT && (
                         <>
                             <Text fontSize={14}
                                 color='gray.500'>Début: {post.startAt.toLocaleDateString("fr")}</Text>
@@ -109,7 +107,7 @@ export default function PostCard({ post }) {
                         </>
                     )}
 
-                    {post.type === "salePost" && (
+                    {post.postType === PostType.SALE && (
                         <>
                             <Text fontSize={14}
                                 color='gray.500'>Prix: {post.isDonation ? "Gratuit !" : post.price + "€"}</Text>
