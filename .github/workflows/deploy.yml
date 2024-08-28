@@ -31,8 +31,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v2
       - run: |
           cat .env.test > .env
+      - run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
       - run: make test
 
   deploy:
