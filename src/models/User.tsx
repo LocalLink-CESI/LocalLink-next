@@ -10,7 +10,7 @@ export default interface User {
     bio: string;
     cityId: number;
     image: string;
-    role: Role;
+    role?: Role;
 }
 
 export interface DetailedUser extends User {

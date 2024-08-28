@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import CreateUser from "@/app/actions/users/create";
+import {CreateUserFromModel} from "@/app/actions/users/create";
 import GetCities from "@/app/actions/cities/get";
 import { Formik, Field, Form } from 'formik';
 
@@ -197,10 +197,12 @@ export function SignUp() {
                             password: "",
                             email: "",
                             cityId: 1,
+                            bio: "",
+                            image: "",
                         }}
                         onSubmit={async (values, actions) => {
                             try {
-                                let user = await CreateUser(values);
+                                let user = await CreateUserFromModel(values, values.password);
                                 // Put the user in the next session and redirect to the signin page to login
                                 router.push("/auth/signin")
 
