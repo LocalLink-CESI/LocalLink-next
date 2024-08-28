@@ -31,7 +31,7 @@ export default async function CreateUserFromModel(user: User, password: string) 
             email: user.email,
             image: user.image,
             password: await bcrypt.hash(password, 10),
-            cityId: user.cityId,
+            cityId: Number(user.cityId),
             bio: user.bio,
         }
     }).catch((error: PrismaClientValidationError) => {
