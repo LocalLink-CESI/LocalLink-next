@@ -3,8 +3,16 @@ import {PostType, prisma} from "@/helpers/database";
 import GetLike from "@/app/actions/likes/get";
 import {Prisma} from ".prisma/client";
 import PrismaClientValidationError = Prisma.PrismaClientValidationError;
+import {authOptions} from "@/lib/authOptions";
+import {getServerSession} from "next-auth";
 
 export default async function CreateLike(postId: number, userId: string) {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+        return new Error("Unauthorized");
+    }
+
     return prisma.like.create({
         data: {
             postId: postId,
