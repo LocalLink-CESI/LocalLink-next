@@ -94,7 +94,7 @@ const SidebarContent = ({ user, onClose, ...rest }: SidebarProps) => {
             justifyContent="space-between" {...rest}>
             <Flex h="20" alignItems="center" justifyContent="center">
                 <Text fontSize="2xl" fontFamily="Montserrat" fontWeight="bold" color="black">
-                    LL
+                    LOCALLINK
                 </Text>
                 <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
             </Flex>
